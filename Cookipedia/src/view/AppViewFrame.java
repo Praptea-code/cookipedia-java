@@ -30,6 +30,19 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         CardLayout cl = (CardLayout) getContentPane().getLayout();
 
+        if (username.isEmpty() && password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,"Please enter username and password.","Validation Error",javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (username.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,"Please enter your username.","Validation Error",javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,"Please enter your password.","Validation Error",javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         if (username.equals("admin") && password.equals("12345")) {
             // admin
             cl.show(getContentPane(), "card4");   
@@ -651,8 +664,14 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_homeButtonFocusGained
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
-        CardLayout cl = (CardLayout) getContentPane().getLayout();
-        cl.show(getContentPane(), "card3");
+        int choice = javax.swing.JOptionPane.showConfirmDialog(this,"Are you sure you want to log out?","Confirm Logout",javax.swing.JOptionPane.YES_NO_OPTION,javax.swing.JOptionPane.QUESTION_MESSAGE);
+
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            CardLayout cl = (CardLayout) getContentPane().getLayout();
+            cl.show(getContentPane(), "card3"); 
+            usernameField.setText("");
+            passwordField.setText("");
+        }
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     /**
