@@ -6,8 +6,6 @@ package view;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import javax.swing.ImageIcon;
-import java.awt.Image;
 import java.util.Scanner;
 import model.AppModel;
 
@@ -20,6 +18,10 @@ public class AppViewFrame extends javax.swing.JFrame {
     private final java.awt.Color loginNormalFg  = new java.awt.Color(239, 196, 4);
     private final java.awt.Color loginHoverBg   = new java.awt.Color(239, 196, 4);  // yellow
     private final java.awt.Color loginHoverFg   = java.awt.Color.BLACK; 
+    private final Color viewNormalBg = Color.BLACK; // F1C40F
+    private final Color viewNormalFg = new Color(0xF1, 0xC4, 0x0F);
+    private final Color viewHoverBg  = new Color(0xF1, 0xC4, 0x0F);
+    private final Color viewHoverFg  = Color.BLACK;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppModel model = new AppModel();
 
@@ -51,7 +53,10 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void loadHomeCards() {
         recentlyAddedPanel.removeAll();
         browseCardsPanel.removeAll(); 
-        browseCardsPanel.setLayout(new java.awt.GridLayout(0, 3, 20, 20));
+        browseCardsPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));
+        browseCardsPanel.setBorder(
+            javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        );
         
         java.util.List<AppModel.RecipeData> recent = model.getRecentlyAdded(4);
         for (AppModel.RecipeData r : recent) {
@@ -99,6 +104,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }
     
+    private void setupHistoryLayout() {
+        browseHistoryPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,33 +140,32 @@ public class AppViewFrame extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         logoutButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        logo = new javax.swing.JLabel();
         basePanel = new javax.swing.JPanel();
         homePanelUser = new javax.swing.JPanel();
         myStatsLabel = new javax.swing.JLabel();
         recentlyAddedPanel = new javax.swing.JPanel();
-        symbol2 = new javax.swing.JLabel();
-        recipesCookedLabel = new javax.swing.JLabel();
+        totalRecipes = new javax.swing.JLabel();
+        totalRecipesNumber = new javax.swing.JLabel();
         recipesCookedNumber = new javax.swing.JLabel();
-        symbol3 = new javax.swing.JLabel();
-        requestedLabel = new javax.swing.JLabel();
         requestedNumber = new javax.swing.JLabel();
         bannerPanel = new javax.swing.JPanel();
         bannerHomePage = new javax.swing.JLabel();
         requestedLabel1 = new javax.swing.JLabel();
         jSeparator5 = new javax.swing.JSeparator();
-        symbol4 = new javax.swing.JLabel();
         requestedNumber1 = new javax.swing.JLabel();
         jSeparator6 = new javax.swing.JSeparator();
         jSeparator7 = new javax.swing.JSeparator();
-        requestedNumber2 = new javax.swing.JLabel();
-        recipesCookedLabel1 = new javax.swing.JLabel();
-        symbol5 = new javax.swing.JLabel();
+        yetToCookNumber = new javax.swing.JLabel();
+        yetToCook = new javax.swing.JLabel();
+        totalRecipesLogo = new javax.swing.JLabel();
+        recipesCookedLogo = new javax.swing.JLabel();
+        requestedLogo = new javax.swing.JLabel();
+        yetToCookLogo = new javax.swing.JLabel();
+        myStatsLabel1 = new javax.swing.JLabel();
         browseRecipesPanel = new javax.swing.JPanel();
         browsePanel = new javax.swing.JPanel();
         browseTopPanel = new javax.swing.JPanel();
-        browseTitleLabel = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -165,6 +173,13 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseScrollPane = new javax.swing.JScrollPane();
         browseCardsPanel = new javax.swing.JPanel();
         myHistoryPanel = new javax.swing.JPanel();
+        historyPanel = new javax.swing.JPanel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        historyScrollPane = new java.awt.ScrollPane();
+        browseHistoryPanel = new javax.swing.JPanel();
         recipeRequestPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -284,7 +299,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         );
         adminPanelLayout.setVerticalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 797, Short.MAX_VALUE)
+            .addGap(0, 856, Short.MAX_VALUE)
         );
 
         getContentPane().add(adminPanel, "card4");
@@ -402,6 +417,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoutButton.setFont(new java.awt.Font("SansSerif", 1, 16)); // NOI18N
         logoutButton.setForeground(new java.awt.Color(255, 204, 0));
         logoutButton.setText("Logout");
+        logoutButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 logoutButtonMouseEntered(evt);
@@ -418,9 +434,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         navMainPanel.add(logoutButton);
         logoutButton.setBounds(1110, 10, 100, 42);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
-        navMainPanel.add(jLabel1);
-        jLabel1.setBounds(20, 0, 60, 58);
+        logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        navMainPanel.add(logo);
+        logo.setBounds(20, 0, 60, 58);
 
         basePanel.setBackground(new java.awt.Color(255, 255, 255));
         basePanel.setLayout(new java.awt.CardLayout());
@@ -432,18 +448,14 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         recentlyAddedPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
 
-        symbol2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol2.png"))); // NOI18N
+        totalRecipes.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        totalRecipes.setText("Total Recipes");
 
-        recipesCookedLabel.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        recipesCookedLabel.setText("Total Recipes");
+        totalRecipesNumber.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        totalRecipesNumber.setText("0");
 
         recipesCookedNumber.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        recipesCookedNumber.setText("0");
-
-        symbol3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol3.png"))); // NOI18N
-
-        requestedLabel.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        requestedLabel.setText("Recipes Cooked");
+        recipesCookedNumber.setText("Recipes Cooked");
 
         requestedNumber.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         requestedNumber.setText("0");
@@ -471,8 +483,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         jSeparator5.setForeground(new java.awt.Color(0, 0, 0));
         jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        symbol4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol3.png"))); // NOI18N
-
         requestedNumber1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         requestedNumber1.setText("0");
 
@@ -482,13 +492,22 @@ public class AppViewFrame extends javax.swing.JFrame {
         jSeparator7.setForeground(new java.awt.Color(0, 0, 0));
         jSeparator7.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        requestedNumber2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        requestedNumber2.setText("0");
+        yetToCookNumber.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        yetToCookNumber.setText("0");
 
-        recipesCookedLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        recipesCookedLabel1.setText("Yet to Cook");
+        yetToCook.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        yetToCook.setText("Yet to Cook");
 
-        symbol5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol3.png"))); // NOI18N
+        totalRecipesLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol1.png"))); // NOI18N
+
+        recipesCookedLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol2.png"))); // NOI18N
+
+        requestedLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol3.png"))); // NOI18N
+
+        yetToCookLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/symbol4.png"))); // NOI18N
+
+        myStatsLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        myStatsLabel1.setText("Stats");
 
         javax.swing.GroupLayout homePanelUserLayout = new javax.swing.GroupLayout(homePanelUser);
         homePanelUser.setLayout(homePanelUserLayout);
@@ -499,100 +518,96 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(78, 78, 78)
                 .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(homePanelUserLayout.createSequentialGroup()
-                        .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(homePanelUserLayout.createSequentialGroup()
                         .addComponent(myStatsLabel)
                         .addContainerGap())
                     .addGroup(homePanelUserLayout.createSequentialGroup()
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(homePanelUserLayout.createSequentialGroup()
-                                .addGap(110, 110, 110)
-                                .addComponent(symbol2))
-                            .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(73, 73, 73)
-                                .addComponent(recipesCookedLabel))
+                                .addComponent(totalRecipes))
                             .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(120, 120, 120)
-                                .addComponent(recipesCookedNumber)))
+                                .addComponent(totalRecipesNumber))
+                            .addGroup(homePanelUserLayout.createSequentialGroup()
+                                .addGap(107, 107, 107)
+                                .addComponent(totalRecipesLogo)))
                         .addGap(80, 80, 80)
                         .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(homePanelUserLayout.createSequentialGroup()
-                                .addGap(120, 120, 120)
-                                .addComponent(symbol3))
-                            .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(83, 83, 83)
-                                .addComponent(requestedLabel))
+                                .addComponent(recipesCookedNumber))
                             .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(131, 131, 131)
-                                .addComponent(requestedNumber1)))
+                                .addComponent(requestedNumber1))
+                            .addGroup(homePanelUserLayout.createSequentialGroup()
+                                .addGap(120, 120, 120)
+                                .addComponent(recipesCookedLogo)))
                         .addGap(84, 84, 84)
                         .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(homePanelUserLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(symbol5)
-                                .addGap(124, 124, 124))
-                            .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(homePanelUserLayout.createSequentialGroup()
                                         .addGap(106, 106, 106)
-                                        .addComponent(recipesCookedLabel1))
+                                        .addComponent(yetToCook))
                                     .addGroup(homePanelUserLayout.createSequentialGroup()
                                         .addGap(139, 139, 139)
-                                        .addComponent(requestedNumber2)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(yetToCookNumber)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(yetToCookLogo)
+                                .addGap(121, 121, 121)))
                         .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(87, 87, 87)
                                 .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
-                                        .addComponent(requestedLabel1)
-                                        .addGap(147, 147, 147))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
                                         .addComponent(requestedNumber)
-                                        .addGap(180, 180, 180))))
+                                        .addGap(180, 180, 180))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
+                                        .addComponent(requestedLabel1)
+                                        .addGap(147, 147, 147))))
                             .addGroup(homePanelUserLayout.createSequentialGroup()
                                 .addGap(106, 106, 106)
-                                .addComponent(symbol4))))))
+                                .addComponent(requestedLogo))))
+                    .addGroup(homePanelUserLayout.createSequentialGroup()
+                        .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(myStatsLabel1)
+                            .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         homePanelUserLayout.setVerticalGroup(
             homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePanelUserLayout.createSequentialGroup()
+                .addComponent(bannerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
+                .addComponent(myStatsLabel1)
+                .addGap(18, 18, 18)
                 .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(homePanelUserLayout.createSequentialGroup()
-                        .addComponent(bannerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-                        .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
-                                .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(symbol2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(symbol3, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(60, 60, 60))
-                            .addComponent(jSeparator6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(homePanelUserLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jSeparator6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelUserLayout.createSequentialGroup()
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(homePanelUserLayout.createSequentialGroup()
-                                .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(symbol5)
-                                    .addComponent(symbol4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(recipesCookedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(requestedLabel)
-                                    .addComponent(recipesCookedLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(requestedLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(recipesCookedNumber)
-                                    .addComponent(requestedNumber1)
-                                    .addComponent(requestedNumber2)
-                                    .addComponent(requestedNumber))))))
+                            .addComponent(recipesCookedLogo)
+                            .addComponent(yetToCookLogo)
+                            .addComponent(totalRecipesLogo)
+                            .addComponent(requestedLogo))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(totalRecipes, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(recipesCookedNumber)
+                            .addComponent(yetToCook, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(requestedLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(totalRecipesNumber)
+                            .addComponent(requestedNumber1)
+                            .addComponent(yetToCookNumber)
+                            .addComponent(requestedNumber))))
                 .addGap(53, 53, 53)
                 .addComponent(myStatsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -608,31 +623,34 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         browseTopPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        browseTitleLabel.setBackground(new java.awt.Color(255, 255, 255));
-        browseTitleLabel.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        browseTitleLabel.setForeground(new java.awt.Color(153, 0, 0));
-        browseTitleLabel.setText("Browse Recipes");
-
-        jLabel2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jLabel2.setText("Search:");
-
-        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField1.setText("Enter Food's Name");
+        jTextField1.setText("Search any recipe");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel3.setText("Sort By:");
 
-        jButton1.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
-        jButton1.setText("Name A→Z");
+        jButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jButton1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 204, 0));
+        jButton1.setText("Name");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton3.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+        jButton3.setBackground(new java.awt.Color(0, 0, 0));
+        jButton3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 204, 0));
         jButton3.setText("Difficulty");
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -644,41 +662,34 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseTopPanelLayout.setHorizontalGroup(
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browseTopPanelLayout.createSequentialGroup()
-                .addContainerGap(427, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(127, 127, 127)
+                .addGap(331, 331, 331)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50)
                 .addComponent(jLabel3)
-                .addGap(27, 27, 27)
+                .addGap(30, 30, 30)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton3)
-                .addGap(197, 197, 197))
-            .addGroup(browseTopPanelLayout.createSequentialGroup()
-                .addGap(415, 415, 415)
-                .addComponent(browseTitleLabel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         browseTopPanelLayout.setVerticalGroup(
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browseTopPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(browseTitleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
-                .addGroup(browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
-                .addGap(17, 17, 17))
+                .addContainerGap(56, Short.MAX_VALUE)
+                .addGroup(browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jButton1)
+                        .addComponent(jButton3))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(23, 23, 23))
         );
 
         browseScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         browseScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         browseCardsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        browseCardsPanel.setAutoscrolls(true);
         browseCardsPanel.setLayout(new java.awt.GridLayout(1, 0));
         browseScrollPane.setViewportView(browseCardsPanel);
 
@@ -688,16 +699,17 @@ public class AppViewFrame extends javax.swing.JFrame {
             browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(browseTopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(browsePanelLayout.createSequentialGroup()
-                .addComponent(browseScrollPane)
-                .addContainerGap())
+                .addGap(63, 63, 63)
+                .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         browsePanelLayout.setVerticalGroup(
             browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browsePanelLayout.createSequentialGroup()
                 .addComponent(browseTopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(browseScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(29, 29, 29)
+                .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout browseRecipesPanelLayout = new javax.swing.GroupLayout(browseRecipesPanel);
@@ -713,17 +725,96 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         basePanel.add(browseRecipesPanel, "card4");
 
-        myHistoryPanel.setBackground(new java.awt.Color(255, 51, 51));
+        myHistoryPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        historyPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTextField2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jTextField2.setForeground(new java.awt.Color(102, 102, 102));
+        jTextField2.setText("Search recipe in your history");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel4.setText("Sort By:");
+
+        jButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jButton2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(255, 204, 0));
+        jButton2.setText("Name");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setBackground(new java.awt.Color(0, 0, 0));
+        jButton4.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(255, 204, 0));
+        jButton4.setText("Difficulty");
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout historyPanelLayout = new javax.swing.GroupLayout(historyPanel);
+        historyPanel.setLayout(historyPanelLayout);
+        historyPanelLayout.setHorizontalGroup(
+            historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyPanelLayout.createSequentialGroup()
+                .addGap(331, 331, 331)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50)
+                .addComponent(jLabel4)
+                .addGap(30, 30, 30)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton4)
+                .addContainerGap(382, Short.MAX_VALUE))
+        );
+        historyPanelLayout.setVerticalGroup(
+            historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(historyPanelLayout.createSequentialGroup()
+                .addContainerGap(56, Short.MAX_VALUE)
+                .addGroup(historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jButton2)
+                        .addComponent(jButton4))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(23, 23, 23))
+        );
+
+        browseHistoryPanel.setLayout(new java.awt.GridLayout());
+        historyScrollPane.add(browseHistoryPanel);
 
         javax.swing.GroupLayout myHistoryPanelLayout = new javax.swing.GroupLayout(myHistoryPanel);
         myHistoryPanel.setLayout(myHistoryPanelLayout);
         myHistoryPanelLayout.setHorizontalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1226, Short.MAX_VALUE)
+            .addGroup(myHistoryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(historyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(myHistoryPanelLayout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         myHistoryPanelLayout.setVerticalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 728, Short.MAX_VALUE)
+            .addGroup(myHistoryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(historyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
         basePanel.add(myHistoryPanel, "card3");
@@ -738,7 +829,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         );
         recipeRequestPanelLayout.setVerticalGroup(
             recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 728, Short.MAX_VALUE)
+            .addGap(0, 787, Short.MAX_VALUE)
         );
 
         basePanel.add(recipeRequestPanel, "card2");
@@ -798,7 +889,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         javax.swing.JLabel lblInfo = new javax.swing.JLabel(
             r.cuisine + " • " + r.difficulty + " • " + r.prepTime + " min" + " • " + r.rating + " ★");
-        lblInfo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 13)); // Increased from 11 to 12
+        lblInfo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12)); 
         lblInfo.setForeground(new java.awt.Color(120, 120, 120));
 
         javax.swing.JPanel center = new javax.swing.JPanel();
@@ -811,12 +902,30 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         // Button at bottom - CENTERED
         javax.swing.JButton btnView = new javax.swing.JButton("View");
-        btnView.setBackground(new java.awt.Color(0x60, 0x1a, 0x1a));
-        btnView.setForeground(java.awt.Color.WHITE);
+        btnView.setBackground(viewNormalBg);
+        btnView.setForeground(viewNormalFg);
+        btnView.setFocusPainted(false);
+        btnView.setBorderPainted(false);
+        btnView.setContentAreaFilled(true);
         btnView.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
         btnView.setFocusPainted(false);
         btnView.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnView.setPreferredSize(new java.awt.Dimension(80, 30));
+        
+        btnView.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnView.setBackground(viewHoverBg);
+                btnView.setForeground(viewHoverFg);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnView.setBackground(viewNormalBg);
+                btnView.setForeground(viewNormalFg);
+            }
+        });
+
 
         javax.swing.JPanel bottom = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));
         bottom.setBackground(java.awt.Color.WHITE);
@@ -830,6 +939,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         return card;
     }
 
+    
     
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
@@ -900,6 +1010,23 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoutButton.setForeground(loginNormalFg);
     }//GEN-LAST:event_logoutButtonMouseExited
 
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -931,19 +1058,22 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JPanel basePanel;
     private javax.swing.JPanel browseCardsPanel;
+    private javax.swing.JPanel browseHistoryPanel;
     private javax.swing.JPanel browsePanel;
     private javax.swing.JButton browseRecipeButton;
     private javax.swing.JPanel browseRecipesPanel;
     private javax.swing.JScrollPane browseScrollPane;
-    private javax.swing.JLabel browseTitleLabel;
     private javax.swing.JPanel browseTopPanel;
+    private javax.swing.JPanel historyPanel;
+    private java.awt.ScrollPane historyScrollPane;
     private javax.swing.JButton homeButton;
     private javax.swing.JPanel homePanelUser;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JSeparator jSeparator1;
@@ -953,36 +1083,39 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel loginPageImage;
     private javax.swing.JPanel loginPanel;
+    private javax.swing.JLabel logo;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton myHistoryButton;
     private javax.swing.JPanel myHistoryPanel;
     private javax.swing.JButton myRecipeRequestButton;
     private javax.swing.JLabel myStatsLabel;
+    private javax.swing.JLabel myStatsLabel1;
     private javax.swing.JPanel navMainPanel;
     private javax.swing.JPanel navigationPanel;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel recentlyAddedPanel;
     private javax.swing.JPanel recipeRequestPanel;
-    private javax.swing.JLabel recipesCookedLabel;
-    private javax.swing.JLabel recipesCookedLabel1;
+    private javax.swing.JLabel recipesCookedLogo;
     private javax.swing.JLabel recipesCookedNumber;
-    private javax.swing.JLabel requestedLabel;
     private javax.swing.JLabel requestedLabel1;
+    private javax.swing.JLabel requestedLogo;
     private javax.swing.JLabel requestedNumber;
     private javax.swing.JLabel requestedNumber1;
-    private javax.swing.JLabel requestedNumber2;
     private javax.swing.JLabel subTitleLabel;
-    private javax.swing.JLabel symbol2;
-    private javax.swing.JLabel symbol3;
-    private javax.swing.JLabel symbol4;
-    private javax.swing.JLabel symbol5;
     private javax.swing.JLabel titleLabel;
+    private javax.swing.JLabel totalRecipes;
+    private javax.swing.JLabel totalRecipesLogo;
+    private javax.swing.JLabel totalRecipesNumber;
     private javax.swing.JPanel userPanel;
     private javax.swing.JTextField usernameField;
     private javax.swing.JLabel usernameLabel;
+    private javax.swing.JLabel yetToCook;
+    private javax.swing.JLabel yetToCookLogo;
+    private javax.swing.JLabel yetToCookNumber;
     // End of variables declaration//GEN-END:variables
 }
