@@ -62,17 +62,19 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
     
     private void setupAdminComponents() {
-    // Link the form fields to existing components
-        adminIdField = idAdmin;
+        // Link the form fields to existing components
         adminTitleField = titleAdmin;
         adminCuisineField = cuisineAdmin;
         adminImagePathField = imagePathAdmin;
-        adminDifficultyField = difficultyAdmin;  // ✅ Correct field name
+        adminDifficultyField = difficultyAdmin;
         adminPrepTimeField = timeAdmin;
         adminRatingField = ratingAdmin;
         adminProcessArea = processAdmin;
-        adminIngredientsField = ingredientsAdmin;  // ✅ Added ingredients
+        adminIngredientsField = ingredientsAdmin;
         adminRecipeTable = jTable1;
+
+        // ✅ Make table non-editable
+        adminRecipeTable.setDefaultEditor(Object.class, null);
 
         // Set up table to show when row is clicked
         adminRecipeTable.getSelectionModel().addListSelectionListener(e -> {
@@ -84,29 +86,53 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
     }
+
+    // ✅ Add this NEW helper method:
+    private AppModel.RecipeData getRecipeById(int id) {
+        for (AppModel.RecipeData r : model.getAllRecipes()) {
+            if (r.id == id) {
+                return r;
+            }
+        }
+        return null;
+    }
     
     private void populateRecipeFormFromTable(int row) {
-        javax.swing.table.TableModel model = adminRecipeTable.getModel();
+        javax.swing.table.TableModel tableModel = adminRecipeTable.getModel();
 
-        adminIdField.setText(model.getValueAt(row, 0).toString());
-        adminTitleField.setText(model.getValueAt(row, 1).toString());
-        adminCuisineField.setText(model.getValueAt(row, 2).toString());
-        adminTypeField.setText(model.getValueAt(row, 3).toString());
-        adminDifficultyField.setText(model.getValueAt(row, 4).toString());
-        adminPrepTimeField.setText(model.getValueAt(row, 5).toString());
-        adminRatingField.setText(model.getValueAt(row, 6).toString());
+        // Get the recipe ID from table
+        int recipeId = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
+
+        // ✅ Fetch full recipe details (including ingredients and process)
+        AppModel.RecipeData recipe = getRecipeById(recipeId);
+
+        if (recipe != null) {
+            // Store ID internally for update/delete operations (no ID field needed)
+            adminRecipeTable.putClientProperty("selectedRecipeId", recipe.id);
+
+            // Populate all form fields
+            adminTitleField.setText(recipe.title);
+            adminCuisineField.setText(recipe.cuisine);
+            adminDifficultyField.setText(recipe.difficulty);
+            adminPrepTimeField.setText(String.valueOf(recipe.prepTime));
+            adminRatingField.setText(String.valueOf(recipe.rating));
+            adminImagePathField.setText(recipe.imagePath != null ? recipe.imagePath : "");
+            adminIngredientsField.setText(recipe.ingredients != null ? recipe.ingredients : "");
+            adminProcessArea.setText(recipe.process != null ? recipe.process : "");
+        }
     }
     
     private void clearRecipeForm() {
-        adminIdField.setText("");
         adminTitleField.setText("");
         adminCuisineField.setText("");
         adminImagePathField.setText("");
-        adminTypeField.setText("");
         adminPrepTimeField.setText("");
         adminRatingField.setText("");
+        adminDifficultyField.setText("");
+        adminIngredientsField.setText("");
         adminProcessArea.setText("");
         adminRecipeTable.clearSelection();
+        adminRecipeTable.putClientProperty("selectedRecipeId", null);
     }
     
     private void setupHomeCardLayouts() {
@@ -1604,13 +1630,13 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         for (AppModel.RecipeData r : model.getAllRecipes()) {
             dtm.addRow(new Object[] {
-                r.id,           // Show ID
-                r.title,
-                r.cuisine,
-                r.type,
-                r.difficulty,
-                r.prepTime,
-                r.rating
+                r.id,           // Column 0: ID
+                r.title,        // Column 1: Title
+                r.cuisine,      // Column 2: Cuisine
+                r.difficulty,   // Column 3: Difficulty
+                r.prepTime,     // Column 4: Time
+                r.rating        // Column 5: Rating
+
             });
         }
     }
@@ -1780,60 +1806,61 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         try {
-                // Validate all required fields (removed adminTypeField check)
-                if (adminTitleField.getText().trim().isEmpty() ||
-                    adminCuisineField.getText().trim().isEmpty() ||
-                    adminDifficultyField.getText().trim().isEmpty() ||  // ✅ Changed to difficulty
-                    adminPrepTimeField.getText().trim().isEmpty() ||
-                    adminRatingField.getText().trim().isEmpty()) {
-
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                        "Please fill all required fields!",
-                        "Validation Error",
-                        javax.swing.JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-
-                String title = adminTitleField.getText().trim();
-                String cuisine = adminCuisineField.getText().trim();
-                String difficulty = adminDifficultyField.getText().trim();  // ✅ Get from difficulty field
-                int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
-                double rating = Double.parseDouble(adminRatingField.getText().trim());
-                String imagePath = adminImagePathField.getText().trim();
-                String ingredients = adminIngredientsField.getText().trim();  // ✅ Added
-                String process = adminProcessArea.getText().trim();  // ✅ Added
-
-                if (imagePath.isEmpty()) {
-                    imagePath = "/img/default.png";
-                }
-
-                // ✅ Constructor now matches: title, cuisine, difficulty, prepTime, rating, imagePath, ingredients, process
-                AppModel.RecipeData r = new AppModel.RecipeData(
-                    title, cuisine, difficulty, prepTime, rating, imagePath, ingredients, process
-                );
-
-                model.addRecipe(r);
-                loadAdminRecipesTable();
-                loadHomeCards();
-                clearRecipeForm();
+        // Validate all required fields
+            if (adminTitleField.getText().trim().isEmpty() ||
+                adminCuisineField.getText().trim().isEmpty() ||
+                adminDifficultyField.getText().trim().isEmpty() ||
+                adminPrepTimeField.getText().trim().isEmpty() ||
+                adminRatingField.getText().trim().isEmpty()) {
 
                 javax.swing.JOptionPane.showMessageDialog(this,
-                    "Recipe added successfully!",
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-
-            } catch (NumberFormatException ex) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Please enter valid numbers for Time and Rating!",
-                    "Input Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                    "Please fill all required fields!",
+                    "Validation Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            String title = adminTitleField.getText().trim();
+            String cuisine = adminCuisineField.getText().trim();
+            String difficulty = adminDifficultyField.getText().trim();
+            int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
+            double rating = Double.parseDouble(adminRatingField.getText().trim());
+            String imagePath = adminImagePathField.getText().trim();
+            String ingredients = adminIngredientsField.getText().trim();
+            String process = adminProcessArea.getText().trim();
+
+            if (imagePath.isEmpty()) {
+                imagePath = "/img/default.png";
+            }
+
+            // ✅ ID is auto-generated in the RecipeData constructor
+            AppModel.RecipeData r = new AppModel.RecipeData(
+                title, cuisine, difficulty, prepTime, rating, imagePath, ingredients, process
+            );
+
+            model.addRecipe(r);
+            loadAdminRecipesTable();
+            loadHomeCards();
+            clearRecipeForm();
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Recipe added successfully!",
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter valid numbers for Time and Rating!",
+                "Input Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         try {
-            String idText = adminIdField.getText().trim();
-            if (idText.isEmpty()) {
+            Integer recipeId = (Integer) adminRecipeTable.getClientProperty("selectedRecipeId");
+
+            if (recipeId == null) {
                 javax.swing.JOptionPane.showMessageDialog(this,
                     "Please select a recipe from the table to update!",
                     "No Selection",
@@ -1841,24 +1868,38 @@ public class AppViewFrame extends javax.swing.JFrame {
                 return;
             }
 
-            int recipeId = Integer.parseInt(idText);
+            // Validate required fields
+            if (adminTitleField.getText().trim().isEmpty() ||
+                adminCuisineField.getText().trim().isEmpty() ||
+                adminDifficultyField.getText().trim().isEmpty() ||
+                adminPrepTimeField.getText().trim().isEmpty() ||
+                adminRatingField.getText().trim().isEmpty()) {
 
-            // Get updated values
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Please fill all required fields!",
+                    "Validation Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Get updated values from form fields
             String title = adminTitleField.getText().trim();
             String cuisine = adminCuisineField.getText().trim();
-            String type = adminTypeField.getText().trim();
             String difficulty = adminDifficultyField.getText().trim();
             int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
             double rating = Double.parseDouble(adminRatingField.getText().trim());
             String imagePath = adminImagePathField.getText().trim();
+            String ingredients = adminIngredientsField.getText().trim();
+            String process = adminProcessArea.getText().trim();
 
             if (imagePath.isEmpty()) {
                 imagePath = "/img/default.png";
             }
 
-            // Update in model
-            boolean updated = model.updateRecipe(recipeId, title, cuisine, type, 
-                                                difficulty, prepTime, rating, imagePath);
+            // ✅ Update in model with all fields including ingredients and process
+            boolean updated = model.updateRecipe(recipeId, title, cuisine, 
+                                                difficulty, prepTime, rating, imagePath,
+                                                ingredients, process);
 
             if (updated) {
                 loadAdminRecipesTable();
@@ -1878,7 +1919,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         } catch (NumberFormatException ex) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "Please enter valid numbers for ID, Time and Rating!",
+                "Please enter valid numbers for Time and Rating!",
                 "Input Error",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
         }
@@ -1886,16 +1927,15 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         try {
-            String idText = adminIdField.getText().trim();
-            if (idText.isEmpty()) {
+            Integer recipeId = (Integer) adminRecipeTable.getClientProperty("selectedRecipeId");
+
+            if (recipeId == null) {
                 javax.swing.JOptionPane.showMessageDialog(this,
                     "Please select a recipe from the table to delete!",
                     "No Selection",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
-            int recipeId = Integer.parseInt(idText);
 
             // Confirm deletion
             int choice = javax.swing.JOptionPane.showConfirmDialog(this,

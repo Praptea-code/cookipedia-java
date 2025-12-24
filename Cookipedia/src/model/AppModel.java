@@ -196,21 +196,23 @@ public class AppModel {
         recipes.add(recipe);
     }
     
-    public boolean updateRecipe(int id, String title, String cuisine, String type,
-                               String difficulty, int prepTime, double rating, String imagePath) {
-        for (RecipeData r : recipes) {
-            if (r.id == id) {
-                r.title = title;
-                r.cuisine = cuisine;
-                r.type = type;
-                r.difficulty = difficulty;
-                r.prepTime = prepTime;
-                r.rating = rating;
-                r.imagePath = imagePath;
-                return true;
-            }
+    public boolean updateRecipe(int id, String title, String cuisine,
+                           String difficulty, int prepTime, double rating, 
+                           String imagePath, String ingredients, String process) {
+    for (RecipeData r : recipes) {
+        if (r.id == id) {
+            r.title = title;
+            r.cuisine = cuisine;
+            r.difficulty = difficulty;
+            r.prepTime = prepTime;
+            r.rating = rating;
+            r.imagePath = imagePath;
+            r.ingredients = ingredients;  
+            r.process = process;          
+            return true;
         }
-        return false;
+    }
+    return false;
     }
     
     public boolean deleteRecipe(int id) {
