@@ -14,6 +14,18 @@ import model.AppModel;
  * @author Acer
  */
 public class AppViewFrame extends javax.swing.JFrame {
+    private javax.swing.JTextField adminIdField;
+    private javax.swing.JTextField adminTitleField;
+    private javax.swing.JTextField adminCuisineField;
+    private javax.swing.JTextField adminImagePathField;
+    private javax.swing.JTextField adminTypeField;
+    private javax.swing.JTextField adminPrepTimeField;
+    private javax.swing.JTextField adminRatingField;
+    private javax.swing.JTextField adminDifficultyField;
+    private javax.swing.JTextArea adminProcessArea;
+    private javax.swing.JTextField adminIngredientsField;
+    private javax.swing.JTable adminRecipeTable;
+    private javax.swing.JTable adminReqTable;
     private final java.awt.Color loginNormalBg  = new java.awt.Color(0, 0, 0);
     private final java.awt.Color loginNormalFg  = new java.awt.Color(239, 196, 4);
     private final java.awt.Color loginHoverBg   = new java.awt.Color(239, 196, 4);  // yellow
@@ -22,6 +34,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     private final Color viewNormalFg = new Color(0xF1, 0xC4, 0x0F);
     private final Color viewHoverBg  = new Color(0xF1, 0xC4, 0x0F);
     private final Color viewHoverFg  = Color.BLACK;
+    private final java.util.Deque<AppModel.RecipeData> historyQueue = new java.util.ArrayDeque<>();
+    private static final int HISTORY_LIMIT = 8;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppModel model = new AppModel();
 
@@ -30,19 +44,68 @@ public class AppViewFrame extends javax.swing.JFrame {
      */
     public AppViewFrame() {
         initComponents();
-            setupHomeCardLayouts();
-            loadHomeCards();
-            logoutButton.setFocusPainted(false);
-            logoutButton.setContentAreaFilled(true);
-            logoutButton.setBorderPainted(false);
+        setupHomeCardLayouts();
+        loadHomeCards();
+        setupHistoryLayout();
+        setupAdminComponents();
+        logoutButton.setFocusPainted(false);
+        logoutButton.setContentAreaFilled(true);
+        logoutButton.setBorderPainted(false);
 
-            logoutButton.setBorder(
-                new javax.swing.border.LineBorder(
-                    new java.awt.Color(0, 0, 0), // border color (black)
-                    2,                            // thickness
-                    true                          // rounded corners
-                )
-            );
+        logoutButton.setBorder(
+            new javax.swing.border.LineBorder(
+                new java.awt.Color(0, 0, 0), // border color (black)
+                2,                            // thickness
+                true                          // rounded corners
+            )
+        );
+    }
+    
+    private void setupAdminComponents() {
+    // Link the form fields to existing components
+        adminIdField = jTextField9;
+        adminTitleField = jTextField6;
+        adminCuisineField = jTextField8;
+        adminImagePathField = jTextField7;
+        adminTypeField = jTextField3;
+        adminPrepTimeField = jTextField4;
+        adminRatingField = jTextField5;
+        adminProcessArea = jTextArea1;
+        adminRecipeTable = jTable1;
+
+        // Set up table to show when row is clicked
+        adminRecipeTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = adminRecipeTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    populateRecipeFormFromTable(selectedRow);
+                }
+            }
+        });
+    }
+    
+    private void populateRecipeFormFromTable(int row) {
+        javax.swing.table.TableModel model = adminRecipeTable.getModel();
+
+        adminIdField.setText(model.getValueAt(row, 0).toString());
+        adminTitleField.setText(model.getValueAt(row, 1).toString());
+        adminCuisineField.setText(model.getValueAt(row, 2).toString());
+        adminTypeField.setText(model.getValueAt(row, 3).toString());
+        adminDifficultyField.setText(model.getValueAt(row, 4).toString());
+        adminPrepTimeField.setText(model.getValueAt(row, 5).toString());
+        adminRatingField.setText(model.getValueAt(row, 6).toString());
+    }
+    
+    private void clearRecipeForm() {
+        adminIdField.setText("");
+        adminTitleField.setText("");
+        adminCuisineField.setText("");
+        adminImagePathField.setText("");
+        adminTypeField.setText("");
+        adminPrepTimeField.setText("");
+        adminRatingField.setText("");
+        adminProcessArea.setText("");
+        adminRecipeTable.clearSelection();
     }
     
     private void setupHomeCardLayouts() {
@@ -72,6 +135,18 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
     }
+    
+    private void loadHistoryCards() {
+        browseHistoryPanel.removeAll();
+
+        for (AppModel.RecipeData r : historyQueue) {
+            browseHistoryPanel.add(createRecipeCard(r));
+        }
+
+        browseHistoryPanel.revalidate();
+        browseHistoryPanel.repaint();
+    }
+
 
     private void handleLogin() {
         String username = usernameField.getText().trim();
@@ -129,6 +204,42 @@ public class AppViewFrame extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         loginPageImage = new javax.swing.JLabel();
         adminPanel = new javax.swing.JPanel();
+        navMainPanelAdmin = new javax.swing.JPanel();
+        navigationPanel1 = new javax.swing.JPanel();
+        manageRecipesBtn = new javax.swing.JButton();
+        manageRequestBtn = new javax.swing.JButton();
+        jSeparator9 = new javax.swing.JSeparator();
+        logoutButtonAdmin = new javax.swing.JButton();
+        logoAdmin = new javax.swing.JLabel();
+        baseAdminPAnel = new javax.swing.JPanel();
+        manageRequestsPanel = new javax.swing.JPanel();
+        manageRecipesPanel = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
+        jTextField6 = new javax.swing.JTextField();
+        jTextField7 = new javax.swing.JTextField();
+        jTextField8 = new javax.swing.JTextField();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        jTextField9 = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
         userPanel = new javax.swing.JPanel();
         navMainPanel = new javax.swing.JPanel();
         navigationPanel = new javax.swing.JPanel();
@@ -178,9 +289,26 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         historyScrollPane = new java.awt.ScrollPane();
         browseHistoryPanel = new javax.swing.JPanel();
         recipeRequestPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        reqUsernameLabel = new javax.swing.JLabel();
+        recipeTitleLabel = new javax.swing.JLabel();
+        vegNonvegLabel = new javax.swing.JLabel();
+        noteLabel = new javax.swing.JLabel();
+        requestBtn = new javax.swing.JButton();
+        reqUsernameTextField = new javax.swing.JTextField();
+        recipeTitleTextfield = new javax.swing.JTextField();
+        vegNonvegTextField = new javax.swing.JTextField();
+        noteTextField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        reqHistoryTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        banner = new javax.swing.JLabel();
+        requestRecipe = new javax.swing.JLabel();
+        reqHistoryLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.CardLayout());
@@ -291,15 +419,357 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         getContentPane().add(loginPanel, "card3");
 
+        navMainPanelAdmin.setBackground(new java.awt.Color(244, 196, 4));
+        navMainPanelAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        navMainPanelAdmin.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        navMainPanelAdmin.setLayout(null);
+
+        navigationPanel1.setBackground(new java.awt.Color(96, 26, 26));
+
+        javax.swing.GroupLayout navigationPanel1Layout = new javax.swing.GroupLayout(navigationPanel1);
+        navigationPanel1.setLayout(navigationPanel1Layout);
+        navigationPanel1Layout.setHorizontalGroup(
+            navigationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 190, Short.MAX_VALUE)
+        );
+        navigationPanel1Layout.setVerticalGroup(
+            navigationPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 550, Short.MAX_VALUE)
+        );
+
+        navMainPanelAdmin.add(navigationPanel1);
+        navigationPanel1.setBounds(0, 130, 190, 550);
+
+        manageRecipesBtn.setBackground(new java.awt.Color(96, 26, 26));
+        manageRecipesBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        manageRecipesBtn.setText("Manage Recipes");
+        manageRecipesBtn.setBorder(null);
+        manageRecipesBtn.setContentAreaFilled(false);
+        manageRecipesBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        manageRecipesBtn.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        manageRecipesBtn.setFocusPainted(false);
+        manageRecipesBtn.setRequestFocusEnabled(false);
+        manageRecipesBtn.setRolloverEnabled(false);
+        manageRecipesBtn.setVerifyInputWhenFocusTarget(false);
+        manageRecipesBtn.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                manageRecipesBtnFocusGained(evt);
+            }
+        });
+        manageRecipesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageRecipesBtnActionPerformed(evt);
+            }
+        });
+        navMainPanelAdmin.add(manageRecipesBtn);
+        manageRecipesBtn.setBounds(410, 0, 180, 60);
+
+        manageRequestBtn.setBackground(new java.awt.Color(96, 26, 26));
+        manageRequestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        manageRequestBtn.setText("Manage Requests");
+        manageRequestBtn.setBorder(null);
+        manageRequestBtn.setBorderPainted(false);
+        manageRequestBtn.setContentAreaFilled(false);
+        manageRequestBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        manageRequestBtn.setFocusPainted(false);
+        manageRequestBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageRequestBtnActionPerformed(evt);
+            }
+        });
+        navMainPanelAdmin.add(manageRequestBtn);
+        manageRequestBtn.setBounds(630, 0, 170, 60);
+
+        jSeparator9.setBackground(new java.awt.Color(0, 0, 0));
+        jSeparator9.setForeground(new java.awt.Color(0, 0, 0));
+        jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        navMainPanelAdmin.add(jSeparator9);
+        jSeparator9.setBounds(600, 20, 10, 30);
+
+        logoutButtonAdmin.setBackground(new java.awt.Color(0, 0, 0));
+        logoutButtonAdmin.setFont(new java.awt.Font("SansSerif", 1, 16)); // NOI18N
+        logoutButtonAdmin.setForeground(new java.awt.Color(255, 204, 0));
+        logoutButtonAdmin.setText("Logout");
+        logoutButtonAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        logoutButtonAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                logoutButtonAdminMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                logoutButtonAdminMouseExited(evt);
+            }
+        });
+        logoutButtonAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonAdminActionPerformed(evt);
+            }
+        });
+        navMainPanelAdmin.add(logoutButtonAdmin);
+        logoutButtonAdmin.setBounds(1110, 10, 100, 42);
+
+        logoAdmin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo.png"))); // NOI18N
+        navMainPanelAdmin.add(logoAdmin);
+        logoAdmin.setBounds(20, 0, 60, 58);
+
+        baseAdminPAnel.setLayout(new java.awt.CardLayout());
+
+        manageRequestsPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout manageRequestsPanelLayout = new javax.swing.GroupLayout(manageRequestsPanel);
+        manageRequestsPanel.setLayout(manageRequestsPanelLayout);
+        manageRequestsPanelLayout.setHorizontalGroup(
+            manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1246, Short.MAX_VALUE)
+        );
+        manageRequestsPanelLayout.setVerticalGroup(
+            manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 787, Short.MAX_VALUE)
+        );
+
+        baseAdminPAnel.add(manageRequestsPanel, "card3");
+
+        manageRecipesPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel2.setText("Title:");
+
+        jLabel5.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel5.setText("Cuisine:");
+
+        jLabel6.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel6.setText("Image Path:");
+
+        jLabel7.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel7.setText("Ingredients:");
+
+        jLabel8.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel8.setText("Time:");
+
+        jLabel9.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel9.setText("Rating:");
+
+        jLabel10.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel10.setText("Process:");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane3.setViewportView(jTextArea1);
+
+        jButton6.setBackground(new java.awt.Color(0, 102, 0));
+        jButton6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton6.setForeground(new java.awt.Color(255, 255, 255));
+        jButton6.setText("Add");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setBackground(new java.awt.Color(0, 51, 153));
+        jButton7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setText("Update");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton8.setBackground(new java.awt.Color(153, 0, 0));
+        jButton8.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton8.setForeground(new java.awt.Color(255, 255, 255));
+        jButton8.setText("Delete");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel13.setText("ID:");
+
+        jTextField9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField9ActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel14.setText("Difficulty:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jButton6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton7)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(241, 241, 241)
+                                .addComponent(jButton8))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(45, 45, 45))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(33, 33, 33)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                                    .addComponent(jTextField9))))
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(339, 339, 339))))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(53, 53, 53)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                    .addGap(525, 525, 525)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel10)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton8)
+                    .addComponent(jButton7))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addContainerGap(166, Short.MAX_VALUE)
+                    .addComponent(jLabel14)
+                    .addGap(140, 140, 140)))
+        );
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Id", "Title ", "Type", "Difficulty", "Time", "Rating", "Process"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        jLabel11.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel11.setText("Recipes Form");
+
+        jLabel12.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel12.setText("Recipes Table");
+
+        javax.swing.GroupLayout manageRecipesPanelLayout = new javax.swing.GroupLayout(manageRecipesPanel);
+        manageRecipesPanel.setLayout(manageRecipesPanelLayout);
+        manageRecipesPanelLayout.setHorizontalGroup(
+            manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manageRecipesPanelLayout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel11)
+                    .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRecipesPanelLayout.createSequentialGroup()
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(473, 473, 473))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        manageRecipesPanelLayout.setVerticalGroup(
+            manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(manageRecipesPanelLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+
+        baseAdminPAnel.add(manageRecipesPanel, "card2");
+
         javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
         adminPanel.setLayout(adminPanelLayout);
         adminPanelLayout.setHorizontalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1226, Short.MAX_VALUE)
+            .addComponent(navMainPanelAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(baseAdminPAnel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         adminPanelLayout.setVerticalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 856, Short.MAX_VALUE)
+            .addGroup(adminPanelLayout.createSequentialGroup()
+                .addComponent(navMainPanelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(baseAdminPAnel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getContentPane().add(adminPanel, "card4");
@@ -392,6 +862,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         myRecipeRequestButton.setContentAreaFilled(false);
         myRecipeRequestButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         myRecipeRequestButton.setFocusPainted(false);
+        myRecipeRequestButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myRecipeRequestButtonActionPerformed(evt);
+            }
+        });
         navMainPanel.add(myRecipeRequestButton);
         myRecipeRequestButton.setBounds(720, 0, 140, 60);
 
@@ -763,35 +1238,49 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setBackground(new java.awt.Color(102, 0, 51));
+        jButton5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Clear History");
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout historyPanelLayout = new javax.swing.GroupLayout(historyPanel);
         historyPanel.setLayout(historyPanelLayout);
         historyPanelLayout.setHorizontalGroup(
             historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(historyPanelLayout.createSequentialGroup()
-                .addGap(331, 331, 331)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addGap(170, 170, 170)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(142, 142, 142)
                 .addComponent(jLabel4)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4)
-                .addContainerGap(382, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5)
+                .addGap(182, 182, 182))
         );
         historyPanelLayout.setVerticalGroup(
             historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(historyPanelLayout.createSequentialGroup()
                 .addContainerGap(56, Short.MAX_VALUE)
-                .addGroup(historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(jButton2)
-                        .addComponent(jButton4))
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jButton2)
+                    .addComponent(jButton4)
+                    .addComponent(jTextField2)
+                    .addComponent(jButton5))
                 .addGap(23, 23, 23))
         );
 
-        browseHistoryPanel.setLayout(new java.awt.GridLayout());
+        browseHistoryPanel.setBackground(new java.awt.Color(255, 255, 255));
+        browseHistoryPanel.setLayout(new java.awt.GridLayout(1, 0));
         historyScrollPane.add(browseHistoryPanel);
 
         javax.swing.GroupLayout myHistoryPanelLayout = new javax.swing.GroupLayout(myHistoryPanel);
@@ -805,7 +1294,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(myHistoryPanelLayout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         myHistoryPanelLayout.setVerticalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -814,22 +1303,159 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addComponent(historyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
                 .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         basePanel.add(myHistoryPanel, "card3");
 
-        recipeRequestPanel.setBackground(new java.awt.Color(204, 51, 255));
+        recipeRequestPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        reqUsernameLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        reqUsernameLabel.setText("Username:");
+
+        recipeTitleLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        recipeTitleLabel.setText("Recipe Title:");
+
+        vegNonvegLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        vegNonvegLabel.setText("Veg/Non-veg:");
+
+        noteLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        noteLabel.setText("Dietary Notes:");
+
+        requestBtn.setBackground(new java.awt.Color(0, 0, 0));
+        requestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        requestBtn.setForeground(new java.awt.Color(255, 204, 0));
+        requestBtn.setText("Request");
+        requestBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                requestBtnActionPerformed(evt);
+            }
+        });
+
+        reqUsernameTextField.setForeground(new java.awt.Color(51, 51, 51));
+        reqUsernameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reqUsernameTextFieldActionPerformed(evt);
+            }
+        });
+
+        recipeTitleTextfield.setForeground(new java.awt.Color(51, 51, 51));
+
+        vegNonvegTextField.setForeground(new java.awt.Color(51, 51, 51));
+        vegNonvegTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vegNonvegTextFieldActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(94, 94, 94)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(reqUsernameLabel)
+                    .addComponent(recipeTitleLabel)
+                    .addComponent(noteLabel)
+                    .addComponent(vegNonvegLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(requestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(vegNonvegTextField)
+                        .addComponent(recipeTitleTextfield)
+                        .addComponent(reqUsernameTextField)
+                        .addComponent(noteTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)))
+                .addContainerGap(113, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(84, 84, 84)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(reqUsernameLabel)
+                    .addComponent(reqUsernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(recipeTitleLabel)
+                    .addComponent(recipeTitleTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(vegNonvegLabel)
+                    .addComponent(vegNonvegTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(noteLabel)
+                    .addComponent(noteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addComponent(requestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
+        );
+
+        reqHistoryTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Username", "Recipe Title", "Veg/Non-Veg", "Dietary Notes", "Date", "Time", "Status"
+            }
+        ));
+        jScrollPane1.setViewportView(reqHistoryTable);
+
+        banner.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/requestBanner.png"))); // NOI18N
+
+        requestRecipe.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        requestRecipe.setText("Request Recipe");
+
+        reqHistoryLabel.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        reqHistoryLabel.setText("Request History");
 
         javax.swing.GroupLayout recipeRequestPanelLayout = new javax.swing.GroupLayout(recipeRequestPanel);
         recipeRequestPanel.setLayout(recipeRequestPanelLayout);
         recipeRequestPanelLayout.setHorizontalGroup(
             recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1226, Short.MAX_VALUE)
+            .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(banner)
+                        .addContainerGap(28, Short.MAX_VALUE))
+                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1098, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                        .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(reqHistoryLabel)
+                            .addComponent(requestRecipe))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         recipeRequestPanelLayout.setVerticalGroup(
             recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 787, Short.MAX_VALUE)
+            .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                        .addGap(229, 229, 229)
+                        .addComponent(jLabel1))
+                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(requestRecipe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(banner)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(33, 33, 33)
+                .addComponent(reqHistoryLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
         );
 
         basePanel.add(recipeRequestPanel, "card2");
@@ -883,7 +1509,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             imgLabel.setText("No image");
         }
 
-        // Text center with larger font
+        //Text center with larger font
         javax.swing.JLabel lblTitle = new javax.swing.JLabel(r.title);
         lblTitle.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15));
 
@@ -895,12 +1521,12 @@ public class AppViewFrame extends javax.swing.JFrame {
         javax.swing.JPanel center = new javax.swing.JPanel();
         center.setBackground(java.awt.Color.WHITE);
         center.setLayout(new javax.swing.BoxLayout(center, javax.swing.BoxLayout.Y_AXIS));
-        center.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 5, 10)); // Reduced side padding
+        center.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 5, 10)); //Reduced side padding
         center.add(lblTitle);
         center.add(javax.swing.Box.createVerticalStrut(3));
         center.add(lblInfo);
 
-        // Button at bottom - CENTERED
+        //Button at bottom - CENTERED
         javax.swing.JButton btnView = new javax.swing.JButton("View");
         btnView.setBackground(viewNormalBg);
         btnView.setForeground(viewNormalFg);
@@ -935,9 +1561,79 @@ public class AppViewFrame extends javax.swing.JFrame {
         card.add(imgLabel, java.awt.BorderLayout.NORTH);
         card.add(center, java.awt.BorderLayout.CENTER);
         card.add(bottom, java.awt.BorderLayout.SOUTH);
+        
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                addToHistory(r);
+            }
+        });
+
 
         return card;
     }
+
+    private void addToHistory(AppModel.RecipeData r) {
+        // Remove old occurrence if exists (avoid duplicates)
+        AppModel.RecipeData toRemove = null;
+        for (AppModel.RecipeData item : historyQueue) {
+            if (item.id == r.id) {          // adjust field if needed
+                toRemove = item;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            historyQueue.remove(toRemove);
+        }
+
+        // Add as most recently viewed
+        historyQueue.addFirst(r);
+
+        // Enforce max 8
+        if (historyQueue.size() > HISTORY_LIMIT) {
+            historyQueue.removeLast();
+        }
+
+        // Refresh history cards UI
+        loadHistoryCards();
+    }
+
+    private void loadAdminRequestsTable() {
+        javax.swing.table.DefaultTableModel dtm =
+            (javax.swing.table.DefaultTableModel) adminReqTable.getModel();
+        dtm.setRowCount(0);
+
+        for (AppModel.RecipeRequest req : model.getAllRequests()) {
+            dtm.addRow(new Object[] {
+                req.username,
+                req.title,
+                req.vegNonVeg,
+                req.notes,
+                req.date,
+                req.time,
+                req.status  // only if you added this field
+            });
+        }
+    }
+    
+    private void loadAdminRecipesTable() {
+        javax.swing.table.DefaultTableModel dtm =
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (AppModel.RecipeData r : model.getAllRecipes()) {
+            dtm.addRow(new Object[] {
+                r.id,           // Show ID
+                r.title,
+                r.cuisine,
+                r.type,
+                r.difficulty,
+                r.prepTime,
+                r.rating
+            });
+        }
+    }
+
 
     
     
@@ -1026,6 +1722,237 @@ public class AppViewFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        historyQueue.clear();
+        loadHistoryCards();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestBtnActionPerformed
+                                          
+        String username = reqUsernameTextField.getText().trim();
+        String title    = recipeTitleTextfield.getText().trim();
+        String veg      = vegNonvegTextField.getText().trim();
+        String notes    = noteTextField.getText().trim();
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        String date = now.toLocalDate().toString();
+        String time = now.toLocalTime().toString();
+
+        AppModel.RecipeRequest req =
+                new AppModel.RecipeRequest(username, title, veg, notes, date, time);
+
+        // Queue in model
+        model.addRequest(req);
+
+        // SIMPLE: clear whole table, then add row
+        javax.swing.table.DefaultTableModel dtm =
+            (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        if (dtm.getRowCount() == 1) {     // only the dummy row exists
+            dtm.setRowCount(0);           // remove it
+        }
+
+        dtm.addRow(new Object[] { username, title, veg, notes, date, time });
+   
+    }//GEN-LAST:event_requestBtnActionPerformed
+
+    private void myRecipeRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myRecipeRequestButtonActionPerformed
+        CardLayout cl = (CardLayout) basePanel.getLayout();
+        cl.show(basePanel, "card2");  
+
+    }//GEN-LAST:event_myRecipeRequestButtonActionPerformed
+
+    private void vegNonvegTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vegNonvegTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_vegNonvegTextFieldActionPerformed
+
+    private void reqUsernameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reqUsernameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_reqUsernameTextFieldActionPerformed
+
+    private void manageRecipesBtnFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_manageRecipesBtnFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_manageRecipesBtnFocusGained
+
+    private void manageRecipesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRecipesBtnActionPerformed
+        CardLayout cl = (CardLayout) adminPanel.getLayout();
+        cl.show(adminPanel, "adminRecipesCard");
+        loadAdminRecipesTable();
+    }//GEN-LAST:event_manageRecipesBtnActionPerformed
+
+    private void manageRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRequestBtnActionPerformed
+        CardLayout cl = (CardLayout) adminPanel.getLayout();
+        cl.show(adminPanel, "adminRequestsCard");
+        loadAdminRequestsTable();
+    }//GEN-LAST:event_manageRequestBtnActionPerformed
+
+    private void logoutButtonAdminMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutButtonAdminMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutButtonAdminMouseEntered
+
+    private void logoutButtonAdminMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutButtonAdminMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutButtonAdminMouseExited
+
+    private void logoutButtonAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonAdminActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutButtonAdminActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        try {
+            // Validate all fields
+            if (adminTitleField.getText().trim().isEmpty() ||
+                adminCuisineField.getText().trim().isEmpty() ||
+                adminTypeField.getText().trim().isEmpty() ||
+                adminPrepTimeField.getText().trim().isEmpty() ||
+                adminRatingField.getText().trim().isEmpty()) {
+
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Please fill all required fields!",
+                    "Validation Error",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String title = adminTitleField.getText().trim();
+            String cuisine = adminCuisineField.getText().trim();
+            String type = adminTypeField.getText().trim();
+            String difficulty = adminDifficultyField.getText().trim();
+            int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
+            double rating = Double.parseDouble(adminRatingField.getText().trim());
+            String imagePath = adminImagePathField.getText().trim();
+
+            if (imagePath.isEmpty()) {
+                imagePath = "/img/default.png";
+            }
+
+            AppModel.RecipeData r = new AppModel.RecipeData(
+                title, cuisine, type, difficulty, prepTime, rating, imagePath
+            );
+
+            model.addRecipe(r);
+            loadAdminRecipesTable();
+            loadHomeCards();
+            clearRecipeForm();
+
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Recipe added successfully!",
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter valid numbers for Time and Rating!",
+                "Input Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jTextField9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField9ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField9ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        try {
+            String idText = adminIdField.getText().trim();
+            if (idText.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Please select a recipe from the table to update!",
+                    "No Selection",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int recipeId = Integer.parseInt(idText);
+
+            // Get updated values
+            String title = adminTitleField.getText().trim();
+            String cuisine = adminCuisineField.getText().trim();
+            String type = adminTypeField.getText().trim();
+            String difficulty = adminDifficultyField.getText().trim();
+            int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
+            double rating = Double.parseDouble(adminRatingField.getText().trim());
+            String imagePath = adminImagePathField.getText().trim();
+
+            if (imagePath.isEmpty()) {
+                imagePath = "/img/default.png";
+            }
+
+            // Update in model
+            boolean updated = model.updateRecipe(recipeId, title, cuisine, type, 
+                                                difficulty, prepTime, rating, imagePath);
+
+            if (updated) {
+                loadAdminRecipesTable();
+                loadHomeCards();
+                clearRecipeForm();
+
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Recipe updated successfully!",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Recipe not found!",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Please enter valid numbers for ID, Time and Rating!",
+                "Input Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        try {
+            String idText = adminIdField.getText().trim();
+            if (idText.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Please select a recipe from the table to delete!",
+                    "No Selection",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int recipeId = Integer.parseInt(idText);
+
+            // Confirm deletion
+            int choice = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this recipe?",
+                "Confirm Delete",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+
+            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                boolean deleted = model.deleteRecipe(recipeId);
+
+                if (deleted) {
+                    loadAdminRecipesTable();
+                    loadHomeCards();
+                    clearRecipeForm();
+
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Recipe deleted successfully!",
+                        "Success",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                        "Recipe not found!",
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Invalid Recipe ID!",
+                "Input Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -1054,8 +1981,10 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
+    private javax.swing.JLabel banner;
     private javax.swing.JLabel bannerHomePage;
     private javax.swing.JPanel bannerPanel;
+    private javax.swing.JPanel baseAdminPAnel;
     private javax.swing.JPanel basePanel;
     private javax.swing.JPanel browseCardsPanel;
     private javax.swing.JPanel browseHistoryPanel;
@@ -1072,36 +2001,85 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JSeparator jSeparator9;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField jTextField9;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel loginPageImage;
     private javax.swing.JPanel loginPanel;
     private javax.swing.JLabel logo;
+    private javax.swing.JLabel logoAdmin;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JButton logoutButtonAdmin;
+    private javax.swing.JButton manageRecipesBtn;
+    private javax.swing.JPanel manageRecipesPanel;
+    private javax.swing.JButton manageRequestBtn;
+    private javax.swing.JPanel manageRequestsPanel;
     private javax.swing.JButton myHistoryButton;
     private javax.swing.JPanel myHistoryPanel;
     private javax.swing.JButton myRecipeRequestButton;
     private javax.swing.JLabel myStatsLabel;
     private javax.swing.JLabel myStatsLabel1;
     private javax.swing.JPanel navMainPanel;
+    private javax.swing.JPanel navMainPanelAdmin;
     private javax.swing.JPanel navigationPanel;
+    private javax.swing.JPanel navigationPanel1;
+    private javax.swing.JLabel noteLabel;
+    private javax.swing.JTextField noteTextField;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel recentlyAddedPanel;
     private javax.swing.JPanel recipeRequestPanel;
+    private javax.swing.JLabel recipeTitleLabel;
+    private javax.swing.JTextField recipeTitleTextfield;
     private javax.swing.JLabel recipesCookedLogo;
     private javax.swing.JLabel recipesCookedNumber;
+    private javax.swing.JLabel reqHistoryLabel;
+    private javax.swing.JTable reqHistoryTable;
+    private javax.swing.JLabel reqUsernameLabel;
+    private javax.swing.JTextField reqUsernameTextField;
+    private javax.swing.JButton requestBtn;
+    private javax.swing.JLabel requestRecipe;
     private javax.swing.JLabel requestedLabel1;
     private javax.swing.JLabel requestedLogo;
     private javax.swing.JLabel requestedNumber;
@@ -1114,6 +2092,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel userPanel;
     private javax.swing.JTextField usernameField;
     private javax.swing.JLabel usernameLabel;
+    private javax.swing.JLabel vegNonvegLabel;
+    private javax.swing.JTextField vegNonvegTextField;
     private javax.swing.JLabel yetToCook;
     private javax.swing.JLabel yetToCookLogo;
     private javax.swing.JLabel yetToCookNumber;

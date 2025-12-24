@@ -19,25 +19,24 @@ public class AppModel {
         public int id;
         public String title;
         public String cuisine;
+        public String type;
         public String difficulty;
         public int prepTime;
         public double rating;
         public String imagePath;
-        String ingredients;
-        String steps;
 
-        public RecipeData(int id, String title, String cuisine,
-                          String difficulty, int prepTime,
-                          double rating, String imagePath,String ingredients,String steps) {
-            this.id = id;
+        private static int idCounter = 1;
+
+        public RecipeData(String title, String cuisine, String type, 
+                         String difficulty, int prepTime, double rating, String imagePath) {
+            this.id = idCounter++;
             this.title = title;
             this.cuisine = cuisine;
+            this.type = type;
             this.difficulty = difficulty;
             this.prepTime = prepTime;
             this.rating = rating;
             this.imagePath = imagePath;
-            this.ingredients=ingredients;
-            this.steps=steps;
         }
     }
 
@@ -170,5 +169,40 @@ public class AppModel {
         int size = all.size();
         int fromIndex = Math.max(0, size - count);
         return all.subList(fromIndex, size);                
+    }
+    
+    public static class RecipeRequest {
+        public String username;
+        public String title;
+        public String vegNonVeg;
+        public String notes;
+        public String date;
+        public String time;
+
+        public RecipeRequest(String username, String title,
+                             String vegNonVeg, String notes,
+                             String date, String time) {
+            this.username = username;
+            this.title = title;
+            this.vegNonVeg = vegNonVeg;
+            this.notes = notes;
+            this.date = date;
+            this.time = time;
+        }
+    }
+
+    private final java.util.Queue<RecipeRequest> requestQueue =
+            new java.util.LinkedList<>();
+
+    public void addRequest(RecipeRequest req) {
+        requestQueue.offer(req);   // enqueue FIFO
+    }
+
+    public java.util.Queue<RecipeRequest> getAllRequests() {
+        return requestQueue;       // user/admin read
+    }
+
+    public RecipeRequest pollNextRequest() {
+        return requestQueue.poll(); // admin handles next
     }
 }
