@@ -67,9 +67,14 @@ public class AppModel {
         seedDummyRecipes();
     }
 
+    private int nextRecipeId = 1;
+
+    public int getNextRecipeId() {
+        return nextRecipeId++;
+    }
     private void seedDummyRecipes() {
         recipes.add(new RecipeData(
-            1, "Chicken Chowmein", "Chinese",
+             "Chicken Chowmein", "Chinese",
             "Easy", 25, 4.3, "/img/chickenChowmein.jpg",
             "Noodles, chicken, onion, cabbage, carrot, garlic, soy sauce, oil",
             "Boil noodles in salted water until soft and drain. Heat oil in a pan, add garlic and sauté until fragrant. "
@@ -79,7 +84,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            2, "Veg Burger", "Fast Food",
+             "Veg Burger", "Fast Food",
             "Easy", 15, 4.1, "/img/vegBurger.jpg",
             "Burger bun, potato patty, lettuce, tomato, onion, mayo, ketchup",
             "Heat oil and fry the potato patty until golden brown on both sides. Slice tomatoes and onions. "
@@ -88,7 +93,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            3, "Pasta Alfredo", "Italian",
+             "Pasta Alfredo", "Italian",
             "Medium", 30, 4.4, "/img/alfredoPasta.jpg",
             "Pasta, cream, butter, garlic, cheese, salt, pepper",
             "Boil pasta in salted water until al dente and drain. Heat butter in a pan and sauté garlic gently. "
@@ -97,7 +102,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            4, "Chicken Biryani", "Indian",
+             "Chicken Biryani", "Indian",
             "Hard", 60, 4.9, "/img/chickenBiryani.jpg",
             "Rice, chicken, onion, yogurt, biryani masala, oil",
             "Wash and soak rice for 30 minutes, then cook halfway. Fry onions until golden brown. "
@@ -107,7 +112,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            5, "Sel Roti", "Nepali",
+             "Sel Roti", "Nepali",
             "Medium", 45, 4.7, "/img/selRoti.jpg",
             "Rice flour, sugar, milk, ghee, oil",
             "Prepare a smooth batter by mixing rice flour, sugar, and milk. Rest the batter for 30 minutes. "
@@ -116,7 +121,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            6, "Spring Rolls", "Chinese",
+             "Spring Rolls", "Chinese",
             "Easy", 20, 4.2, "/img/springRolls.jpg",
             "Spring roll wrapper, cabbage, carrot, garlic, oil",
             "Heat oil in a pan and sauté garlic. Add cabbage and carrot and cook briefly. "
@@ -125,7 +130,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            7, "French Fries", "Fast Food",
+             "French Fries", "Fast Food",
             "Easy", 10, 4.0, "/img/frenchFries.jpg",
             "Potatoes, oil, salt",
             "Peel and cut potatoes into thin strips. Wash and dry them completely. "
@@ -134,7 +139,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            8, "Lasagna", "Italian",
+             "Lasagna", "Italian",
             "Hard", 50, 4.6, "/img/lasagna.jpg",
             "Lasagna sheets, tomato sauce, cheese, vegetables/meat",
             "Boil lasagna sheets and drain. Prepare tomato sauce separately. "
@@ -143,7 +148,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            9, "Chicken Curry", "Indian",
+             "Chicken Curry", "Indian",
             "Medium", 35, 4.5, "/img/chickenCurry.jpg",
             "Chicken, onion, tomato, ginger garlic paste, spices, oil",
             "Heat oil and fry onions until golden. Add ginger garlic paste and sauté well. "
@@ -152,7 +157,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            10, "Yomari", "Nepali",
+             "Yomari", "Nepali",
             "Hard", 90, 4.8, "/img/yomari.jpg",
             "Rice flour, chaku (jaggery), sesame seeds",
             "Prepare rice flour dough using warm water. Make filling by mixing chaku and sesame seeds. "
@@ -161,7 +166,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            11, "Veg Sandwich", "Fast Food",
+             "Veg Sandwich", "Fast Food",
             "Easy", 10, 3.9, "/img/vegSandwich.jpg",
             "Bread, cucumber, tomato, butter, salt",
             "Apply butter evenly on bread slices. Slice cucumber and tomato thinly. "
@@ -170,7 +175,7 @@ public class AppModel {
         ));
 
         recipes.add(new RecipeData(
-            12, "Hakka Noodles", "Chinese",
+             "Hakka Noodles", "Chinese",
             "Easy", 20, 4.1, "/img/hakkaNoodles.jpg",
             "Noodles, onion, cabbage, carrot, garlic, soy sauce, oil",
             "Boil noodles and drain. Heat oil in a wok and sauté garlic. "

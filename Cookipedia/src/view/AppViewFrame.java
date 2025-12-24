@@ -23,7 +23,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextField adminRatingField;
     private javax.swing.JTextField adminDifficultyField;
     private javax.swing.JTextArea adminProcessArea;
-    private javax.swing.JTextField adminIngredientsField;
+    private javax.swing.JTextArea adminIngredientsArea;
     private javax.swing.JTable adminRecipeTable;
     private javax.swing.JTable adminReqTable;
     private final java.awt.Color loginNormalBg  = new java.awt.Color(0, 0, 0);
@@ -70,7 +70,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminPrepTimeField = timeAdmin;
         adminRatingField = ratingAdmin;
         adminProcessArea = processAdmin;
-        adminIngredientsField = ingredientsAdmin;
         adminRecipeTable = jTable1;
 
         // ✅ Make table non-editable
@@ -117,7 +116,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             adminPrepTimeField.setText(String.valueOf(recipe.prepTime));
             adminRatingField.setText(String.valueOf(recipe.rating));
             adminImagePathField.setText(recipe.imagePath != null ? recipe.imagePath : "");
-            adminIngredientsField.setText(recipe.ingredients != null ? recipe.ingredients : "");
+            adminIngredientsArea.setText(recipe.ingredients != null ? recipe.ingredients : "");
             adminProcessArea.setText(recipe.process != null ? recipe.process : "");
         }
     }
@@ -129,7 +128,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminPrepTimeField.setText("");
         adminRatingField.setText("");
         adminDifficultyField.setText("");
-        adminIngredientsField.setText("");
+        adminIngredientsArea.setText("");
         adminProcessArea.setText("");
         adminRecipeTable.clearSelection();
         adminRecipeTable.putClientProperty("selectedRecipeId", null);
@@ -260,7 +259,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         difficultyLabelAdmin = new javax.swing.JLabel();
-        ingredientsAdmin = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
@@ -435,7 +435,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(loginPanelLayout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -488,7 +488,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
         navMainPanelAdmin.add(manageRecipesBtn);
-        manageRecipesBtn.setBounds(410, 0, 180, 60);
+        manageRecipesBtn.setBounds(610, 0, 180, 60);
 
         manageRequestBtn.setBackground(new java.awt.Color(96, 26, 26));
         manageRequestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -504,7 +504,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
         navMainPanelAdmin.add(manageRequestBtn);
-        manageRequestBtn.setBounds(630, 0, 170, 60);
+        manageRequestBtn.setBounds(420, 0, 170, 60);
 
         jSeparator9.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator9.setForeground(new java.awt.Color(0, 0, 0));
@@ -548,7 +548,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         cuisineLabelAdmin.setText("Cuisine:");
 
         imagePathLevelAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        imagePathLevelAdmin.setText("Image Path:");
+        imagePathLevelAdmin.setText("Image:");
 
         ingredientsLabelAmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         ingredientsLabelAmin.setText("Ingredients:");
@@ -564,6 +564,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         processAdmin.setColumns(20);
         processAdmin.setRows(5);
+        processAdmin.setWrapStyleWord(true);
         jScrollPane3.setViewportView(processAdmin);
 
         jButton6.setBackground(new java.awt.Color(0, 102, 0));
@@ -599,6 +600,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         difficultyLabelAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         difficultyLabelAdmin.setText("Difficulty:");
 
+        jTextArea1.setColumns(6);
+        jTextArea1.setRows(5);
+        jTextArea1.setWrapStyleWord(true);
+        jScrollPane4.setViewportView(jTextArea1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -607,68 +613,59 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(ratingLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(ratingAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(imagePathLevelAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(titleLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButton6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton7)))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(difficultyLabelAdmin)
+                                    .addComponent(timeLabelAdmin)
+                                    .addComponent(jButton6)
+                                    .addComponent(ratingLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(241, 241, 241)
+                                .addGap(274, 274, 274)
                                 .addComponent(jButton8))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(45, 45, 45))
+                                .addGap(90, 90, 90)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(difficultyLabelAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(titleLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(cuisineLabelAdmin)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(timeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(timeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ratingAdmin))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(timeLabelAdmin)
-                                            .addComponent(cuisineLabelAdmin)
-                                            .addComponent(imagePathLevelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(6, 6, 6)
-                                        .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(57, 57, 57)
-                        .addComponent(ingredientsLabelAmin, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ingredientsAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(106, 106, 106))))
+                                .addGap(20, 20, 20)
+                                .addComponent(ingredientsLabelAmin, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton7)
+                                    .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(68, 68, 68))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ingredientsLabelAmin)
-                    .addComponent(ingredientsAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ingredientsLabelAmin)
                             .addComponent(titleLabelAdmin)
-                            .addComponent(processLabelAdmin)
                             .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -677,19 +674,24 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(imagePathLevelAdmin)
-                            .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(difficultyLabelAdmin)
                             .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(difficultyLabelAdmin))
-                        .addGap(9, 9, 9)
+                            .addComponent(processLabelAdmin))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(timeLabelAdmin)
                             .addComponent(timeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ratingLabelAdmin)
-                            .addComponent(ratingAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(ratingAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton6)
@@ -700,13 +702,13 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Title ", "Cuisine", "Image Path", "Difficulty", "Time", "Rating", "Process"
+                "Id", "Title ", "Cuisine", "Difficulty", "Time", "Rating"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
@@ -726,12 +728,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
                     .addComponent(jLabel11)
-                    .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRecipesPanelLayout.createSequentialGroup()
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(473, 473, 473))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(101, Short.MAX_VALUE))
         );
         manageRecipesPanelLayout.setVerticalGroup(
             manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -744,7 +743,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         baseAdminPAnel.add(manageRecipesPanel, "card2");
@@ -755,7 +754,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         manageRequestsPanel.setLayout(manageRequestsPanelLayout);
         manageRequestsPanelLayout.setHorizontalGroup(
             manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1246, Short.MAX_VALUE)
+            .addGap(0, 1274, Short.MAX_VALUE)
         );
         manageRequestsPanelLayout.setVerticalGroup(
             manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -950,7 +949,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         bannerPanel.setLayout(bannerPanelLayout);
         bannerPanelLayout.setHorizontalGroup(
             bannerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bannerHomePage, javax.swing.GroupLayout.DEFAULT_SIZE, 1226, Short.MAX_VALUE)
+            .addComponent(bannerHomePage, javax.swing.GroupLayout.DEFAULT_SIZE, 1274, Short.MAX_VALUE)
         );
         bannerPanelLayout.setVerticalGroup(
             bannerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1183,7 +1182,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(browsePanelLayout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         browsePanelLayout.setVerticalGroup(
             browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1301,7 +1300,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(myHistoryPanelLayout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         myHistoryPanelLayout.setVerticalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1430,11 +1429,11 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(banner)
-                        .addContainerGap(28, Short.MAX_VALUE))
+                        .addContainerGap(51, Short.MAX_VALUE))
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1098, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1781,14 +1780,14 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_manageRecipesBtnFocusGained
 
     private void manageRecipesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRecipesBtnActionPerformed
-        CardLayout cl = (CardLayout) adminPanel.getLayout();
-        cl.show(adminPanel, "adminRecipesCard");
+        CardLayout cl = (CardLayout) baseAdminPAnel.getLayout();
+        cl.show(baseAdminPAnel, "card2");      // manageRecipesPanel
         loadAdminRecipesTable();
     }//GEN-LAST:event_manageRecipesBtnActionPerformed
 
     private void manageRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRequestBtnActionPerformed
-        CardLayout cl = (CardLayout) adminPanel.getLayout();
-        cl.show(adminPanel, "adminRequestsCard");
+        CardLayout cl = (CardLayout) baseAdminPAnel.getLayout();
+        cl.show(baseAdminPAnel, "card3");
         loadAdminRequestsTable();
     }//GEN-LAST:event_manageRequestBtnActionPerformed
 
@@ -1801,7 +1800,19 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonAdminMouseExited
 
     private void logoutButtonAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonAdminActionPerformed
-        // TODO add your handling code here:
+        int choice = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to log out?",
+            "Confirm Logout",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE);
+
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            CardLayout cl = (CardLayout) getContentPane().getLayout();
+            cl.show(getContentPane(), "card3");   // login panel
+            usernameField.setText("");
+            passwordField.setText("");
+        }
     }//GEN-LAST:event_logoutButtonAdminActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1826,7 +1837,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
             double rating = Double.parseDouble(adminRatingField.getText().trim());
             String imagePath = adminImagePathField.getText().trim();
-            String ingredients = adminIngredientsField.getText().trim();
+            String ingredients = adminIngredientsArea.getText().trim();
             String process = adminProcessArea.getText().trim();
 
             if (imagePath.isEmpty()) {
@@ -1889,7 +1900,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             int prepTime = Integer.parseInt(adminPrepTimeField.getText().trim());
             double rating = Double.parseDouble(adminRatingField.getText().trim());
             String imagePath = adminImagePathField.getText().trim();
-            String ingredients = adminIngredientsField.getText().trim();
+            String ingredients = adminIngredientsArea.getText().trim();
             String process = adminProcessArea.getText().trim();
 
             if (imagePath.isEmpty()) {
@@ -2022,7 +2033,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel homePanelUser;
     private javax.swing.JTextField imagePathAdmin;
     private javax.swing.JLabel imagePathLevelAdmin;
-    private javax.swing.JTextField ingredientsAdmin;
     private javax.swing.JLabel ingredientsLabelAmin;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -2044,6 +2054,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -2052,6 +2063,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator9;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JButton loginButton;
