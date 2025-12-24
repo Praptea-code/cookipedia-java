@@ -24,19 +24,40 @@ public class AppModel {
         public int prepTime;
         public double rating;
         public String imagePath;
+        public String ingredients;  
+        public String process; 
 
         private static int idCounter = 1;
 
-        public RecipeData(String title, String cuisine, String type, 
-                         String difficulty, int prepTime, double rating, String imagePath) {
-            this.id = idCounter++;
+        // Constructor WITH ID (for seeding initial data)
+        public RecipeData(int id, String title, String cuisine, String difficulty, 
+                         int prepTime, double rating, String imagePath, 
+                         String ingredients, String process) {
+            this.id = id;
             this.title = title;
             this.cuisine = cuisine;
-            this.type = type;
+            this.type = ""; // Set default empty for seeded data
             this.difficulty = difficulty;
             this.prepTime = prepTime;
             this.rating = rating;
             this.imagePath = imagePath;
+            this.ingredients = ingredients;
+            this.process = process;
+       }
+        
+       public RecipeData(String title, String cuisine, String difficulty, 
+                         int prepTime, double rating, String imagePath, 
+                         String ingredients, String process) {
+            this.id = idCounter++;
+            this.title = title;
+            this.cuisine = cuisine;
+            this.type = ""; // Keep field but leave empty
+            this.difficulty = difficulty;
+            this.prepTime = prepTime;
+            this.rating = rating;
+            this.imagePath = imagePath;
+            this.ingredients = ingredients;
+            this.process = process;
         }
     }
 
@@ -171,6 +192,31 @@ public class AppModel {
         return all.subList(fromIndex, size);                
     }
     
+    public void addRecipe(RecipeData recipe) {
+        recipes.add(recipe);
+    }
+    
+    public boolean updateRecipe(int id, String title, String cuisine, String type,
+                               String difficulty, int prepTime, double rating, String imagePath) {
+        for (RecipeData r : recipes) {
+            if (r.id == id) {
+                r.title = title;
+                r.cuisine = cuisine;
+                r.type = type;
+                r.difficulty = difficulty;
+                r.prepTime = prepTime;
+                r.rating = rating;
+                r.imagePath = imagePath;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteRecipe(int id) {
+        return recipes.removeIf(r -> r.id == id);
+    }
+    
     public static class RecipeRequest {
         public String username;
         public String title;
@@ -178,6 +224,7 @@ public class AppModel {
         public String notes;
         public String date;
         public String time;
+        public String status;
 
         public RecipeRequest(String username, String title,
                              String vegNonVeg, String notes,
@@ -188,6 +235,7 @@ public class AppModel {
             this.notes = notes;
             this.date = date;
             this.time = time;
+            this.status = "Pending";
         }
     }
 
