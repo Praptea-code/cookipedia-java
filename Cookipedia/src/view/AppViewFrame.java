@@ -70,9 +70,16 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminPrepTimeField = timeAdmin;
         adminRatingField = ratingAdmin;
         adminProcessArea = processAdmin;
-        adminRecipeTable = jTable1;
+        adminRecipeTable = recipesTable;
         adminIngredientsArea = ingredientsAdmin;  
         adminRecipeTable.setDefaultEditor(Object.class, null);
+        
+        adminReqTable = reqTableAdmin;
+        
+        adminRecipeTable.setDefaultEditor(Object.class, null);
+        
+        adminReqTable.setDefaultEditor(Object.class, null);
+
 
         // Set up table to show when row is clicked
         adminRecipeTable.getSelectionModel().addListSelectionListener(e -> {
@@ -262,12 +269,17 @@ public class AppViewFrame extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         ingredientsAdmin = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        recipesTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         manageRequestsPanel = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        reqTableAdmin = new javax.swing.JTable();
+        updateStatusBtn = new javax.swing.JButton();
+        deleteRequestBtn = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
         userPanel = new javax.swing.JPanel();
         navMainPanel = new javax.swing.JPanel();
         navigationPanel = new javax.swing.JPanel();
@@ -311,6 +323,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         browseScrollPane = new javax.swing.JScrollPane();
         browseCardsPanel = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
         myHistoryPanel = new javax.swing.JPanel();
         historyPanel = new javax.swing.JPanel();
         jTextField2 = new javax.swing.JTextField();
@@ -320,6 +333,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         historyScrollPane = new java.awt.ScrollPane();
         browseHistoryPanel = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
         recipeRequestPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         reqUsernameLabel = new javax.swing.JLabel();
@@ -421,7 +435,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
                 .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(277, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(239, 196, 4));
@@ -437,7 +451,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(loginPanelLayout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 767, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -665,7 +679,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton7)
                                     .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(68, 68, 68))
+                .addGap(16, 16, 16))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -710,7 +724,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        recipesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -721,7 +735,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 "Id", "Title ", "Cuisine", "Difficulty", "Time", "Rating"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(recipesTable);
 
         jLabel11.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel11.setText("Recipes Form");
@@ -736,19 +750,19 @@ public class AppViewFrame extends javax.swing.JFrame {
         manageRecipesPanelLayout.setHorizontalGroup(
             manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                .addGap(55, 55, 55)
+                .addGap(32, 32, 32)
                 .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
-                    .addComponent(jLabel11)
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(29, 29, 29)
                         .addComponent(jLabel5))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel2))
+                    .addComponent(jLabel11))
+                .addContainerGap())
         );
         manageRecipesPanelLayout.setVerticalGroup(
             manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -758,33 +772,90 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(jLabel12)))
-                .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(168, 168, 168)
+                        .addComponent(jLabel2)
+                        .addContainerGap(260, Short.MAX_VALUE))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(jLabel2))
-                    .addGroup(manageRecipesPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39))))
         );
 
         baseAdminPAnel.add(manageRecipesPanel, "card2");
 
         manageRequestsPanel.setBackground(new java.awt.Color(255, 255, 255));
 
+        reqTableAdmin.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Username", "Recipe Title", "Veg/Non-Veg", "Dietary Notes", "Date", "Time", "Status"
+            }
+        ));
+        jScrollPane6.setViewportView(reqTableAdmin);
+
+        updateStatusBtn.setBackground(new java.awt.Color(0, 0, 0));
+        updateStatusBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        updateStatusBtn.setForeground(new java.awt.Color(255, 204, 0));
+        updateStatusBtn.setText("Update Status");
+        updateStatusBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateStatusBtnActionPerformed(evt);
+            }
+        });
+
+        deleteRequestBtn.setBackground(new java.awt.Color(0, 0, 0));
+        deleteRequestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        deleteRequestBtn.setForeground(new java.awt.Color(255, 204, 0));
+        deleteRequestBtn.setText("Delete Request");
+        deleteRequestBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteRequestBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel7.setText("Requests");
+
         javax.swing.GroupLayout manageRequestsPanelLayout = new javax.swing.GroupLayout(manageRequestsPanel);
         manageRequestsPanel.setLayout(manageRequestsPanelLayout);
         manageRequestsPanelLayout.setHorizontalGroup(
             manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1268, Short.MAX_VALUE)
+            .addGroup(manageRequestsPanelLayout.createSequentialGroup()
+                .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRequestsPanelLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(updateStatusBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteRequestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(manageRequestsPanelLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         manageRequestsPanelLayout.setVerticalGroup(
             manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
+            .addGroup(manageRequestsPanelLayout.createSequentialGroup()
+                .addGap(68, 68, 68)
+                .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateStatusBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteRequestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         baseAdminPAnel.add(manageRequestsPanel, "card3");
@@ -794,7 +865,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminPanelLayout.setHorizontalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(navMainPanelAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(baseAdminPAnel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(baseAdminPAnel, javax.swing.GroupLayout.DEFAULT_SIZE, 1225, Short.MAX_VALUE)
         );
         adminPanelLayout.setVerticalGroup(
             adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -975,7 +1046,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         bannerPanel.setLayout(bannerPanelLayout);
         bannerPanelLayout.setHorizontalGroup(
             bannerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bannerHomePage, javax.swing.GroupLayout.DEFAULT_SIZE, 1268, Short.MAX_VALUE)
+            .addComponent(bannerHomePage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         bannerPanelLayout.setVerticalGroup(
             bannerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1082,8 +1153,8 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addComponent(requestedLogo))))
                     .addGroup(homePanelUserLayout.createSequentialGroup()
                         .addGroup(homePanelUserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(myStatsLabel1)
-                            .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1074, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(myStatsLabel1))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         homePanelUserLayout.setVerticalGroup(
@@ -1115,11 +1186,11 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addComponent(requestedNumber1)
                             .addComponent(yetToCookNumber)
                             .addComponent(requestedNumber))))
-                .addGap(53, 53, 53)
+                .addGap(86, 86, 86)
                 .addComponent(myStatsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(239, 239, 239))
+                .addContainerGap())
         );
 
         basePanel.add(homePanelUser, "card6");
@@ -1177,7 +1248,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(393, Short.MAX_VALUE))
         );
         browseTopPanelLayout.setVerticalGroup(
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1200,23 +1271,30 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseCardsPanel.setLayout(new java.awt.GridLayout(1, 0));
         browseScrollPane.setViewportView(browseCardsPanel);
 
+        jLabel6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel6.setText("All Recipes");
+
         javax.swing.GroupLayout browsePanelLayout = new javax.swing.GroupLayout(browsePanel);
         browsePanel.setLayout(browsePanelLayout);
         browsePanelLayout.setHorizontalGroup(
             browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(browseTopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(browsePanelLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, browsePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60))
         );
         browsePanelLayout.setVerticalGroup(
             browsePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browsePanelLayout.createSequentialGroup()
                 .addComponent(browseTopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(browseScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout browseRecipesPanelLayout = new javax.swing.GroupLayout(browseRecipesPanel);
@@ -1315,27 +1393,36 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseHistoryPanel.setLayout(new java.awt.GridLayout(1, 0));
         historyScrollPane.add(browseHistoryPanel);
 
+        jLabel8.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel8.setText("History");
+
         javax.swing.GroupLayout myHistoryPanelLayout = new javax.swing.GroupLayout(myHistoryPanel);
         myHistoryPanel.setLayout(myHistoryPanelLayout);
         myHistoryPanelLayout.setHorizontalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(myHistoryPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(historyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(myHistoryPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(historyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(myHistoryPanelLayout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addGroup(myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 55, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(myHistoryPanelLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
         );
         myHistoryPanelLayout.setVerticalGroup(
             myHistoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(myHistoryPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(historyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel8)
+                .addGap(12, 12, 12)
                 .addComponent(historyScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         basePanel.add(myHistoryPanel, "card3");
@@ -1455,19 +1542,17 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(banner)
-                        .addContainerGap(48, Short.MAX_VALUE))
-                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1098, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(reqHistoryLabel)
-                            .addComponent(requestRecipe))
-                        .addGap(0, 0, 0))))
+                            .addComponent(requestRecipe)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         recipeRequestPanelLayout.setVerticalGroup(
             recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1643,7 +1728,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 req.notes,
                 req.date,
                 req.time,
-                req.status  // only if you added this field
+                req.status  
             });
         }
     }
@@ -1777,14 +1862,19 @@ public class AppViewFrame extends javax.swing.JFrame {
         model.addRequest(req);
 
         // SIMPLE: clear whole table, then add row
-        javax.swing.table.DefaultTableModel dtm =
-            (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
-        if (dtm.getRowCount() == 1) {     // only the dummy row exists
-            dtm.setRowCount(0);           // remove it
+        javax.swing.table.DefaultTableModel dtm =(javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        
+        if (dtm.getRowCount() > 0 && dtm.getValueAt(0, 0) == null) {
+            dtm.setRowCount(0);  // Clear all empty rows
         }
+        
+        dtm.addRow(new Object[] { username, title, veg, notes, date, time, "Pending" });
+        
+        reqUsernameTextField.setText("");
+        recipeTitleTextfield.setText("");
+        vegNonvegTextField.setText("");
+        noteTextField.setText("");
 
-        dtm.addRow(new Object[] { username, title, veg, notes, date, time });
-   
     }//GEN-LAST:event_requestBtnActionPerformed
 
     private void myRecipeRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myRecipeRequestButtonActionPerformed
@@ -1814,7 +1904,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void manageRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRequestBtnActionPerformed
         CardLayout cl = (CardLayout) baseAdminPAnel.getLayout();
         cl.show(baseAdminPAnel, "card3");
-        loadAdminRequestsTable();
+        loadAdminRequestsTable(); 
     }//GEN-LAST:event_manageRequestBtnActionPerformed
 
     private void logoutButtonAdminMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutButtonAdminMouseEntered
@@ -2009,6 +2099,14 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void updateStatusBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_updateStatusBtnActionPerformed
+
+    private void deleteRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRequestBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteRequestBtnActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -2051,6 +2149,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel browseTopPanel;
     private javax.swing.JTextField cuisineAdmin;
     private javax.swing.JLabel cuisineLabelAdmin;
+    private javax.swing.JButton deleteRequestBtn;
     private javax.swing.JTextField difficultyAdmin;
     private javax.swing.JLabel difficultyLabelAdmin;
     private javax.swing.JPanel historyPanel;
@@ -2076,6 +2175,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -2084,6 +2186,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -2091,7 +2194,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator9;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JButton loginButton;
@@ -2128,8 +2230,10 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextField recipeTitleTextfield;
     private javax.swing.JLabel recipesCookedLogo;
     private javax.swing.JLabel recipesCookedNumber;
+    private javax.swing.JTable recipesTable;
     private javax.swing.JLabel reqHistoryLabel;
     private javax.swing.JTable reqHistoryTable;
+    private javax.swing.JTable reqTableAdmin;
     private javax.swing.JLabel reqUsernameLabel;
     private javax.swing.JTextField reqUsernameTextField;
     private javax.swing.JButton requestBtn;
@@ -2147,6 +2251,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel totalRecipes;
     private javax.swing.JLabel totalRecipesLogo;
     private javax.swing.JLabel totalRecipesNumber;
+    private javax.swing.JButton updateStatusBtn;
     private javax.swing.JPanel userPanel;
     private javax.swing.JTextField usernameField;
     private javax.swing.JLabel usernameLabel;
