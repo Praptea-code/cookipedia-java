@@ -412,31 +412,31 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addComponent(usernameLabel)
                             .addComponent(titleLabel)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(190, 190, 190)
-                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(164, 164, 164)
+                        .addComponent(subTitleLabel))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(subTitleLabel)))
+                        .addGap(187, 187, 187)
+                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(89, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(195, 195, 195)
+                .addGap(259, 259, 259)
                 .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(subTitleLabel)
-                .addGap(96, 96, 96)
+                .addGap(43, 43, 43)
                 .addComponent(usernameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55)
+                .addGap(45, 45, 45)
                 .addComponent(passwordLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(51, 51, 51)
                 .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(277, Short.MAX_VALUE))
+                .addContainerGap(254, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(239, 196, 4));
@@ -505,7 +505,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
         navMainPanelAdmin.add(manageRecipesBtn);
-        manageRecipesBtn.setBounds(410, 0, 180, 60);
+        manageRecipesBtn.setBounds(440, 0, 180, 60);
 
         manageRequestBtn.setBackground(new java.awt.Color(96, 26, 26));
         manageRequestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -521,13 +521,13 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
         navMainPanelAdmin.add(manageRequestBtn);
-        manageRequestBtn.setBounds(610, 0, 170, 60);
+        manageRequestBtn.setBounds(640, 0, 170, 60);
 
         jSeparator9.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator9.setForeground(new java.awt.Color(0, 0, 0));
         jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
         navMainPanelAdmin.add(jSeparator9);
-        jSeparator9.setBounds(600, 20, 10, 30);
+        jSeparator9.setBounds(630, 20, 10, 30);
 
         logoutButtonAdmin.setBackground(new java.awt.Color(0, 0, 0));
         logoutButtonAdmin.setFont(new java.awt.Font("SansSerif", 1, 16)); // NOI18N
