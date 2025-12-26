@@ -13,56 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class AppModel {
-
-    // simple inner class for recipes
-    public static class RecipeData {
-        public int id;
-        public String title;
-        public String cuisine;
-        public String type;
-        public String difficulty;
-        public int prepTime;
-        public double rating;
-        public String imagePath;
-        public String ingredients;  
-        public String process; 
-
-        private static int idCounter = 1;
-
-        // Constructor WITH ID (for seeding initial data)
-        public RecipeData(int id, String title, String cuisine, String difficulty, 
-                         int prepTime, double rating, String imagePath, 
-                         String ingredients, String process) {
-            this.id = id;
-            this.title = title;
-            this.cuisine = cuisine;
-            this.type = ""; // Set default empty for seeded data
-            this.difficulty = difficulty;
-            this.prepTime = prepTime;
-            this.rating = rating;
-            this.imagePath = imagePath;
-            this.ingredients = ingredients;
-            this.process = process;
-       }
-        
-       public RecipeData(String title, String cuisine, String difficulty, 
-                         int prepTime, double rating, String imagePath, 
-                         String ingredients, String process) {
-            this.id = idCounter++;
-            this.title = title;
-            this.cuisine = cuisine;
-            this.type = ""; // Keep field but leave empty
-            this.difficulty = difficulty;
-            this.prepTime = prepTime;
-            this.rating = rating;
-            this.imagePath = imagePath;
-            this.ingredients = ingredients;
-            this.process = process;
-        }
-    }
-
     private final List<RecipeData> recipes = new ArrayList<>();
 
+    
+    
     public AppModel() {
         seedDummyRecipes();
     }
@@ -189,7 +143,6 @@ public class AppModel {
         return new ArrayList<>(recipes);
     }
 
-    // for random recommended
     public java.util.List<RecipeData> getRecentlyAdded(int count) {
         java.util.List<RecipeData> all = getAllRecipes();   
         int size = all.size();
@@ -224,40 +177,19 @@ public class AppModel {
         return recipes.removeIf(r -> r.id == id);
     }
     
-    public static class RecipeRequest {
-        public String username;
-        public String title;
-        public String vegNonVeg;
-        public String notes;
-        public String date;
-        public String time;
-        public String status;
-
-        public RecipeRequest(String username, String title,
-                             String vegNonVeg, String notes,
-                             String date, String time) {
-            this.username = username;
-            this.title = title;
-            this.vegNonVeg = vegNonVeg;
-            this.notes = notes;
-            this.date = date;
-            this.time = time;
-            this.status = "Pending";
-        }
-    }
 
     private final java.util.Queue<RecipeRequest> requestQueue =
             new java.util.LinkedList<>();
 
     public void addRequest(RecipeRequest req) {
-        requestQueue.offer(req);   // enqueue FIFO
+        requestQueue.offer(req);   
     }
 
     public java.util.Queue<RecipeRequest> getAllRequests() {
-        return requestQueue;       // user/admin read
+        return requestQueue;      
     }
 
     public RecipeRequest pollNextRequest() {
-        return requestQueue.poll(); // admin handles next
+        return requestQueue.poll(); 
     }
 }
