@@ -45,6 +45,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     private static final int HISTORY_LIMIT = 8;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppController controller = new AppController();
+    private String lastVisitedPanel = "card6";
+    private RecipeData currentViewingRecipe = null;
 
     
     public AppViewFrame() {
