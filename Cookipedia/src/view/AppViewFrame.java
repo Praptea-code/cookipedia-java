@@ -272,6 +272,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoutButton = new javax.swing.JButton();
         logo = new javax.swing.JLabel();
         basePanel = new javax.swing.JPanel();
+        viewPanel = new javax.swing.JPanel();
+        backButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         homePanelUser = new javax.swing.JPanel();
         myStatsLabel = new javax.swing.JLabel();
         recentlyAddedPanel = new javax.swing.JPanel();
@@ -1001,6 +1004,53 @@ public class AppViewFrame extends javax.swing.JFrame {
         basePanel.setBackground(new java.awt.Color(255, 255, 255));
         basePanel.setLayout(new java.awt.CardLayout());
 
+        viewPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        backButton.setBackground(new java.awt.Color(102, 0, 51));
+        backButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        backButton.setForeground(new java.awt.Color(255, 255, 255));
+        backButton.setText("Back");
+        backButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1124, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 606, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout viewPanelLayout = new javax.swing.GroupLayout(viewPanel);
+        viewPanel.setLayout(viewPanelLayout);
+        viewPanelLayout.setHorizontalGroup(
+            viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(viewPanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backButton))
+                .addContainerGap(51, Short.MAX_VALUE))
+        );
+        viewPanelLayout.setVerticalGroup(
+            viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(viewPanelLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(backButton)
+                .addGap(61, 61, 61)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
+        );
+
+        basePanel.add(viewPanel, "card6");
+
         homePanelUser.setBackground(new java.awt.Color(255, 255, 255));
 
         myStatsLabel.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -1172,7 +1222,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addComponent(myStatsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recentlyAddedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(318, 318, 318))
         );
 
         basePanel.add(homePanelUser, "card6");
@@ -2063,6 +2113,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_deleteRequestBtnActionPerformed
 
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backButtonActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -2091,6 +2145,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel adminPanel;
+    private javax.swing.JButton backButton;
     private javax.swing.JLabel banner;
     private javax.swing.JLabel bannerHomePage;
     private javax.swing.JPanel bannerPanel;
@@ -2138,6 +2193,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -2214,6 +2270,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JLabel vegNonvegLabel;
     private javax.swing.JTextField vegNonvegTextField;
+    private javax.swing.JPanel viewPanel;
     private javax.swing.JLabel yetToCook;
     private javax.swing.JLabel yetToCookLogo;
     private javax.swing.JLabel yetToCookNumber;
