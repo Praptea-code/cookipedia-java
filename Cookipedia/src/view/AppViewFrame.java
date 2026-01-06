@@ -41,8 +41,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private final Color viewNormalFg = new Color(0xF1, 0xC4, 0x0F);
     private final Color viewHoverBg  = new Color(0xF1, 0xC4, 0x0F);
     private final Color viewHoverFg  = Color.BLACK;
-    private final java.util.Deque<RecipeData> historyQueue = new java.util.ArrayDeque<>();
-    private static final int HISTORY_LIMIT = 8;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppController controller = new AppController();
     private String lastVisitedPanel = "card4";
@@ -181,41 +179,16 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
     
     private void updateHomeStats() {
-        // Total recipes from database
-        int total = controller.getAllRecipes().size();
-        totalRecipesNumber.setText(String.valueOf(total));
-
-        // Recipes cooked (read current value or set to 0 initially)
-        // Keep the current value if it exists, otherwise start at 0
-        String cookedText = requestedNumber1.getText().trim();
-        int cooked = 0;
-        try {
-            cooked = Integer.parseInt(cookedText);
-        } catch (NumberFormatException e) {
-            cooked = 0;
-        }
-        requestedNumber1.setText(String.valueOf(cooked));
-
-        // Yet to cook = total - cooked
-        int yetToCook = total - cooked;
-        if (yetToCook < 0) yetToCook = 0;
-        yetToCookNumber.setText(String.valueOf(yetToCook));
-
-        // Requested (read current value)
-        String requestedText = requestedNumber.getText().trim();
-        int requested = 0;
-        try {
-            requested = Integer.parseInt(requestedText);
-        } catch (NumberFormatException e) {
-            requested = 0;
-        }
-        requestedNumber.setText(String.valueOf(requested));
+        totalRecipesNumber.setText(String.valueOf(controller.getTotalRecipes()));
+        requestedNumber1.setText(String.valueOf(controller.getCookedCount()));
+        yetToCookNumber.setText(String.valueOf(controller.getYetToCookCount()));
+        requestedNumber.setText(String.valueOf(controller.getRequestCount()));
     }
     
     private void loadHistoryCards() {
         browseHistoryPanel.removeAll();
 
-        for (RecipeData r : historyQueue) {
+        for (RecipeData r :controller.getHistory()) {
             browseHistoryPanel.add(createRecipeCard(r));
         }
 
@@ -1990,37 +1963,14 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     // Helpers
     
-    private void incrementLabelNumber(javax.swing.JLabel label, int delta) {
-        if (label == null) return;
-        String text = label.getText().trim();
-        int current = 0;
-        try {
-            current = Integer.parseInt(text);
-        } catch (NumberFormatException ex) {
-            current = 0;
-        }
-        int updated = current + delta;
-        if (updated < 0) {
-            updated = 0;
-        }
-        label.setText(String.valueOf(updated));
-    }
-    
     private void handleRecipeCooked(RecipeData recipe) {
         try {
-            // 1) Stats update on home page
+        // Update model through controller
+            controller.markRecipeAsCooked();
+            controller.addToHistory(recipe);
 
-            // +1 to Recipes Cooked -> use requestedNumber1 as the numeric value under that card
-            incrementLabelNumber(requestedNumber1, 1);
-
-            // -1 from Yet to Cook (optional)
-            incrementLabelNumber(yetToCookNumber, -1);
-
-            // If you like, recompute total from DB:
-            // totalRecipesNumber.setText(String.valueOf(controller.getAllRecipes().size()));
-
-            // 2) History update
-            addToHistory(recipe);
+            // Update UI
+            updateHomeStats();
             loadHistoryCards();
 
             javax.swing.JOptionPane.showMessageDialog(
@@ -2063,23 +2013,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
    
     private void addToHistory(RecipeData r) {
-        RecipeData toRemove = null;
-        for (RecipeData item : historyQueue) {
-            if (item.id == r.id) {          
-                toRemove = item;
-                break;
-            }
-        }
-        if (toRemove != null) {
-            historyQueue.remove(toRemove);
-        }
-
-        historyQueue.addFirst(r);
-
-        if (historyQueue.size() > HISTORY_LIMIT) {
-            historyQueue.removeLast();
-        }
-
+        controller.addToHistory(r);
         loadHistoryCards();
     }
 
@@ -2207,40 +2141,57 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        historyQueue.clear();
+        controller.clearHistory();
         loadHistoryCards();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestBtnActionPerformed
                                           
         String username = reqUsernameTextField.getText().trim();
-        String title    = recipeTitleTextfield.getText().trim();
-        String veg      = vegNonvegTextField.getText().trim();
-        String notes    = noteTextField.getText().trim();
+        String title = recipeTitleTextfield.getText().trim();
+        String veg = vegNonvegTextField.getText().trim();
+        String notes = noteTextField.getText().trim();
 
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        String date = now.toLocalDate().toString();
-        String time = now.toLocalTime().toString();
+        // Validate and add through controller
+        String result = controller.addRecipeRequest(username, title, veg, notes);
 
-        RecipeRequest req =
-                new RecipeRequest(username, title, veg, notes, date, time);
-
-        controller.addRequest(req);
-
-        javax.swing.table.DefaultTableModel dtm =(javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
-        
-        if (dtm.getRowCount() > 0 && dtm.getValueAt(0, 0) == null) {
-            dtm.setRowCount(0);  
+        if (!result.equals("success")) {
+            javax.swing.JOptionPane.showMessageDialog(this, result,
+                "Validation Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
         }
-        
-        dtm.addRow(new Object[] { username, title, veg, notes, date, time, "Pending" });
-        
+
+        // Update UI
+        refreshRequestTable();
+        updateHomeStats();
+        clearRequestForm();
+
+        javax.swing.JOptionPane.showMessageDialog(this,
+            "Request submitted successfully!",
+            "Success",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // ADD THIS HELPER METHOD
+    private void refreshRequestTable() {
+        javax.swing.table.DefaultTableModel dtm =
+            (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeRequest req : controller.getAllRequests()) {
+            dtm.addRow(new Object[] {
+                req.username, req.title, req.vegNonVeg,
+                req.notes, req.date, req.time, req.status
+            });
+        }
+    }
+
+    // ADD THIS HELPER METHOD
+    private void clearRequestForm() {
         reqUsernameTextField.setText("");
         recipeTitleTextfield.setText("");
         vegNonvegTextField.setText("");
         noteTextField.setText("");
-        
-        incrementLabelNumber(requestedNumber, 1);
 
     }//GEN-LAST:event_requestBtnActionPerformed
 
@@ -2272,9 +2223,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void manageRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageRequestBtnActionPerformed
         CardLayout cl = (CardLayout) baseAdminPAnel.getLayout();
         cl.show(baseAdminPAnel, "card3");
-        loadAdminRequestsTable(); 
-        incrementLabelNumber(requestedNumber, 1);
-        incrementLabelNumber(requestedNumber1, 1);
+        loadAdminRequestsTable();
     }//GEN-LAST:event_manageRequestBtnActionPerformed
 
     private void logoutButtonAdminMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutButtonAdminMouseEntered
@@ -2331,19 +2280,15 @@ public class AppViewFrame extends javax.swing.JFrame {
             adminProcessArea.getText().trim()
         );
 
-        controller.addRecipe(r);  // Changed
+        controller.addRecipe(r);
         loadAdminRecipesTable();
         loadHomeCards();
         clearRecipeForm();
+        updateHomeStats();  // This now gets data from controller
 
         javax.swing.JOptionPane.showMessageDialog(this,
             "Recipe added successfully!", "Success",
             javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        
-        incrementLabelNumber(totalRecipesNumber, 1);
-        incrementLabelNumber(yetToCookNumber, 1);
-        
-        updateHomeStats();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed

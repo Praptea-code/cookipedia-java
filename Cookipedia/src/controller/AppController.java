@@ -18,6 +18,25 @@ public class AppController {
         this.model = new AppModel();
     }
     
+    public int getCookedCount() {
+        return model.getCookedCount();
+    }
+    
+    public void markRecipeAsCooked() {
+        model.incrementCookedCount();
+    }
+    
+    public int getYetToCookCount() {
+        return model.getYetToCookCount();
+    }
+    
+    public int getTotalRecipes() {
+        return model.getTotalRecipes();
+    }
+    
+    public int getRequestCount() {
+        return model.getRequestCount();
+    }
 
     public List<RecipeData> getAllRecipes() {
         return model.getAllRecipes();
@@ -29,6 +48,26 @@ public class AppController {
     
     public void addRecipe(RecipeData recipe) {
         model.addRecipe(recipe);
+    }
+    
+    public void addToHistory(RecipeData recipe) {
+        model.addToHistory(recipe);
+    }
+    
+    public java.util.List<RecipeData> getHistory() {
+        return model.getHistory();
+    }
+    
+    public void clearHistory() {
+        model.clearHistory();
+    }
+    
+    public void addRequest(RecipeRequest req) {
+        model.addRequest(req);
+    }
+    
+    public java.util.Queue<RecipeRequest> getAllRequests() {
+        return model.getAllRequests();
     }
     
     public boolean updateRecipe(int id, String title, String cuisine,
@@ -51,12 +90,21 @@ public class AppController {
         return null;
     }
     
-    public void addRequest(RecipeRequest req) {
+    public String addRecipeRequest(String username, String title, 
+                                   String vegNonVeg, String notes) {
+        if (username.isEmpty() || title.isEmpty()) {
+            return "Username and Recipe Title are required!";
+        }
+        
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        String date = now.toLocalDate().toString();
+        String time = now.toLocalTime().toString();
+        
+        RecipeRequest req = new RecipeRequest(username, title, vegNonVeg, notes, date, time);
         model.addRequest(req);
-    }
-    
-    public java.util.Queue<RecipeRequest> getAllRequests() {
-        return model.getAllRequests();
+        model.incrementRequestCount();
+        
+        return "success";
     }
 
     public String validateLogin(String username, String password) {

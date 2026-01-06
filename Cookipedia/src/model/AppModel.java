@@ -14,14 +14,39 @@ import java.util.List;
 
 public class AppModel {
     private final List<RecipeData> recipes = new ArrayList<>();
-
+    private int cookedCount = 0;
+    private int requestCount = 0;
+    private final java.util.Deque<RecipeData> historyQueue = new java.util.LinkedList<>();
+    private static final int HISTORY_LIMIT = 8;
+    private int nextRecipeId = 1;
     
+    public int getCookedCount() {
+        return cookedCount;
+    }
+    
+    public void incrementCookedCount() {
+        cookedCount++;
+    }
+    
+    public int getYetToCookCount() {
+        return getAllRecipes().size() - cookedCount;
+    }
+    
+    public int getTotalRecipes() {
+        return getAllRecipes().size();
+    }
+    
+    public int getRequestCount() {
+        return requestCount;
+    }
+    
+    public void incrementRequestCount() {
+        requestCount++;
+    }
     
     public AppModel() {
         seedDummyRecipes();
     }
-
-    private int nextRecipeId = 1;
 
     public int getNextRecipeId() {
         return nextRecipeId++;
@@ -191,5 +216,34 @@ public class AppModel {
 
     public RecipeRequest pollNextRequest() {
         return requestQueue.poll(); 
+    }
+    
+    public void addToHistory(RecipeData recipe) {
+        RecipeData toRemove = null;
+        for (RecipeData item : historyQueue) {
+            if (item.id == recipe.id) {
+                toRemove = item;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            historyQueue.remove(toRemove);
+        }
+        
+        // Add to front
+        historyQueue.addFirst(recipe);
+        
+        // Maintain limit
+        if (historyQueue.size() > HISTORY_LIMIT) {
+            historyQueue.removeLast();
+        }
+    }
+    
+    public java.util.List<RecipeData> getHistory() {
+        return new java.util.ArrayList<>(historyQueue);
+    }
+    
+    public void clearHistory() {
+        historyQueue.clear();
     }
 }
