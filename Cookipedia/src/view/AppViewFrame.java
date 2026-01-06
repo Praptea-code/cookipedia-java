@@ -45,7 +45,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private static final int HISTORY_LIMIT = 8;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppController controller = new AppController();
-    private String lastVisitedPanel = "card3";
+    private String lastVisitedPanel = "card4";
     private RecipeData currentViewingRecipe = null;
 
     
@@ -171,10 +171,45 @@ public class AppViewFrame extends javax.swing.JFrame {
                 browseCardsPanel.add(createRecipeCard(r));
             }
 
+            
+        updateHomeStats();
+        
         recentlyAddedPanel.revalidate();
         recentlyAddedPanel.repaint();
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
+    }
+    
+    private void updateHomeStats() {
+        // Total recipes from database
+        int total = controller.getAllRecipes().size();
+        totalRecipesNumber.setText(String.valueOf(total));
+
+        // Recipes cooked (read current value or set to 0 initially)
+        // Keep the current value if it exists, otherwise start at 0
+        String cookedText = requestedNumber1.getText().trim();
+        int cooked = 0;
+        try {
+            cooked = Integer.parseInt(cookedText);
+        } catch (NumberFormatException e) {
+            cooked = 0;
+        }
+        requestedNumber1.setText(String.valueOf(cooked));
+
+        // Yet to cook = total - cooked
+        int yetToCook = total - cooked;
+        if (yetToCook < 0) yetToCook = 0;
+        yetToCookNumber.setText(String.valueOf(yetToCook));
+
+        // Requested (read current value)
+        String requestedText = requestedNumber.getText().trim();
+        int requested = 0;
+        try {
+            requested = Integer.parseInt(requestedText);
+        } catch (NumberFormatException e) {
+            requested = 0;
+        }
+        requestedNumber.setText(String.valueOf(requested));
     }
     
     private void loadHistoryCards() {
@@ -201,6 +236,13 @@ public class AppViewFrame extends javax.swing.JFrame {
             loadAdminRecipesTable();
         } else if (result.equals("user")) {
             cl.show(getContentPane(), "card2");
+            
+            CardLayout baseCL = (CardLayout) basePanel.getLayout();
+            baseCL.show(basePanel, "card6"); 
+            
+            lastVisitedPanel = "card6";
+            
+            updateHomeStats(); 
             loadHomeCards();
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, result,
@@ -1762,8 +1804,17 @@ public class AppViewFrame extends javax.swing.JFrame {
             currentViewingRecipe = recipe;
             addToHistory(recipe);   
 
-            CardLayout baseCL = (CardLayout) basePanel.getLayout();
+            // SAVE WHICH PANEL USER WAS ON
+            for (java.awt.Component comp : basePanel.getComponents()) {
+                if (comp.isVisible()) {
+                    if      (comp == homePanelUser)        lastVisitedPanel = "card6";
+                    else if (comp == browseRecipesPanel)   lastVisitedPanel = "card4";
+                    else if (comp == myHistoryPanel)       lastVisitedPanel = "card3";
+                    else if (comp == recipeRequestPanel)   lastVisitedPanel = "card2";  
+                }
+            }
 
+            CardLayout baseCL = (CardLayout) basePanel.getLayout();
             baseCL.show(basePanel, "card5");           
 
             basePanel.revalidate();
@@ -1783,14 +1834,6 @@ public class AppViewFrame extends javax.swing.JFrame {
                 "Error opening recipe view:\n" + e.getMessage(),
                 "View Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-        for (java.awt.Component comp : basePanel.getComponents()) {
-        if (comp.isVisible()) {
-            if      (comp == homePanelUser)        lastVisitedPanel = "card6";
-            else if (comp == browseRecipesPanel)   lastVisitedPanel = "card4";
-            else if (comp == myHistoryPanel)       lastVisitedPanel = "card3";
-            else if (comp == recipeRequestPanel)   lastVisitedPanel = "card2";  
-        }
-    }
     }
     
     private void populateViewPanel(RecipeData recipe) {
@@ -1830,7 +1873,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         gbc.gridwidth = 1;
         gbc.weightx = 0;
         gbc.weighty = 0;
-        gbc.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.fill = java.awt.GridBagConstraints.NONE; 
 
         javax.swing.JButton markCookedBtn = new javax.swing.JButton("Mark Cooked");
         markCookedBtn.setBackground(new java.awt.Color(0, 0, 0));
@@ -2112,17 +2156,20 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void myHistoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myHistoryButtonActionPerformed
+        lastVisitedPanel = "card3"; 
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card3");
     }//GEN-LAST:event_myHistoryButtonActionPerformed
 
     private void browseRecipeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseRecipeButtonActionPerformed
+        lastVisitedPanel = "card4";
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card4");   
         loadHomeCards();
     }//GEN-LAST:event_browseRecipeButtonActionPerformed
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
+        lastVisitedPanel = "card6";
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card6");   
         loadHomeCards();
@@ -2192,10 +2239,13 @@ public class AppViewFrame extends javax.swing.JFrame {
         recipeTitleTextfield.setText("");
         vegNonvegTextField.setText("");
         noteTextField.setText("");
+        
+        incrementLabelNumber(requestedNumber, 1);
 
     }//GEN-LAST:event_requestBtnActionPerformed
 
     private void myRecipeRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myRecipeRequestButtonActionPerformed
+        lastVisitedPanel = "card2";
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card2");  
 
@@ -2292,6 +2342,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         
         incrementLabelNumber(totalRecipesNumber, 1);
         incrementLabelNumber(yetToCookNumber, 1);
+        
+        updateHomeStats();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -2417,7 +2469,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         CardLayout cl = (CardLayout) basePanel.getLayout();
-        cl.show(basePanel, "card4");
+        cl.show(basePanel, "card4"); // Always go to Recipes panel
         basePanel.revalidate();
         basePanel.repaint();
     }//GEN-LAST:event_backButtonActionPerformed
