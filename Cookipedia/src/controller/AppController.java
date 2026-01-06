@@ -5,7 +5,6 @@
 package controller;
 
 import model.AppModel;
-import model.AppModel.ValidationResult;
 import model.RecipeData;
 import model.RecipeRequest;
 import java.time.LocalDateTime;
@@ -18,219 +17,346 @@ import java.util.Queue;
 public class AppController {
     private final AppModel model;
     
-    public AppController(AppModel model) {
-        this.model = model;
+    public AppController() {
+        this.model = new AppModel();
     }
     
-    // Delegate to model - NO UI LOGIC HERE
-    public int getCookedCount() {
-        return model.getCookedCount();
+    // ===== Authentication Logic =====
+    
+    /**
+     * Validates user login credentials
+     * @return "admin" if admin login, "user" if user login, error message otherwise
+     */
+    public String validateLogin(String username, String password) {
+        // Input validation
+        if (username == null || password == null) {
+            return "Please enter username and password.";
+        }
+        
+        username = username.trim();
+        password = password.trim();
+        
+        if (username.isEmpty() && password.isEmpty()) {
+            return "Please enter username and password.";
+        }
+        if (username.isEmpty()) {
+            return "Please enter your username.";
+        }
+        if (password.isEmpty()) {
+            return "Please enter your password.";
+        }
+        
+        // Authentication logic
+        if (username.equals("admin") && password.equals("12345")) {
+            return "admin";
+        } else if (username.equals("user") && password.equals("67890")) {
+            return "user";
+        } else {
+            return "Invalid username or password!";
+        }
     }
     
-    public int getYetToCookCount() {
-        return model.getYetToCookCount();
+    // ===== Recipe Management Logic =====
+    
+    /**
+     * Validates recipe form fields
+     * @return "valid" if all fields are valid, error message otherwise
+     */
+    public String validateRecipeFields(String title, String cuisine, String difficulty,
+                                      String prepTime, String rating) {
+        // Check for empty fields
+        if (title == null || title.trim().isEmpty() ||
+            cuisine == null || cuisine.trim().isEmpty() ||
+            difficulty == null || difficulty.trim().isEmpty() ||
+            prepTime == null || prepTime.trim().isEmpty() ||
+            rating == null || rating.trim().isEmpty()) {
+            return "Please fill all required fields!";
+        }
+        
+        // Validate numeric fields
+        try {
+            int time = Integer.parseInt(prepTime.trim());
+            if (time <= 0) {
+                return "Preparation time must be positive!";
+            }
+        } catch (NumberFormatException e) {
+            return "Please enter a valid number for preparation time!";
+        }
+        
+        try {
+            double rate = Double.parseDouble(rating.trim());
+            if (rate < 0 || rate > 5) {
+                return "Rating must be between 0 and 5!";
+            }
+        } catch (NumberFormatException e) {
+            return "Please enter a valid number for rating!";
+        }
+        
+        return "valid";
     }
     
-    public int getTotalRecipes() {
-        return model.getTotalRecipes();
+    /**
+     * Adds a new recipe after validation
+     */
+    public String addRecipe(String title, String cuisine, String difficulty,
+                           String prepTime, String rating, String imagePath,
+                           String ingredients, String process) {
+        // Validate first
+        String validation = validateRecipeFields(title, cuisine, difficulty, prepTime, rating);
+        if (!validation.equals("valid")) {
+            return validation;
+        }
+        
+        // Set default image if empty
+        if (imagePath == null || imagePath.trim().isEmpty()) {
+            imagePath = "/img/default.png";
+        }
+        
+        // Create and add recipe
+        RecipeData recipe = new RecipeData(
+            title.trim(),
+            cuisine.trim(),
+            difficulty.trim(),
+            Integer.parseInt(prepTime.trim()),
+            Double.parseDouble(rating.trim()),
+            imagePath.trim(),
+            ingredients != null ? ingredients.trim() : "",
+            process != null ? process.trim() : ""
+        );
+        
+        model.addRecipe(recipe);
+        return "success";
     }
     
-    public int getRequestCount() {
-        return model.getRequestCount();
+    /**
+     * Updates an existing recipe
+     */
+    public boolean updateRecipe(int id, String title, String cuisine, String difficulty,
+                               int prepTime, double rating, String imagePath,
+                               String ingredients, String process) {
+        return model.updateRecipe(id, title, cuisine, difficulty, prepTime,
+                                 rating, imagePath, ingredients, process);
     }
     
-    public List<RecipeData> getAllRecipes() {
-        return model.getAllRecipes();
+    /**
+     * Deletes a recipe by ID
+     */
+    public boolean deleteRecipe(int id) {
+        return model.deleteRecipe(id);
     }
     
-    public List<RecipeData> getRecentlyAdded(int count) {
-        return model.getRecentlyAdded(count);
-    }
-    
-    public List<RecipeData> getHistory() {
-        return model.getHistory();
-    }
-    
-    public Queue<RecipeRequest> getAllRequests() {
-        return model.getAllRequests();
-    }
-    
+    /**
+     * Retrieves a recipe by ID
+     */
     public RecipeData getRecipeById(int id) {
         return model.getRecipeById(id);
     }
     
-    // Business operations
-    public void markRecipeAsCooked(RecipeData recipe) {
-        model.incrementCookedCount();
-        model.addToHistory(recipe);
+    /**
+     * Gets all recipes
+     */
+    public List<RecipeData> getAllRecipes() {
+        return model.getAllRecipes();
     }
     
+    /**
+     * Gets recently added recipes
+     */
+    public List<RecipeData> getRecentlyAdded(int count) {
+        return model.getRecentlyAdded(count);
+    }
+    
+    /**
+     * Sorts recipes by name
+     */
+    public List<RecipeData> sortRecipesByName() {
+        List<RecipeData> recipes = model.getAllRecipes();
+        recipes.sort((r1, r2) -> r1.getTitle().compareToIgnoreCase(r2.getTitle()));
+        return recipes;
+    }
+    
+    /**
+     * Sorts recipes by difficulty
+     */
+    public List<RecipeData> sortRecipesByDifficulty() {
+        List<RecipeData> recipes = model.getAllRecipes();
+        recipes.sort((r1, r2) -> {
+            int order1 = getDifficultyOrder(r1.getDifficulty());
+            int order2 = getDifficultyOrder(r2.getDifficulty());
+            return Integer.compare(order1, order2);
+        });
+        return recipes;
+    }
+    
+    private int getDifficultyOrder(String difficulty) {
+        switch (difficulty.toLowerCase()) {
+            case "easy": return 1;
+            case "medium": return 2;
+            case "hard": return 3;
+            default: return 4;
+        }
+    }
+    
+    /**
+     * Searches recipes by title
+     */
+    public List<RecipeData> searchRecipes(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return model.getAllRecipes();
+        }
+        
+        String lowerQuery = query.trim().toLowerCase();
+        List<RecipeData> results = new java.util.ArrayList<>();
+        
+        for (RecipeData recipe : model.getAllRecipes()) {
+            if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
+                results.add(recipe);
+            }
+        }
+        
+        return results;
+    }
+    
+    // ===== Recipe Request Logic =====
+    
+    /**
+     * Validates and adds a recipe request
+     */
+    public String addRecipeRequest(String username, String title,
+                                   String vegNonVeg, String notes) {
+        // Validation
+        if (username == null || username.trim().isEmpty()) {
+            return "Username is required!";
+        }
+        if (title == null || title.trim().isEmpty()) {
+            return "Recipe title is required!";
+        }
+        
+        // Generate timestamp
+        LocalDateTime now = LocalDateTime.now();
+        String date = now.toLocalDate().toString();
+        String time = now.toLocalTime().toString().substring(0, 8); // HH:MM:SS
+        
+        // Create and add request
+        RecipeRequest request = new RecipeRequest(
+            username.trim(),
+            title.trim(),
+            vegNonVeg != null ? vegNonVeg.trim() : "",
+            notes != null ? notes.trim() : "",
+            date,
+            time
+        );
+        
+        model.addRequest(request);
+        model.incrementRequestCount();
+        
+        return "success";
+    }
+    
+    /**
+     * Gets all recipe requests
+     */
+    public Queue<RecipeRequest> getAllRequests() {
+        return model.getAllRequests();
+    }
+    
+    /**
+     * Updates request status
+     */
+    public boolean updateRequestStatus(RecipeRequest request, String newStatus) {
+        if (request == null || newStatus == null) {
+            return false;
+        }
+        request.setStatus(newStatus);
+        return true;
+    }
+    
+    /**
+     * Removes a recipe request
+     */
+    public boolean removeRequest(RecipeRequest request) {
+        return model.removeRequest(request);
+    }
+    
+    // ===== History Management Logic =====
+    
+    /**
+     * Adds a recipe to viewing history
+     */
     public void addToHistory(RecipeData recipe) {
-        model.addToHistory(recipe);
+        if (recipe != null) {
+            model.addToHistory(recipe);
+        }
     }
     
+    /**
+     * Gets recipe viewing history
+     */
+    public List<RecipeData> getHistory() {
+        return model.getHistory();
+    }
+    
+    /**
+     * Clears viewing history
+     */
     public void clearHistory() {
         model.clearHistory();
     }
     
-    // Recipe CRUD
-    public ValidationResult addRecipe(String title, String cuisine, String difficulty,
-                                     String prepTime, String rating, String imagePath,
-                                     String ingredients, String process) {
-        ValidationResult validation = model.validateRecipeFields(
-            title, cuisine, difficulty, prepTime, rating
-        );
-        
-        if (!validation.isValid()) {
-            return validation;
+    /**
+     * Searches history by title
+     */
+    public List<RecipeData> searchHistory(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return model.getHistory();
         }
         
-        try {
-            String finalImagePath = (imagePath == null || imagePath.trim().isEmpty()) 
-                ? "/img/default.png" 
-                : imagePath.trim();
-            
-            RecipeData recipe = new RecipeData(
-                title.trim(),
-                cuisine.trim(),
-                difficulty.trim(),
-                Integer.parseInt(prepTime.trim()),
-                Double.parseDouble(rating.trim()),
-                finalImagePath,
-                ingredients != null ? ingredients.trim() : "",
-                process != null ? process.trim() : ""
-            );
-            
-            model.addRecipe(recipe);
-            return new ValidationResult(true, "Recipe added successfully!");
-            
-        } catch (Exception e) {
-            return new ValidationResult(false, "Error creating recipe: " + e.getMessage());
-        }
-    }
-    
-    public ValidationResult updateRecipe(int id, String title, String cuisine,
-                                        String difficulty, String prepTime, 
-                                        String rating, String imagePath,
-                                        String ingredients, String process) {
-        ValidationResult validation = model.validateRecipeFields(
-            title, cuisine, difficulty, prepTime, rating
-        );
+        String lowerQuery = query.trim().toLowerCase();
+        List<RecipeData> results = new java.util.ArrayList<>();
         
-        if (!validation.isValid()) {
-            return validation;
-        }
-        
-        try {
-            String finalImagePath = (imagePath == null || imagePath.trim().isEmpty()) 
-                ? "/img/default.png" 
-                : imagePath.trim();
-            
-            boolean updated = model.updateRecipe(
-                id,
-                title.trim(),
-                cuisine.trim(),
-                difficulty.trim(),
-                Integer.parseInt(prepTime.trim()),
-                Double.parseDouble(rating.trim()),
-                finalImagePath,
-                ingredients != null ? ingredients.trim() : "",
-                process != null ? process.trim() : ""
-            );
-            
-            if (updated) {
-                return new ValidationResult(true, "Recipe updated successfully!");
-            } else {
-                return new ValidationResult(false, "Recipe not found!");
+        for (RecipeData recipe : model.getHistory()) {
+            if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
+                results.add(recipe);
             }
-            
-        } catch (Exception e) {
-            return new ValidationResult(false, "Error updating recipe: " + e.getMessage());
         }
+        
+        return results;
     }
     
-    public ValidationResult deleteRecipe(int id) {
-        boolean deleted = model.deleteRecipe(id);
-        if (deleted) {
-            return new ValidationResult(true, "Recipe deleted successfully!");
-        } else {
-            return new ValidationResult(false, "Recipe not found!");
-        }
+    // ===== Statistics Logic =====
+    
+    /**
+     * Marks a recipe as cooked
+     */
+    public void markRecipeAsCooked() {
+        model.incrementCookedCount();
     }
     
-    // Request operations
-    public ValidationResult addRecipeRequest(String username, String title,
-                                            String vegNonVeg, String notes) {
-        ValidationResult validation = model.validateRequestFields(username, title);
-        
-        if (!validation.isValid()) {
-            return validation;
-        }
-        
-        try {
-            LocalDateTime now = LocalDateTime.now();
-            String date = now.toLocalDate().toString();
-            String time = now.toLocalTime().toString();
-            
-            RecipeRequest req = new RecipeRequest(
-                username.trim(),
-                title.trim(),
-                vegNonVeg != null ? vegNonVeg.trim() : "",
-                notes != null ? notes.trim() : "",
-                date,
-                time
-            );
-            
-            model.addRequest(req);
-            model.incrementRequestCount();
-            
-            return new ValidationResult(true, "Request submitted successfully!");
-            
-        } catch (Exception e) {
-            return new ValidationResult(false, "Error creating request: " + e.getMessage());
-        }
+    /**
+     * Gets count of cooked recipes
+     */
+    public int getCookedCount() {
+        return model.getCookedCount();
     }
     
-    // Login validation
-    public LoginResult validateLogin(String username, String password) {
-        if ((username == null || username.trim().isEmpty()) && 
-            (password == null || password.trim().isEmpty())) {
-            return new LoginResult(LoginResult.Status.ERROR, 
-                "Please enter username and password.");
-        }
-        if (username == null || username.trim().isEmpty()) {
-            return new LoginResult(LoginResult.Status.ERROR, 
-                "Please enter your username.");
-        }
-        if (password == null || password.trim().isEmpty()) {
-            return new LoginResult(LoginResult.Status.ERROR, 
-                "Please enter your password.");
-        }
-        
-        String cleanUsername = username.trim();
-        
-        if (cleanUsername.equals("admin") && password.equals("12345")) {
-            return new LoginResult(LoginResult.Status.ADMIN, "Login successful");
-        } else if (cleanUsername.equals("user") && password.equals("67890")) {
-            return new LoginResult(LoginResult.Status.USER, "Login successful");
-        } else {
-            return new LoginResult(LoginResult.Status.ERROR, "User not found!");
-        }
+    /**
+     * Gets count of recipes yet to cook
+     */
+    public int getYetToCookCount() {
+        return model.getYetToCookCount();
     }
     
-    // Inner class for login results
-    public static class LoginResult {
-        public enum Status { ADMIN, USER, ERROR }
-        
-        private final Status status;
-        private final String message;
-        
-        public LoginResult(Status status, String message) {
-            this.status = status;
-            this.message = message;
-        }
-        
-        public Status getStatus() { return status; }
-        public String getMessage() { return message; }
+    /**
+     * Gets total recipe count
+     */
+    public int getTotalRecipes() {
+        return model.getTotalRecipes();
     }
-
+    
+    /**
+     * Gets total request count
+     */
+    public int getRequestCount() {
+        return model.getRequestCount();
+    }
+}
