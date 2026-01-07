@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import model.RecipeData;      
 import model.RecipeRequest;
 import controller.AppController;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -52,6 +53,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         loadHomeCards();
         setupHistoryLayout();
         setupAdminComponents();
+        setupSearchFieldListeners(); 
         logoutButton.setFocusPainted(false);
         logoutButton.setContentAreaFilled(true);
         logoutButton.setBorderPainted(false);
@@ -776,7 +778,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton14.setBackground(new java.awt.Color(0, 0, 0));
         jButton14.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton14.setForeground(new java.awt.Color(255, 204, 0));
-        jButton14.setText("Name");
+        jButton14.setText("Name ↑");
         jButton14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -787,14 +789,24 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton15.setBackground(new java.awt.Color(0, 0, 0));
         jButton15.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton15.setForeground(new java.awt.Color(255, 204, 0));
-        jButton15.setText("Time");
+        jButton15.setText(" Time ↑");
         jButton15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
 
         jButton16.setBackground(new java.awt.Color(0, 0, 0));
         jButton16.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton16.setForeground(new java.awt.Color(255, 204, 0));
-        jButton16.setText("Rating");
+        jButton16.setText("Rating ↓");
         jButton16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
 
         jTextField3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jTextField3.setForeground(new java.awt.Color(102, 102, 102));
@@ -828,14 +840,14 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(39, 39, 39)
                                 .addComponent(jLabel13)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton14)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton15)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton16))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(24, 24, 24)
                         .addComponent(jLabel2)))
                 .addContainerGap())
         );
@@ -854,7 +866,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addContainerGap(266, Short.MAX_VALUE))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12)
                         .addGap(10, 10, 10)
                         .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -863,7 +875,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addComponent(jButton15)
                             .addComponent(jButton16)
                             .addComponent(jTextField3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39))))
         );
@@ -1301,7 +1313,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 204, 0));
-        jButton1.setText("Name");
+        jButton1.setText("Name ↑");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1312,7 +1324,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton3.setBackground(new java.awt.Color(0, 0, 0));
         jButton3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton3.setForeground(new java.awt.Color(255, 204, 0));
-        jButton3.setText("Time");
+        jButton3.setText("Time ↑");
         jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1428,7 +1440,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 204, 0));
-        jButton2.setText("Name");
+        jButton2.setText(" Name ↑");
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1439,7 +1451,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton4.setBackground(new java.awt.Color(0, 0, 0));
         jButton4.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 204, 0));
-        jButton4.setText("Time");
+        jButton4.setText("Time ↑");
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1652,7 +1664,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton11.setBackground(new java.awt.Color(0, 0, 0));
         jButton11.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 204, 0));
-        jButton11.setText("Name");
+        jButton11.setText("Name ↑");
         jButton11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1663,7 +1675,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton12.setBackground(new java.awt.Color(0, 0, 0));
         jButton12.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton12.setForeground(new java.awt.Color(255, 204, 0));
-        jButton12.setText("Time");
+        jButton12.setText("Time ↑");
         jButton12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1698,14 +1710,14 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addComponent(reqHistoryLabel)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
                         .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(requestRecipe))
                         .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipeRequestPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton11)
@@ -1731,7 +1743,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(33, 33, 33)
                 .addComponent(reqHistoryLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1814,6 +1826,12 @@ public class AppViewFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setupSearchFieldListeners() {
+        setupBrowseSearchField();
+        setupHistorySearchField();
+        setupAdminSearchField();
+    }
+    
     private javax.swing.JPanel createRecipeCard(RecipeData r) {
         if (r == null) {
             System.err.println("Error: RecipeData is null!");
@@ -2223,6 +2241,104 @@ public class AppViewFrame extends javax.swing.JFrame {
             });
         }
     }
+    
+    private void displayRecipesInBrowse(List<RecipeData> recipes) {
+        browseCardsPanel.removeAll();
+        for (RecipeData recipe : recipes) {
+            browseCardsPanel.add(createRecipeCard(recipe));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
+    }
+    
+        private void setupBrowseSearchField() {
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextField1.getText().equals("Search any recipe")) {
+                    jTextField1.setText("");
+                    jTextField1.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextField1.getText().trim().isEmpty()) {
+                    jTextField1.setText("Search any recipe");
+                    jTextField1.setForeground(new Color(102, 102, 102));
+                }
+            }
+        });
+    }
+        
+    private void setupHistorySearchField() {
+        jTextField2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextField2.getText().equals("Search recipe in your history")) {
+                    jTextField2.setText("");
+                    jTextField2.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextField2.getText().trim().isEmpty()) {
+                    jTextField2.setText("Search recipe in your history");
+                    jTextField2.setForeground(new Color(102, 102, 102));
+                }
+            }
+        });
+    }
+    
+    private void setupAdminSearchField() {
+        jTextField3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextField3.getText().equals("Search any recipe")) {
+                    jTextField3.setText("");
+                    jTextField3.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextField3.getText().trim().isEmpty()) {
+                    jTextField3.setText("Search any recipe");
+                    jTextField3.setForeground(new Color(102, 102, 102));
+                }
+            }
+        });
+    }
+    
+    // Helper method to sort request table
+    private void sortRequestTable(List<RecipeData> sortedRecipes) {
+        // Get all requests
+        Queue<RecipeRequest> allRequests = controller.getAllRequests();
+        List<RecipeRequest> requestList = new ArrayList<>(allRequests);
+
+        // Sort requests based on sorted recipes order
+        requestList.sort((r1, r2) -> {
+            int index1 = -1, index2 = -1;
+            for (int i = 0; i < sortedRecipes.size(); i++) {
+                if (sortedRecipes.get(i).getTitle().equalsIgnoreCase(r1.getTitle())) {
+                    index1 = i;
+                }
+                if (sortedRecipes.get(i).getTitle().equalsIgnoreCase(r2.getTitle())) {
+                    index2 = i;
+                }
+            }
+            return Integer.compare(index1, index2);
+        });
+
+        // Update table
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeRequest req : requestList) {
+            dtm.addRow(new Object[] {
+                req.getUsername(),
+                req.getTitle(),
+                req.getVegNonVeg(),
+                req.getNotes(),
+                req.getDate(),
+                req.getTime(),
+                req.getStatus()
+            });
+        }
+    }
        
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
@@ -2233,11 +2349,29 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByName();
+
+        // Update view
+        browseCardsPanel.removeAll();
+        for (RecipeData r : sorted) {
+            browseCardsPanel.add(createRecipeCard(r));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByTime();
+
+        // Update view
+        browseCardsPanel.removeAll();
+        for (RecipeData r : sorted) {
+            browseCardsPanel.add(createRecipeCard(r));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void loginButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginButtonMouseEntered
@@ -2296,19 +2430,85 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonMouseExited
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+        String query = jTextField1.getText().trim();
+    
+        if (query.equals("Search any recipe")) {
+            query = "";
+        }
 
+        // Call controller method
+        List<RecipeData> results = controller.searchRecipesByTitle(query);
+
+        // Update view
+        browseCardsPanel.removeAll();
+        for (RecipeData r : results) {
+            browseCardsPanel.add(createRecipeCard(r));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
+    }//GEN-LAST:event_jTextField1ActionPerformed
+    
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
+        String query = jTextField2.getText().trim();
+    
+        if (query.equals("Search recipe in your history")) {
+            query = "";
+        }
+
+        // Call controller method
+        List<RecipeData> results = controller.searchHistory(query);
+
+        // Update view
+        browseHistoryPanel.removeAll();
+        for (RecipeData r : results) {
+            browseHistoryPanel.add(createRecipeCard(r));
+        }
+        browseHistoryPanel.revalidate();
+        browseHistoryPanel.repaint();
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByName();
+
+        // Filter only history items
+        List<RecipeData> historyItems = controller.getHistory();
+        List<RecipeData> sortedHistory = new ArrayList<>();
+        for (RecipeData r : sorted) {
+            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
+                sortedHistory.add(r);
+            }
+        }
+
+        // Update view
+        browseHistoryPanel.removeAll();
+        for (RecipeData r : sortedHistory) {
+            browseHistoryPanel.add(createRecipeCard(r));
+        }
+        browseHistoryPanel.revalidate();
+        browseHistoryPanel.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByTime();
+
+        // Filter only history items
+        List<RecipeData> historyItems = controller.getHistory();
+        List<RecipeData> sortedHistory = new ArrayList<>();
+        for (RecipeData r : sorted) {
+            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
+                sortedHistory.add(r);
+            }
+        }
+
+        // Update view
+        browseHistoryPanel.removeAll();
+        for (RecipeData r : sortedHistory) {
+            browseHistoryPanel.add(createRecipeCard(r));
+        }
+        browseHistoryPanel.revalidate();
+        browseHistoryPanel.repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -2686,32 +2886,144 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByRating();
+
+        // Update view
+        browseCardsPanel.removeAll();
+        for (RecipeData r : sorted) {
+            browseCardsPanel.add(createRecipeCard(r));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByRating();
+
+        // Filter only history items
+        List<RecipeData> historyItems = controller.getHistory();
+        List<RecipeData> sortedHistory = new ArrayList<>();
+        for (RecipeData r : sorted) {
+            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
+                sortedHistory.add(r);
+            }
+        }
+
+        // Update view
+        browseHistoryPanel.removeAll();
+        for (RecipeData r : sortedHistory) {
+            browseHistoryPanel.add(createRecipeCard(r));
+        }
+        browseHistoryPanel.revalidate();
+        browseHistoryPanel.repaint();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        List<RecipeData> sorted = controller.sortRecipesByName();
+        sortRequestTable(sorted);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
+        List<RecipeData> sorted = controller.sortRecipesByTime();
+        sortRequestTable(sorted);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
+        List<RecipeData> sorted = controller.sortRecipesByRating();
+        sortRequestTable(sorted);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByName();
+
+        // Update view
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeData r : sorted) {
+            dtm.addRow(new Object[] {
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
+        String query = jTextField3.getText().trim();
+    
+        if (query.equals("Search any recipe")) {
+            query = "";
+        }
+
+        // Call controller method
+        List<RecipeData> results = controller.searchRecipesByTitle(query);
+
+        // Update view
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeData r : results) {
+            dtm.addRow(new Object[] {
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByTime();
+
+        // Update view
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeData r : sorted) {
+            dtm.addRow(new Object[] {
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // Call controller method
+        List<RecipeData> sorted = controller.sortRecipesByRating();
+
+        // Update view
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeData r : sorted) {
+            dtm.addRow(new Object[] {
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
+    }//GEN-LAST:event_jButton16ActionPerformed
 
     
     /**
