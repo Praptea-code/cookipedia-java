@@ -61,41 +61,93 @@ public class AppController {
     // ===== Recipe Management Logic =====
     
     /**
-     * Validates recipe form fields
-     * @return "valid" if all fields are valid, error message otherwise
-     */
-    public String validateRecipeFields(String title, String cuisine, String difficulty,
-                                      String prepTime, String rating) {
-        // Check for empty fields
-        if (title == null || title.trim().isEmpty() ||
-            cuisine == null || cuisine.trim().isEmpty() ||
-            difficulty == null || difficulty.trim().isEmpty() ||
-            prepTime == null || prepTime.trim().isEmpty() ||
-            rating == null || rating.trim().isEmpty()) {
-            return "Please fill all required fields!";
-        }
-        
-        // Validate numeric fields
-        try {
-            int time = Integer.parseInt(prepTime.trim());
-            if (time <= 0) {
-                return "Preparation time must be positive!";
-            }
-        } catch (NumberFormatException e) {
-            return "Please enter a valid number for preparation time!";
-        }
-        
-        try {
-            double rate = Double.parseDouble(rating.trim());
-            if (rate < 0 || rate > 5) {
-                return "Rating must be between 0 and 5!";
-            }
-        } catch (NumberFormatException e) {
-            return "Please enter a valid number for rating!";
-        }
-        
-        return "valid";
-    }
+    * Enhanced validation for recipe fields with specific error messages
+    */
+   public String validateRecipeFields(String title, String cuisine, String difficulty,
+                                     String prepTime, String rating) {
+       // Validate title
+       if (title == null || title.trim().isEmpty()) {
+           return "Recipe title cannot be empty!";
+       }
+
+       // Check for duplicate titles
+       for (RecipeData existingRecipe : model.getAllRecipes()) {
+           if (existingRecipe.getTitle().equalsIgnoreCase(title.trim())) {
+               return "A recipe with this title already exists!";
+           }
+       }
+
+       // Validate cuisine
+       if (cuisine == null || cuisine.trim().isEmpty()) {
+           return "Cuisine type cannot be empty!";
+       }
+
+       // Validate difficulty
+       if (difficulty == null || difficulty.trim().isEmpty()) {
+           return "Difficulty level cannot be empty!";
+       }
+
+       String difficultyLower = difficulty.trim().toLowerCase();
+       if (!difficultyLower.equals("easy") && 
+           !difficultyLower.equals("medium") && 
+           !difficultyLower.equals("hard")) {
+           return "Difficulty must be Easy, Medium, or Hard!";
+       }
+
+       // Validate preparation time
+       if (prepTime == null || prepTime.trim().isEmpty()) {
+           return "Preparation time cannot be empty!";
+       }
+
+       try {
+           int time = Integer.parseInt(prepTime.trim());
+           if (time <= 0) {
+               return "Preparation time must be a positive number!";
+           }
+           if (time > 1440) { // 24 hours in minutes
+               return "Preparation time seems unreasonably long (max 1440 minutes)!";
+           }
+       } catch (NumberFormatException e) {
+           return "Preparation time must be a valid number! Please enter only digits.";
+       }
+
+       // Validate rating
+       if (rating == null || rating.trim().isEmpty()) {
+           return "Rating cannot be empty!";
+       }
+
+       try {
+           double rate = Double.parseDouble(rating.trim());
+           if (rate < 0.0 || rate > 5.0) {
+               return "Rating must be between 0.0 and 5.0!";
+           }
+       } catch (NumberFormatException e) {
+           return "Rating must be a valid decimal number (e.g., 4.5)!";
+       }
+
+       return "valid";
+   }
+
+   /**
+    * Update recipe with duplicate check
+    */
+
+   public boolean updateRecipe(int id, String title, String cuisine, String difficulty,
+                              int prepTime, double rating, String imagePath,
+                              String ingredients, String process) {
+       // Check for duplicate title (excluding current recipe)
+       for (RecipeData existingRecipe : model.getAllRecipes()) {
+           if (existingRecipe.getId() != id && 
+               existingRecipe.getTitle().equalsIgnoreCase(title.trim())) {
+               throw new IllegalArgumentException("A recipe with this title already exists!");
+           }
+       }
+
+       RecipeData recipe = model.getRecipeById(id);
+
+       return model.updateRecipe(id, title, cuisine, difficulty, prepTime, 
+                                rating, imagePath, ingredients, process);
+   }
     
     /**
      * Adds a new recipe after validation
@@ -128,16 +180,6 @@ public class AppController {
         
         model.addRecipe(recipe);
         return "success";
-    }
-    
-    /**
-     * Updates an existing recipe
-     */
-    public boolean updateRecipe(int id, String title, String cuisine, String difficulty,
-                               int prepTime, double rating, String imagePath,
-                               String ingredients, String process) {
-        return model.updateRecipe(id, title, cuisine, difficulty, prepTime,
-                                 rating, imagePath, ingredients, process);
     }
     
     /**
