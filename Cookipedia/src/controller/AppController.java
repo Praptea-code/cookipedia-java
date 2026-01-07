@@ -8,8 +8,10 @@ import model.AppModel;
 import model.RecipeData;
 import model.RecipeRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+
 /**
  *
  * @author Acer
@@ -167,25 +169,134 @@ public class AppController {
     }
     
     /**
-     * Sorts recipes by name
-     */
+ * Sorts recipes by name using Merge Sort
+ */
     public List<RecipeData> sortRecipesByName() {
-        List<RecipeData> recipes = model.getAllRecipes();
-        recipes.sort((r1, r2) -> r1.getTitle().compareToIgnoreCase(r2.getTitle()));
+        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
+        mergeSortByName(recipes, 0, recipes.size() - 1);
         return recipes;
     }
-    
+
+    private void mergeSortByName(List<RecipeData> recipes, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+            mergeSortByName(recipes, left, mid);
+            mergeSortByName(recipes, mid + 1, right);
+            mergeByName(recipes, left, mid, right);
+        }
+    }
+
+    private void mergeByName(List<RecipeData> recipes, int left, int mid, int right) {
+        List<RecipeData> leftList = new ArrayList<>(recipes.subList(left, mid + 1));
+        List<RecipeData> rightList = new ArrayList<>(recipes.subList(mid + 1, right + 1));
+
+        int i = 0, j = 0, k = left;
+
+        while (i < leftList.size() && j < rightList.size()) {
+            if (leftList.get(i).getTitle().compareToIgnoreCase(rightList.get(j).getTitle()) <= 0) {
+                recipes.set(k++, leftList.get(i++));
+            } else {
+                recipes.set(k++, rightList.get(j++));
+            }
+        }
+
+        while (i < leftList.size()) {
+            recipes.set(k++, leftList.get(i++));
+        }
+
+        while (j < rightList.size()) {
+            recipes.set(k++, rightList.get(j++));
+        }
+    }
+
     /**
-     * Sorts recipes by difficulty
+     * Sorts recipes by difficulty using Insertion Sort
      */
     public List<RecipeData> sortRecipesByDifficulty() {
-        List<RecipeData> recipes = model.getAllRecipes();
-        recipes.sort((r1, r2) -> {
-            int order1 = getDifficultyOrder(r1.getDifficulty());
-            int order2 = getDifficultyOrder(r2.getDifficulty());
-            return Integer.compare(order1, order2);
-        });
+        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
+        insertionSortByDifficulty(recipes);
         return recipes;
+    }
+
+    private void insertionSortByDifficulty(List<RecipeData> recipes) {
+        for (int i = 1; i < recipes.size(); i++) {
+            RecipeData key = recipes.get(i);
+            int j = i - 1;
+
+            while (j >= 0 && getDifficultyOrder(recipes.get(j).getDifficulty()) > 
+                   getDifficultyOrder(key.getDifficulty())) {
+                recipes.set(j + 1, recipes.get(j));
+                j--;
+            }
+            recipes.set(j + 1, key);
+        }
+    }
+
+    /**
+     * Sorts recipes by preparation time using Selection Sort
+     */
+    public List<RecipeData> sortRecipesByTime() {
+        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
+        selectionSortByTime(recipes);
+        return recipes;
+    }
+
+    private void selectionSortByTime(List<RecipeData> recipes) {
+        for (int i = 0; i < recipes.size() - 1; i++) {
+            int minIdx = i;
+            for (int j = i + 1; j < recipes.size(); j++) {
+                if (recipes.get(j).getPrepTime() < recipes.get(minIdx).getPrepTime()) {
+                    minIdx = j;
+                }
+            }
+            if (minIdx != i) {
+                RecipeData temp = recipes.get(i);
+                recipes.set(i, recipes.get(minIdx));
+                recipes.set(minIdx, temp);
+            }
+        }
+    }
+
+    /**
+     * Sorts recipes by rating using Merge Sort (descending)
+     */
+    public List<RecipeData> sortRecipesByRating() {
+        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
+        mergeSortByRating(recipes, 0, recipes.size() - 1);
+        return recipes;
+    }
+
+    private void mergeSortByRating(List<RecipeData> recipes, int left, int right) {
+        if (left < right) {
+            int mid = (left + right) / 2;
+            mergeSortByRating(recipes, left, mid);
+            mergeSortByRating(recipes, mid + 1, right);
+            mergeByRating(recipes, left, mid, right);
+        }
+    }
+
+    private void mergeByRating(List<RecipeData> recipes, int left, int mid, int right) {
+        List<RecipeData> leftList = new ArrayList<>(recipes.subList(left, mid + 1));
+        List<RecipeData> rightList = new ArrayList<>(recipes.subList(mid + 1, right + 1));
+
+        int i = 0, j = 0, k = left;
+
+        while (i < leftList.size() && j < rightList.size()) {
+            // Descending order
+            if (leftList.get(i).getRating() >= rightList.get(j).getRating()) {
+                recipes.set(k++, leftList.get(i++));
+            } else {
+                recipes.set(k++, rightList.get(j++));
+            }
+        }
+
+        while (i < leftList.size()) {
+            recipes.set(k++, leftList.get(i++));
+        }
+
+        while (j < rightList.size()) {
+            recipes.set(k++, rightList.get(j++));
+        }
     }
     
     private int getDifficultyOrder(String difficulty) {
