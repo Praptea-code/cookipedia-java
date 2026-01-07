@@ -43,7 +43,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private final Color viewHoverFg  = Color.BLACK;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppController controller = new AppController();
-    private String lastVisitedPanel = "card4";
     private RecipeData currentViewingRecipe = null;
 
     
@@ -116,15 +115,15 @@ public class AppViewFrame extends javax.swing.JFrame {
             RecipeData recipe = controller.getRecipeById(recipeId);
 
             if (recipe != null) {
-                adminRecipeTable.putClientProperty("selectedRecipeId", recipe.id);
-                adminTitleField.setText(recipe.title != null ? recipe.title : "");
-                adminCuisineField.setText(recipe.cuisine != null ? recipe.cuisine : "");
-                adminDifficultyField.setText(recipe.difficulty != null ? recipe.difficulty : "");
-                adminPrepTimeField.setText(String.valueOf(recipe.prepTime));
-                adminRatingField.setText(String.valueOf(recipe.rating));
-                adminImagePathField.setText(recipe.imagePath != null ? recipe.imagePath : "");
-                adminIngredientsArea.setText(recipe.ingredients != null ? recipe.ingredients : "");
-                adminProcessArea.setText(recipe.process != null ? recipe.process : "");
+                adminRecipeTable.putClientProperty("selectedRecipeId", recipe.getId());
+                adminTitleField.setText(recipe.getTitle() != null ? recipe.getTitle() : "");
+                adminCuisineField.setText(recipe.getCuisine() != null ? recipe.getCuisine() : "");
+                adminDifficultyField.setText(recipe.getDifficulty() != null ? recipe.getDifficulty() : "");
+                adminPrepTimeField.setText(String.valueOf(recipe.getPrepTime()));
+                adminRatingField.setText(String.valueOf(recipe.getRating()));
+                adminImagePathField.setText(recipe.getImagePath() != null ? recipe.getImagePath() : "");
+                adminIngredientsArea.setText(recipe.getIngredients() != null ? recipe.getIngredients() : "");
+                adminProcessArea.setText(recipe.getProcess() != null ? recipe.getProcess() : "");
             } else {
                 System.err.println("Recipe not found for ID: " + recipeId);
             }
@@ -213,7 +212,6 @@ public class AppViewFrame extends javax.swing.JFrame {
             CardLayout baseCL = (CardLayout) basePanel.getLayout();
             baseCL.show(basePanel, "card6"); 
             
-            lastVisitedPanel = "card6";
             
             updateHomeStats(); 
             loadHomeCards();
@@ -364,9 +362,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         requestRecipe = new javax.swing.JLabel();
         reqHistoryLabel = new javax.swing.JLabel();
         viewPanel = new javax.swing.JPanel();
-        backButton = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         jPanel4 = new javax.swing.JPanel();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.CardLayout());
@@ -1598,17 +1596,6 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         viewPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        backButton.setBackground(new java.awt.Color(102, 0, 51));
-        backButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        backButton.setForeground(new java.awt.Color(255, 255, 255));
-        backButton.setText("Back");
-        backButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -1622,6 +1609,17 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         jScrollPane5.setViewportView(jPanel4);
 
+        backButton.setBackground(new java.awt.Color(102, 0, 51));
+        backButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        backButton.setForeground(new java.awt.Color(255, 255, 255));
+        backButton.setText("Back");
+        backButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout viewPanelLayout = new javax.swing.GroupLayout(viewPanel);
         viewPanel.setLayout(viewPanelLayout);
         viewPanelLayout.setHorizontalGroup(
@@ -1629,16 +1627,16 @@ public class AppViewFrame extends javax.swing.JFrame {
             .addGroup(viewPanelLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(backButton))
+                    .addComponent(backButton)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1134, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         viewPanelLayout.setVerticalGroup(
             viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(viewPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(25, 25, 25)
                 .addComponent(backButton)
-                .addGap(45, 45, 45)
+                .addGap(48, 48, 48)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1666,71 +1664,113 @@ public class AppViewFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private javax.swing.JPanel createRecipeCard(RecipeData r) {
-        javax.swing.JPanel card = new javax.swing.JPanel();
-        card.setLayout(new java.awt.BorderLayout());
-        card.setBackground(java.awt.Color.WHITE);
-        card.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 220, 220)));
-
-        // ===== Image =====
-        javax.swing.JLabel imageLabel = new javax.swing.JLabel();
-        imageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        String imgPath = r.getImagePath();
-        if (imgPath != null && !imgPath.trim().isEmpty()) {
-            java.net.URL imgUrl = getClass().getResource(imgPath.trim());
-            if (imgUrl != null) {
-                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgUrl);
-                java.awt.Image scaled = icon.getImage().getScaledInstance(180, 120, java.awt.Image.SCALE_SMOOTH);
-                imageLabel.setIcon(new javax.swing.ImageIcon(scaled));
-            } else {
-                imageLabel.setText("No image");
-            }
-        } else {
-            imageLabel.setText("No image");
+        if (r == null) {
+            System.err.println("Error: RecipeData is null!");
+            return new javax.swing.JPanel(); // Return empty panel
         }
 
-        // ===== Text area =====
-        javax.swing.JPanel infoPanel = new javax.swing.JPanel();
-        infoPanel.setLayout(new java.awt.GridLayout(3, 1));
-        infoPanel.setBackground(java.awt.Color.WHITE);
+        javax.swing.JPanel card = new javax.swing.JPanel();
+        card.setPreferredSize(new java.awt.Dimension(220, 260));
+        card.setBackground(java.awt.Color.WHITE);
+        card.setBorder(javax.swing.BorderFactory.createLineBorder(
+            new java.awt.Color(230, 230, 230), 1, true));
+        card.setLayout(new java.awt.BorderLayout(0, 0)); 
 
-        javax.swing.JLabel titleLabel = new javax.swing.JLabel(
-                r.getTitle() != null ? r.getTitle() : "Untitled");
-        titleLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+        javax.swing.JLabel imgLabel = new javax.swing.JLabel();
+        imgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        imgLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        imgLabel.setOpaque(true);
+        imgLabel.setBackground(new Color(245, 245, 245));
+
+        String imgPath = r.getImagePath();
+        if (imgPath != null) {
+            java.net.URL imgUrl = getClass().getResource(imgPath);
+            if (imgUrl != null) {
+                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgUrl);
+                java.awt.Image scaled = icon.getImage().getScaledInstance(
+                    218, 150, java.awt.Image.SCALE_SMOOTH);
+                imgLabel.setIcon(new javax.swing.ImageIcon(scaled));
+            } else {
+                imgLabel.setText("No image");
+            }
+        } else {
+            imgLabel.setText("No image");
+        }
+
+        javax.swing.JLabel lblTitle = new javax.swing.JLabel(
+            r.getTitle() != null ? r.getTitle() : "Untitled");
+        lblTitle.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15));
 
         String infoText = String.format(
-                "%s • %s • %d min",
-                r.getCuisine() != null ? r.getCuisine() : "Cuisine",
-                r.getDifficulty() != null ? r.getDifficulty() : "Difficulty",
-                r.getPrepTime()
+            "%s • %s • %d min • %.1f ★",
+            r.getCuisine() != null ? r.getCuisine() : "Cuisine",
+            r.getDifficulty() != null ? r.getDifficulty() : "Difficulty",
+            r.getPrepTime(),
+            r.getRating()
         );
-        javax.swing.JLabel infoLabel = new javax.swing.JLabel(infoText);
+        javax.swing.JLabel lblInfo = new javax.swing.JLabel(infoText);
+        lblInfo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12)); 
+        lblInfo.setForeground(new java.awt.Color(120, 120, 120));
 
-        String ratingText = String.format("Rating: %.1f ★", r.getRating());
-        javax.swing.JLabel ratingLabel = new javax.swing.JLabel(ratingText);
+        javax.swing.JPanel center = new javax.swing.JPanel();
+        center.setBackground(java.awt.Color.WHITE);
+        center.setLayout(new javax.swing.BoxLayout(center, javax.swing.BoxLayout.Y_AXIS));
+        center.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 5, 10)); 
+        center.add(lblTitle);
+        center.add(javax.swing.Box.createVerticalStrut(3));
+        center.add(lblInfo);
 
-        infoPanel.add(titleLabel);
-        infoPanel.add(infoLabel);
-        infoPanel.add(ratingLabel);
+        javax.swing.JButton btnView = new javax.swing.JButton("View");
+        btnView.setBackground(viewNormalBg);
+        btnView.setForeground(viewNormalFg);
+        btnView.setFocusPainted(false);
+        btnView.setBorderPainted(false);
+        btnView.setContentAreaFilled(true);
+        btnView.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
+        btnView.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnView.setPreferredSize(new java.awt.Dimension(80, 30));
 
-        // ===== View button =====
-        javax.swing.JButton viewBtn = new javax.swing.JButton("View");
-        viewBtn.setBackground(viewNormalBg);
-        viewBtn.setForeground(viewNormalFg);
-        viewBtn.setFocusPainted(false);
-        viewBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnView.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnView.setBackground(viewHoverBg);
+                btnView.setForeground(viewHoverFg);
+            }
 
-        viewBtn.addActionListener(e -> {
-            currentViewingRecipe = r;
-            populateViewPanel(r);
-            CardLayout cl = (CardLayout) basePanel.getLayout();
-            cl.show(basePanel, "card5");  // your viewPanel card name
-            lastVisitedPanel = "card5";
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnView.setBackground(viewNormalBg);
+                btnView.setForeground(viewNormalFg);
+            }
         });
 
-        card.add(imageLabel, java.awt.BorderLayout.NORTH);
-        card.add(infoPanel, java.awt.BorderLayout.CENTER);
-        card.add(viewBtn, java.awt.BorderLayout.SOUTH);
+        javax.swing.JPanel bottom = new javax.swing.JPanel(
+            new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));
+        bottom.setBackground(java.awt.Color.WHITE);
+        bottom.add(btnView);
+
+        card.add(imgLabel, java.awt.BorderLayout.NORTH);
+        card.add(center, java.awt.BorderLayout.CENTER);
+        card.add(bottom, java.awt.BorderLayout.SOUTH);
+
+        btnView.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    System.out.println("View button clicked for recipe: " + r.getTitle());
+                    controller.addToHistory(r);  // use controller, not direct method
+                    openRecipeView(r);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    javax.swing.JOptionPane.showMessageDialog(
+                        AppViewFrame.this,
+                        "Error opening recipe: " + ex.getMessage(),
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
 
         return card;
     }
@@ -1745,16 +1785,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         try {
             currentViewingRecipe = recipe;
             addToHistory(recipe);   
-
-            // SAVE WHICH PANEL USER WAS ON
-            for (java.awt.Component comp : basePanel.getComponents()) {
-                if (comp.isVisible()) {
-                    if      (comp == homePanelUser)        lastVisitedPanel = "card6";
-                    else if (comp == browseRecipesPanel)   lastVisitedPanel = "card4";
-                    else if (comp == myHistoryPanel)       lastVisitedPanel = "card3";
-                    else if (comp == recipeRequestPanel)   lastVisitedPanel = "card2";  
-                }
-            }
 
             CardLayout baseCL = (CardLayout) basePanel.getLayout();
             baseCL.show(basePanel, "card5");           
@@ -1780,113 +1810,161 @@ public class AppViewFrame extends javax.swing.JFrame {
     
     private void populateViewPanel(RecipeData recipe) {
         if (recipe == null) {
+            System.err.println("Recipe is null");
             return;
         }
 
+        jScrollPane5.setBorder(null);
+        jScrollPane5.setBackground(viewPanel.getBackground());
+        jScrollPane5.getViewport().setBackground(viewPanel.getBackground());
+        viewPanel.setBorder(null);
+
         jPanel4.removeAll();
-        jPanel4.setLayout(new java.awt.BorderLayout());
-        jPanel4.setBackground(java.awt.Color.WHITE);
+        jPanel4.setLayout(new java.awt.GridBagLayout());
+        jPanel4.setBackground(viewPanel.getBackground());
 
-        // ===== Title =====
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.insets = new java.awt.Insets(12, 24, 20, 24);
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = java.awt.GridBagConstraints.NORTHWEST;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+
         javax.swing.JLabel titleLabel = new javax.swing.JLabel(
-                recipe.getTitle() != null ? recipe.getTitle().trim() : "Recipe");
-        titleLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 22));
+            recipe.getTitle() != null ? recipe.getTitle().trim() : "Recipe");
+        titleLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 30));
+        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel4.add(titleLabel, gbc);
+        
+        gbc.gridy = 2;
+        gbc.gridx = 1; // under right column
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        gbc.fill = java.awt.GridBagConstraints.NONE; 
 
-        // ===== Top info =====
-        String infoText = String.format(
-                "%s • %s • %d min • %.1f ★",
-                recipe.getCuisine() != null ? recipe.getCuisine() : "Cuisine",
-                recipe.getDifficulty() != null ? recipe.getDifficulty() : "Difficulty",
-                recipe.getPrepTime(),
-                recipe.getRating()
-        );
-        javax.swing.JLabel infoLabel = new javax.swing.JLabel(infoText);
-
-        javax.swing.JPanel headerPanel = new javax.swing.JPanel();
-        headerPanel.setLayout(new java.awt.BorderLayout());
-        headerPanel.setBackground(java.awt.Color.WHITE);
-        headerPanel.add(titleLabel, java.awt.BorderLayout.NORTH);
-        headerPanel.add(infoLabel, java.awt.BorderLayout.SOUTH);
-
-        // ===== Image =====
-        javax.swing.JLabel imageLabel = new javax.swing.JLabel();
-        imageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        String imgPath = recipe.getImagePath();
-        if (imgPath != null && !imgPath.trim().isEmpty()) {
-            java.net.URL imgUrl = getClass().getResource(imgPath.trim());
-            if (imgUrl != null) {
-                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgUrl);
-                java.awt.Image scaled = icon.getImage().getScaledInstance(260, 180, java.awt.Image.SCALE_SMOOTH);
-                imageLabel.setIcon(new javax.swing.ImageIcon(scaled));
-            } else {
-                imageLabel.setText("No image");
-            }
-        } else {
-            imageLabel.setText("No image");
-        }
-
-        // ===== Ingredients & Process =====
-        javax.swing.JTextArea ingArea = new javax.swing.JTextArea();
-        ingArea.setEditable(false);
-        ingArea.setLineWrap(true);
-        ingArea.setWrapStyleWord(true);
-        ingArea.setText(recipe.getIngredients() != null ? recipe.getIngredients() : "");
-
-        javax.swing.JTextArea procArea = new javax.swing.JTextArea();
-        procArea.setEditable(false);
-        procArea.setLineWrap(true);
-        procArea.setWrapStyleWord(true);
-        procArea.setText(recipe.getProcess() != null ? recipe.getProcess() : "");
-
-        javax.swing.JScrollPane ingScroll = new javax.swing.JScrollPane(ingArea);
-        javax.swing.JScrollPane procScroll = new javax.swing.JScrollPane(procArea);
-
-        javax.swing.JPanel centerPanel = new javax.swing.JPanel();
-        centerPanel.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
-        centerPanel.setBackground(java.awt.Color.WHITE);
-        centerPanel.add(ingScroll);
-        centerPanel.add(procScroll);
-
-        // ===== Mark cooked button =====
-        javax.swing.JButton markCookedBtn = new javax.swing.JButton("Mark as Cooked");
-        markCookedBtn.setBackground(viewNormalBg);
-        markCookedBtn.setForeground(viewNormalFg);
-        markCookedBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        javax.swing.JButton markCookedBtn = new javax.swing.JButton("Mark Cooked");
+        markCookedBtn.setBackground(new java.awt.Color(0, 0, 0));
+        markCookedBtn.setForeground(new java.awt.Color(255, 204, 0));
+        markCookedBtn.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
         markCookedBtn.setFocusPainted(false);
+        markCookedBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        markCookedBtn.setPreferredSize(new java.awt.Dimension(130, 36));
 
         markCookedBtn.addActionListener(e -> {
-            controller.markRecipeAsCooked();
-            controller.addToHistory(recipe);
-            updateHomeStats();
-            loadHistoryCards();
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Recipe marked as cooked!",
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+           controller.markRecipeAsCooked();
+           updateHomeStats();  
+           javax.swing.JOptionPane.showMessageDialog(
+            this,
+            "Recipe marked as cooked successfully!",
+            "Success",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
         });
 
-        javax.swing.JPanel bottomPanel = new javax.swing.JPanel();
-        bottomPanel.setBackground(java.awt.Color.WHITE);
-        bottomPanel.add(markCookedBtn);
 
-        // ===== Assemble =====
-        javax.swing.JPanel contentPanel = new javax.swing.JPanel();
-        contentPanel.setLayout(new java.awt.BorderLayout(0, 20));
-        contentPanel.setBackground(java.awt.Color.WHITE);
-        contentPanel.add(headerPanel, java.awt.BorderLayout.NORTH);
-        contentPanel.add(imageLabel, java.awt.BorderLayout.CENTER);
-        contentPanel.add(centerPanel, java.awt.BorderLayout.SOUTH);
+        jPanel4.add(markCookedBtn, gbc);
 
-        jPanel4.add(contentPanel, java.awt.BorderLayout.CENTER);
-        jPanel4.add(bottomPanel, java.awt.BorderLayout.SOUTH);
+        // ========== vertical glue ==========
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.weighty = 1.0;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanel4.add(new javax.swing.JLabel(), gbc);
+
+        // Reset for columns
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.anchor = java.awt.GridBagConstraints.NORTHWEST;
+
+        // ───────────────────────────────
+        // LEFT COLUMN (Image + Info)
+        // ───────────────────────────────
+        gbc.gridx = 0;
+        gbc.weightx = 0.55;           // left side gets more space
+        gbc.fill = java.awt.GridBagConstraints.BOTH;
+
+        javax.swing.JPanel leftPanel = new javax.swing.JPanel();
+        leftPanel.setLayout(new javax.swing.BoxLayout(leftPanel, javax.swing.BoxLayout.Y_AXIS));
+        leftPanel.setBackground(jPanel4.getBackground());
+        leftPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 10, 20));
+
+            // Image
+            javax.swing.JLabel imgLabel = new javax.swing.JLabel();
+            imgLabel.setAlignmentX(0.0f);
+            imgLabel.setPreferredSize(new java.awt.Dimension(520, 380));
+            imgLabel.setMaximumSize(new java.awt.Dimension(520, 380));
+            imgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            imgLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220,220,220), 1));
+
+            // ← put your image loading code here (same as before)
+            if (recipe.getImagePath() != null && !recipe.getImagePath().isBlank()) {
+                try {
+                    java.net.URL url = getClass().getResource(recipe.getImagePath());
+                    if (url != null) {
+                        javax.swing.ImageIcon icon = new javax.swing.ImageIcon(url);
+                        java.awt.Image scaled = icon.getImage().getScaledInstance(520, 380, java.awt.Image.SCALE_SMOOTH);
+                        imgLabel.setIcon(new javax.swing.ImageIcon(scaled));
+                    } else {
+                        imgLabel.setText("Image not found");
+                    }
+                } catch (Exception e) {
+                    imgLabel.setText("Image error");
+                }
+            } else {
+                imgLabel.setText("No image");
+            }
+            leftPanel.add(imgLabel);
+            leftPanel.add(javax.swing.Box.createVerticalStrut(18));
+
+            // Info line
+            String info = String.format("%s  •  %s  •  %d min  •  %.1f ★",
+                recipe.getCuisine() != null ? recipe.getCuisine() : "—",
+                recipe.getDifficulty() != null ? recipe.getDifficulty() : "—",
+                recipe.getPrepTime(),
+                recipe.getRating());
+            javax.swing.JLabel infoLabel = new javax.swing.JLabel(info);
+            infoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 19));
+            infoLabel.setForeground(new java.awt.Color(100, 100, 100));
+            infoLabel.setAlignmentX(0.0f);
+            leftPanel.add(infoLabel);
+
+        jPanel4.add(leftPanel, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.45;
+        gbc.fill = java.awt.GridBagConstraints.BOTH;
+        gbc.anchor = java.awt.GridBagConstraints.NORTH;
+
+        javax.swing.JPanel rightPanel = new javax.swing.JPanel();
+        rightPanel.setLayout(new javax.swing.BoxLayout(rightPanel, javax.swing.BoxLayout.Y_AXIS));
+        rightPanel.setBackground(jPanel4.getBackground());
+        rightPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 10, 0));
+
+            // Ingredients
+            rightPanel.add(createSectionLabel("Ingredients"));
+            rightPanel.add(createContentTextArea(recipe.getIngredients() != null ? recipe.getIngredients() : "No ingredients listed."));
+
+            rightPanel.add(javax.swing.Box.createVerticalStrut(40));
+
+            // Process
+            rightPanel.add(createSectionLabel("Process"));
+            rightPanel.add(createContentTextArea(recipe.getProcess() != null ? recipe.getProcess() : "No instructions available."));
+
+        jPanel4.add(rightPanel, gbc);
 
         jPanel4.revalidate();
         jPanel4.repaint();
+        jScrollPane5.revalidate();
+        jScrollPane5.repaint();
     }
-
 
     // Helpers
     
@@ -2032,20 +2110,20 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void myHistoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myHistoryButtonActionPerformed
-        lastVisitedPanel = "card3"; 
+
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card3");
     }//GEN-LAST:event_myHistoryButtonActionPerformed
 
     private void browseRecipeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseRecipeButtonActionPerformed
-        lastVisitedPanel = "card4";
+  
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card4");   
         loadHomeCards();
     }//GEN-LAST:event_browseRecipeButtonActionPerformed
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
-        lastVisitedPanel = "card6";
+     
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card6");   
         loadHomeCards();
@@ -2132,7 +2210,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_requestBtnActionPerformed
 
     private void myRecipeRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myRecipeRequestButtonActionPerformed
-        lastVisitedPanel = "card2";
+     
         CardLayout cl = (CardLayout) basePanel.getLayout();
         cl.show(basePanel, "card2");  
 
@@ -2451,10 +2529,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteRequestBtnActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        CardLayout cl = (CardLayout) basePanel.getLayout();
-        cl.show(basePanel, "card4"); // Always go to Recipes panel
-        basePanel.revalidate();
-        basePanel.repaint();
+        CardLayout baseCL = (CardLayout) basePanel.getLayout();
+        baseCL.show(basePanel, "card4");
+        loadHomeCards();
     }//GEN-LAST:event_backButtonActionPerformed
 
     
