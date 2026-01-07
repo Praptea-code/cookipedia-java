@@ -309,24 +309,123 @@ public class AppController {
     }
     
     /**
-     * Searches recipes by title
-     */
-    public List<RecipeData> searchRecipes(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            return model.getAllRecipes();
-        }
-        
-        String lowerQuery = query.trim().toLowerCase();
-        List<RecipeData> results = new java.util.ArrayList<>();
-        
-        for (RecipeData recipe : model.getAllRecipes()) {
-            if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
-                results.add(recipe);
-            }
-        }
-        
-        return results;
-    }
+    * Linear Search for partial title matches
+    */
+   public List<RecipeData> searchRecipesByTitle(String query) {
+       if (query == null || query.trim().isEmpty()) {
+           return model.getAllRecipes();
+       }
+
+       String lowerQuery = query.trim().toLowerCase();
+       List<RecipeData> results = new ArrayList<>();
+
+       // Linear search for partial matches
+       for (RecipeData recipe : model.getAllRecipes()) {
+           if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
+               results.add(recipe);
+           }
+       }
+
+       return results;
+   }
+
+   /**
+    * Binary Search for exact cuisine match (requires sorted list)
+    */
+   public List<RecipeData> searchRecipesByCuisine(String cuisine) {
+       if (cuisine == null || cuisine.trim().isEmpty()) {
+           return model.getAllRecipes();
+       }
+
+       List<RecipeData> allRecipes = sortRecipesByCuisine(); // Sort first
+       List<RecipeData> results = new ArrayList<>();
+
+       String lowerCuisine = cuisine.trim().toLowerCase();
+
+       // Binary search for first occurrence
+       int index = binarySearchCuisine(allRecipes, lowerCuisine);
+
+       if (index != -1) {
+           // Add all recipes with matching cuisine
+           int i = index;
+           while (i >= 0 && allRecipes.get(i).getCuisine().toLowerCase().equals(lowerCuisine)) {
+               results.add(0, allRecipes.get(i));
+               i--;
+           }
+
+           i = index + 1;
+           while (i < allRecipes.size() && 
+                  allRecipes.get(i).getCuisine().toLowerCase().equals(lowerCuisine)) {
+               results.add(allRecipes.get(i));
+               i++;
+           }
+       }
+
+       return results;
+   }
+
+   private List<RecipeData> sortRecipesByCuisine() {
+       List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
+       recipes.sort((r1, r2) -> r1.getCuisine().compareToIgnoreCase(r2.getCuisine()));
+       return recipes;
+   }
+
+   private int binarySearchCuisine(List<RecipeData> recipes, String cuisine) {
+       int left = 0;
+       int right = recipes.size() - 1;
+
+       while (left <= right) {
+           int mid = left + (right - left) / 2;
+           int comparison = recipes.get(mid).getCuisine().toLowerCase().compareTo(cuisine);
+
+           if (comparison == 0) {
+               return mid;
+           } else if (comparison < 0) {
+               left = mid + 1;
+           } else {
+               right = mid - 1;
+           }
+       }
+
+       return -1;
+   }
+
+   /**
+    * Multi-criteria search using Linear Search
+    */
+   public List<RecipeData> searchRecipes(String title, String cuisine, String difficulty) {
+       List<RecipeData> results = new ArrayList<>();
+
+       boolean searchTitle = title != null && !title.trim().isEmpty();
+       boolean searchCuisine = cuisine != null && !cuisine.trim().isEmpty();
+       boolean searchDifficulty = difficulty != null && !difficulty.trim().isEmpty();
+
+       String lowerTitle = searchTitle ? title.trim().toLowerCase() : "";
+       String lowerCuisine = searchCuisine ? cuisine.trim().toLowerCase() : "";
+       String lowerDifficulty = searchDifficulty ? difficulty.trim().toLowerCase() : "";
+
+       for (RecipeData recipe : model.getAllRecipes()) {
+           boolean matches = true;
+
+           if (searchTitle) {
+               matches = matches && recipe.getTitle().toLowerCase().contains(lowerTitle);
+           }
+
+           if (searchCuisine) {
+               matches = matches && recipe.getCuisine().toLowerCase().contains(lowerCuisine);
+           }
+
+           if (searchDifficulty) {
+               matches = matches && recipe.getDifficulty().toLowerCase().equals(lowerDifficulty);
+           }
+
+           if (matches) {
+               results.add(recipe);
+           }
+       }
+
+       return results;
+   }
     
     // ===== Recipe Request Logic =====
     
