@@ -21,7 +21,7 @@ public class AppController {
         this.model = new AppModel();
     }
     
-    // ===== Authentication Logic =====
+    // = Authentication Logic =
     
     /**
      * Validates user login credentials
