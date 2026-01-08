@@ -266,29 +266,6 @@ public class AppController {
     }
 
     /**
-     * Sorts recipes by difficulty using Insertion Sort
-     */
-    public List<RecipeData> sortRecipesByDifficulty() {
-        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
-        insertionSortByDifficulty(recipes);
-        return recipes;
-    }
-
-    private void insertionSortByDifficulty(List<RecipeData> recipes) {
-        for (int i = 1; i < recipes.size(); i++) {
-            RecipeData key = recipes.get(i);
-            int j = i - 1;
-
-            while (j >= 0 && getDifficultyOrder(recipes.get(j).getDifficulty()) > 
-                   getDifficultyOrder(key.getDifficulty())) {
-                recipes.set(j + 1, recipes.get(j));
-                j--;
-            }
-            recipes.set(j + 1, key);
-        }
-    }
-
-    /**
      * Sorts recipes by preparation time using Selection Sort
      */
     public List<RecipeData> sortRecipesByTime() {
@@ -355,13 +332,44 @@ public class AppController {
         }
     }
     
-    private int getDifficultyOrder(String difficulty) {
-        switch (difficulty.toLowerCase()) {
-            case "easy": return 1;
-            case "medium": return 2;
-            case "hard": return 3;
-            default: return 4;
+    // Z-A sorting using INSERTION SORT - NO LAMBDAS
+    public List<RecipeRequest> sortRequestsByNameDesc() {
+        List<RecipeRequest> list = new ArrayList<>(getAllRequests());
+
+        // Insertion Sort for descending order (Z-A)
+        for (int i = 1; i < list.size(); i++) {
+            RecipeRequest key = list.get(i);
+            int j = i - 1;
+
+            // Move elements that are smaller than key to one position ahead
+            while (j >= 0 && list.get(j).getTitle().compareToIgnoreCase(key.getTitle()) < 0) {
+                list.set(j + 1, list.get(j));
+                j = j - 1;
+            }
+            list.set(j + 1, key);
         }
+
+        return list;
+    }
+
+    // A-Z sorting using INSERTION SORT - NO LAMBDAS
+    public List<RecipeRequest> sortRequestsByNameAsc() {
+        List<RecipeRequest> list = new ArrayList<>(getAllRequests());
+
+        // Insertion Sort for ascending order (A-Z)
+        for (int i = 1; i < list.size(); i++) {
+            RecipeRequest key = list.get(i);
+            int j = i - 1;
+
+            // Move elements that are greater than key to one position ahead
+            while (j >= 0 && list.get(j).getTitle().compareToIgnoreCase(key.getTitle()) > 0) {
+                list.set(j + 1, list.get(j));
+                j = j - 1;
+            }
+            list.set(j + 1, key);
+        }
+
+        return list;
     }
     
     /**

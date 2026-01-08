@@ -81,7 +81,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminRecipeTable.setDefaultEditor(Object.class, null);
         
         adminReqTable = reqTableAdmin;
-        
+        reqHistoryTable.setDefaultEditor(Object.class, null);
+
         adminRecipeTable.setDefaultEditor(Object.class, null);
         
         adminReqTable.setDefaultEditor(Object.class, null);
@@ -2383,32 +2384,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }
     
-    private void sortRequestHistoryByNameDesc() {
-        java.util.List<RecipeRequest> list =
-                new java.util.ArrayList<>(controller.getAllRequests());
-
-        list.sort((a, b) -> a.getTitle().compareToIgnoreCase(b.getTitle())); // A-Z
-
-        // Manual reverse
-        java.util.List<RecipeRequest> reversed = new java.util.ArrayList<>();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            reversed.add(list.get(i));
-        }
-
-        DefaultTableModel dtm = (DefaultTableModel) reqHistoryTable.getModel();
-        dtm.setRowCount(0);
-        for (RecipeRequest req : reversed) {
-            dtm.addRow(new Object[]{
-                req.getUsername(),
-                req.getTitle(),
-                req.getVegNonVeg(),
-                req.getNotes(),
-                req.getDate(),
-                req.getTime(),
-                req.getStatus()
-            });
-        }
-    }
        
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
@@ -3003,8 +2978,21 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void nameAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameAscActionPerformed
-        List<RecipeData> sorted = controller.sortRecipesByName();
-        sortRequestTable(sorted);
+        List<RecipeRequest> sorted = controller.sortRequestsByNameAsc();
+    
+        DefaultTableModel dtm = (DefaultTableModel) reqHistoryTable.getModel();
+        dtm.setRowCount(0);
+        for (RecipeRequest req : sorted) {
+            dtm.addRow(new Object[]{
+                req.getUsername(),
+                req.getTitle(),
+                req.getVegNonVeg(),
+                req.getNotes(),
+                req.getDate(),
+                req.getTime(),
+                req.getStatus()
+            });
+        }
     }//GEN-LAST:event_nameAscActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -3098,17 +3086,20 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
-        DefaultTableModel dtm = (DefaultTableModel) adminRecipeTable.getModel();
+         List<RecipeRequest> sorted = controller.sortRequestsByNameDesc();
+    
+        // View ONLY updates display
+        DefaultTableModel dtm = (DefaultTableModel) reqHistoryTable.getModel();
         dtm.setRowCount(0);
-        for (RecipeData r : sorted) {
+        for (RecipeRequest req : sorted) {
             dtm.addRow(new Object[]{
-                r.getId(),
-                r.getTitle(),
-                r.getCuisine(),
-                r.getDifficulty(),
-                r.getPrepTime(),
-                r.getRating()
+                req.getUsername(),
+                req.getTitle(),
+                req.getVegNonVeg(),
+                req.getNotes(),
+                req.getDate(),
+                req.getTime(),
+                req.getStatus()
             });
         }
     }//GEN-LAST:event_jButton13ActionPerformed
