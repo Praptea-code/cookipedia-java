@@ -371,8 +371,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         requestRecipe = new javax.swing.JLabel();
         reqHistoryLabel = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        nameAsc = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         viewPanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -1335,7 +1334,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton9.setBackground(new java.awt.Color(0, 0, 0));
         jButton9.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton9.setForeground(new java.awt.Color(255, 204, 0));
-        jButton9.setText("Rating");
+        jButton9.setText("Rating ↓");
         jButton9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1473,7 +1472,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton10.setBackground(new java.awt.Color(0, 0, 0));
         jButton10.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton10.setForeground(new java.awt.Color(255, 204, 0));
-        jButton10.setText("Rating");
+        jButton10.setText("Rating ↓");
         jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1661,38 +1660,22 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel10.setText("Sort By:");
 
-        jButton11.setBackground(new java.awt.Color(0, 0, 0));
-        jButton11.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton11.setForeground(new java.awt.Color(255, 204, 0));
-        jButton11.setText("Name ↑");
-        jButton11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        nameAsc.setBackground(new java.awt.Color(0, 0, 0));
+        nameAsc.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        nameAsc.setForeground(new java.awt.Color(255, 204, 0));
+        nameAsc.setText("Name (A-Z)");
+        nameAsc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        nameAsc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
-        jButton12.setBackground(new java.awt.Color(0, 0, 0));
-        jButton12.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton12.setForeground(new java.awt.Color(255, 204, 0));
-        jButton12.setText("Time ↑");
-        jButton12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                nameAscActionPerformed(evt);
             }
         });
 
         jButton13.setBackground(new java.awt.Color(0, 0, 0));
         jButton13.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton13.setForeground(new java.awt.Color(255, 204, 0));
-        jButton13.setText("Rating");
+        jButton13.setText("Name (Z-A)");
         jButton13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout recipeRequestPanelLayout = new javax.swing.GroupLayout(recipeRequestPanel);
         recipeRequestPanel.setLayout(recipeRequestPanelLayout);
@@ -1709,23 +1692,19 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addComponent(banner)
                         .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
-                        .addComponent(reqHistoryLabel)
-                        .addContainerGap())
-                    .addGroup(recipeRequestPanelLayout.createSequentialGroup()
-                        .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(requestRecipe))
+                        .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1099, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(requestRecipe))
+                            .addGroup(recipeRequestPanelLayout.createSequentialGroup()
+                                .addComponent(reqHistoryLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nameAsc)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton13)))
                         .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipeRequestPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton13)
-                .addGap(83, 83, 83))
         );
         recipeRequestPanelLayout.setVerticalGroup(
             recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1744,12 +1723,10 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(33, 33, 33)
                 .addComponent(reqHistoryLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton11)
-                        .addComponent(jButton12)
-                        .addComponent(jButton13)))
+                .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameAsc)
+                    .addComponent(jButton13)
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33))
@@ -2920,20 +2897,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseHistoryPanel.repaint();
     }//GEN-LAST:event_jButton10ActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void nameAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameAscActionPerformed
         List<RecipeData> sorted = controller.sortRecipesByName();
         sortRequestTable(sorted);
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        List<RecipeData> sorted = controller.sortRecipesByTime();
-        sortRequestTable(sorted);
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        List<RecipeData> sorted = controller.sortRecipesByRating();
-        sortRequestTable(sorted);
-    }//GEN-LAST:event_jButton13ActionPerformed
+    }//GEN-LAST:event_nameAscActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // Call controller method
@@ -3081,8 +3048,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel ingredientsLabelAmin;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
@@ -3145,6 +3110,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JButton myRecipeRequestButton;
     private javax.swing.JLabel myStatsLabel;
     private javax.swing.JLabel myStatsLabel1;
+    private javax.swing.JButton nameAsc;
     private javax.swing.JPanel navMainPanel;
     private javax.swing.JPanel navMainPanelAdmin;
     private javax.swing.JPanel navigationPanel;
