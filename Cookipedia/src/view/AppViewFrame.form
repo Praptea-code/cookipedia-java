@@ -491,20 +491,23 @@
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Component id="difficultyLabelAdmin" alignment="0" min="-2" max="-2" attributes="0"/>
                                                   <Component id="timeLabelAdmin" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="jButton6" alignment="0" min="-2" max="-2" attributes="0"/>
                                                   <Component id="ratingLabelAdmin" alignment="0" min="-2" pref="54" max="-2" attributes="0"/>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="jButton6" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="109" max="-2" attributes="0"/>
+                                                      <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
                                               </Group>
                                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <Group type="103" groupAlignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="jScrollPane3" min="-2" pref="256" max="-2" attributes="0"/>
                                           <Group type="102" attributes="0">
-                                              <EmptySpace min="-2" pref="274" max="-2" attributes="0"/>
-                                              <Component id="jButton8" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" attributes="0">
-                                              <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
-                                              <Component id="jScrollPane3" min="-2" pref="256" max="-2" attributes="0"/>
+                                              <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="32767" attributes="0"/>
+                                              <Component id="jButton11" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -514,6 +517,7 @@
                                               <Component id="titleLabelAdmin" min="-2" pref="40" max="-2" attributes="0"/>
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Component id="titleAdmin" min="-2" pref="205" max="-2" attributes="0"/>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="1" attributes="0">
                                               <Component id="cuisineLabelAdmin" min="-2" max="-2" attributes="0"/>
@@ -536,10 +540,7 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="jButton7" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="processLabelAdmin" min="-2" pref="62" max="-2" attributes="0"/>
-                                              </Group>
+                                              <Component id="processLabelAdmin" min="-2" pref="62" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -598,6 +599,7 @@
                                   <Component id="jButton6" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton11" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace pref="31" max="32767" attributes="0"/>
                           </Group>
@@ -770,6 +772,23 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JButton" name="jButton11">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="0" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="SansSerif" size="14" style="1"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Clear"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
+                      </Events>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -2530,6 +2549,9 @@
                       <Color id="Hand Cursor"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton13ActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

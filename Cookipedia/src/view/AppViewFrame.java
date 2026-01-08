@@ -15,6 +15,7 @@ import model.RecipeRequest;
 import controller.AppController;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -279,6 +280,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         difficultyLabelAdmin = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         ingredientsAdmin = new javax.swing.JTextArea();
+        jButton11 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         recipesTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
@@ -655,6 +657,16 @@ public class AppViewFrame extends javax.swing.JFrame {
         jScrollPane2.setHorizontalScrollBarPolicy(
             javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+        jButton11.setBackground(new java.awt.Color(0, 0, 0));
+        jButton11.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton11.setForeground(new java.awt.Color(255, 255, 255));
+        jButton11.setText("Clear");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -669,22 +681,26 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(difficultyLabelAdmin)
                                     .addComponent(timeLabelAdmin)
-                                    .addComponent(jButton6)
-                                    .addComponent(ratingLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(ratingLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jButton6)
+                                        .addGap(109, 109, 109)
+                                        .addComponent(jButton8)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(90, 90, 90)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(274, 274, 274)
-                                .addComponent(jButton8))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(90, 90, 90)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jButton7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton11))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(titleLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(cuisineLabelAdmin)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -702,9 +718,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton7)
-                                    .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(16, 16, 16))
         );
         jPanel2Layout.setVerticalGroup(
@@ -746,7 +760,8 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton6)
                     .addComponent(jButton8)
-                    .addComponent(jButton7))
+                    .addComponent(jButton7)
+                    .addComponent(jButton11))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -1676,6 +1691,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton13.setForeground(new java.awt.Color(255, 204, 0));
         jButton13.setText("Name (Z-A)");
         jButton13.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout recipeRequestPanelLayout = new javax.swing.GroupLayout(recipeRequestPanel);
         recipeRequestPanel.setLayout(recipeRequestPanelLayout);
@@ -2219,6 +2239,24 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }
     
+    private void loadUserRequestHistoryTable() {
+        javax.swing.table.DefaultTableModel dtm =
+                (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeRequest req : controller.getAllRequests()) {
+            dtm.addRow(new Object[]{
+                    req.getUsername(),
+                    req.getTitle(),
+                    req.getVegNonVeg(),
+                    req.getNotes(),
+                    req.getDate(),
+                    req.getTime(),
+                    req.getStatus()
+            });
+        }
+    }
+    
     private void displayRecipesInBrowse(List<RecipeData> recipes) {
         browseCardsPanel.removeAll();
         for (RecipeData recipe : recipes) {
@@ -2306,6 +2344,33 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         for (RecipeRequest req : requestList) {
             dtm.addRow(new Object[] {
+                req.getUsername(),
+                req.getTitle(),
+                req.getVegNonVeg(),
+                req.getNotes(),
+                req.getDate(),
+                req.getTime(),
+                req.getStatus()
+            });
+        }
+    }
+    
+    private void sortRequestHistoryByNameDesc() {
+        java.util.List<RecipeRequest> list =
+                new java.util.ArrayList<>(controller.getAllRequests());
+
+        list.sort((a, b) -> a.getTitle().compareToIgnoreCase(b.getTitle())); // A-Z
+
+        // Manual reverse
+        java.util.List<RecipeRequest> reversed = new java.util.ArrayList<>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            reversed.add(list.get(i));
+        }
+
+        DefaultTableModel dtm = (DefaultTableModel) reqHistoryTable.getModel();
+        dtm.setRowCount(0);
+        for (RecipeRequest req : reversed) {
+            dtm.addRow(new Object[]{
                 req.getUsername(),
                 req.getTitle(),
                 req.getVegNonVeg(),
@@ -2494,47 +2559,41 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestBtnActionPerformed
-    String username = reqUsernameTextField.getText().trim();
-    String title    = recipeTitleTextfield.getText().trim();
-    String veg      = vegNonvegTextField.getText().trim();
-    String notes    = noteTextField.getText().trim();
+        String username = reqUsernameTextField.getText().trim();
+        String title    = recipeTitleTextfield.getText().trim();
+        String vegNon   = vegNonvegTextField.getText().trim();
+        String notes    = noteTextField.getText().trim();
 
-    String result = controller.addRecipeRequest(username, title, veg, notes);
+        String result = controller.addRecipeRequest(username, title, vegNon, notes);
 
-    if (!"success".equals(result)) {
-        javax.swing.JOptionPane.showMessageDialog(
-            this,
-            result,
-            "Validation Error",
-            javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-        return;
-    }
+        if ("success".equals(result)) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Request submitted successfully!",
+                    "Success",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
 
-    // Reload request history table from controller queue
-    javax.swing.table.DefaultTableModel dtm =
-        (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
-    dtm.setRowCount(0);
-    for (RecipeRequest req : controller.getAllRequests()) {
-        dtm.addRow(new Object[] {
-            req.getUsername(),
-            req.getTitle(),
-            req.getVegNonVeg(),
-            req.getNotes(),
-            req.getDate(),
-            req.getTime(),
-            req.getStatus()
-        });
-    }
+            // reload history from controller for both MVC correctness and sync
+            loadUserRequestHistoryTable();
 
-    // Clear text fields
-    reqUsernameTextField.setText("");
-    recipeTitleTextfield.setText("");
-    vegNonvegTextField.setText("");
-    noteTextField.setText("");
+            // Clear text fields
+            reqUsernameTextField.setText("");
+            recipeTitleTextfield.setText("");
+            vegNonvegTextField.setText("");
+            noteTextField.setText("");
 
-    // Update statistics labels properly from model
-    updateHomeStats();
+            // Update statistics labels properly from model
+            updateHomeStats();
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    result,
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_requestBtnActionPerformed
 
     private void myRecipeRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myRecipeRequestButtonActionPerformed
@@ -2741,31 +2800,37 @@ public class AppViewFrame extends javax.swing.JFrame {
         int row = adminReqTable.getSelectedRow();
         if (row < 0) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Please select a request from the table.",
-                "No Selection",
-                javax.swing.JOptionPane.WARNING_MESSAGE
+                    this,
+                    "Please select a request from the table.",
+                    "No Selection",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
-        // Get username & title from table row to identify the request
+        // Identify request using username + title from selected row
         String username = (String) adminReqTable.getValueAt(row, 0);
         String title    = (String) adminReqTable.getValueAt(row, 1);
 
-        // Ask for new status
-        String newStatus = javax.swing.JOptionPane.showInputDialog(
-            this,
-            "Enter new status (e.g., Pending, In Progress, Completed):",
-            "Update Status",
-            javax.swing.JOptionPane.PLAIN_MESSAGE
+        // Dialog is View responsibility
+        String[] options = {"Pending", "Updated", "Cancelled"};
+        String currentStatus = (String) adminReqTable.getValueAt(row, 6);
+        String newStatus = (String) javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Select new status:",
+                "Update Status",
+                javax.swing.JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                currentStatus
         );
-        if (newStatus == null || newStatus.trim().isEmpty()) {
+
+        if (newStatus == null) {
+            // dialog cancelled
             return;
         }
-        newStatus = newStatus.trim();
 
-        // Find matching request from controller queue
+        // Find matching request object via controller
         RecipeRequest target = null;
         for (RecipeRequest req : controller.getAllRequests()) {
             if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
@@ -2776,10 +2841,10 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         if (target == null) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Request not found.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
+                    this,
+                    "Request not found.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
             );
             return;
         }
@@ -2787,25 +2852,34 @@ public class AppViewFrame extends javax.swing.JFrame {
         boolean ok = controller.updateRequestStatus(target, newStatus);
         if (!ok) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Failed to update status.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
+                    this,
+                    "Status must be Pending, Updated, or Cancelled only.",
+                    "Invalid Status",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
+        // Sync admin + user views from same controller data
         loadAdminRequestsTable();
+        loadUserRequestHistoryTable();
+
+        javax.swing.JOptionPane.showMessageDialog(
+                this,
+                "Status updated successfully.",
+                "Success",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
     }//GEN-LAST:event_updateStatusBtnActionPerformed
 
     private void deleteRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRequestBtnActionPerformed
         int row = adminReqTable.getSelectedRow();
         if (row < 0) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Please select a request from the table.",
-                "No Selection",
-                javax.swing.JOptionPane.WARNING_MESSAGE
+                    this,
+                    "Please select a request from the table.",
+                    "No Selection",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
             );
             return;
         }
@@ -2813,14 +2887,14 @@ public class AppViewFrame extends javax.swing.JFrame {
         String username = (String) adminReqTable.getValueAt(row, 0);
         String title    = (String) adminReqTable.getValueAt(row, 1);
 
-        int choice = javax.swing.JOptionPane.showConfirmDialog(
-            this,
-            "Delete this request?",
-            "Confirm Delete",
-            javax.swing.JOptionPane.YES_NO_OPTION,
-            javax.swing.JOptionPane.WARNING_MESSAGE
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this request?",
+                "Confirm Delete",
+                javax.swing.JOptionPane.YES_NO_OPTION
         );
-        if (choice != javax.swing.JOptionPane.YES_OPTION) {
+
+        if (confirm != javax.swing.JOptionPane.YES_OPTION) {
             return;
         }
 
@@ -2834,26 +2908,29 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         if (target == null) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Request not found.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
+                    this,
+                    "Request not found.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
             );
             return;
         }
 
         boolean removed = controller.removeRequest(target);
-        if (removed) {
-            loadAdminRequestsTable();
-            updateHomeStats();
-        } else {
+        if (!removed) {
             javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Failed to delete request.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
+                    this,
+                    "Failed to delete request.",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
             );
+            return;
         }
+
+        // Sync admin + user views after delete
+        loadAdminRequestsTable();
+        loadUserRequestHistoryTable();
+        updateHomeStats();
     }//GEN-LAST:event_deleteRequestBtnActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -2992,6 +3069,26 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton16ActionPerformed
 
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
+        DefaultTableModel dtm = (DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+        for (RecipeData r : sorted) {
+            dtm.addRow(new Object[]{
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        clearRecipeForm();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -3048,6 +3145,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel ingredientsLabelAmin;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;

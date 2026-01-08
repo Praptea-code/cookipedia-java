@@ -219,6 +219,20 @@ public class AppController {
         return recipes;
     }
 
+    // In AppController
+    public List<RecipeData> getRecipesSortedByNameDesc() {
+        List<RecipeData> list = new ArrayList<>(model.getAllRecipes());
+        // merge sort already makes A-Z
+        mergeSortByName(list, 0, list.size() - 1);
+        // manual reverse to stay inside controller, no Swing
+        List<RecipeData> reversed = new ArrayList<>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            reversed.add(list.get(i));
+        }
+        return reversed;
+    }
+
+    
     private void mergeSortByName(List<RecipeData> recipes, int left, int right) {
         if (left < right) {
             int mid = (left + right) / 2;
@@ -511,16 +525,14 @@ public class AppController {
     public Queue<RecipeRequest> getAllRequests() {
         return model.getAllRequests();
     }
-    
-    /**
-     * Updates request status
-     */
-    public boolean updateRequestStatus(RecipeRequest request, String newStatus) {
-        if (request == null || newStatus == null) {
-            return false;
-        }
-        request.setStatus(newStatus);
-        return true;
+   
+
+    private String capitalizeStatus(String s) {
+        s = s.trim().toLowerCase();
+        if (s.equals("pending")) return "Pending";
+        if (s.equals("updated")) return "Updated";
+        if (s.equals("cancelled")) return "Cancelled";
+        return s;
     }
     
     /**
@@ -610,5 +622,29 @@ public class AppController {
      */
     public int getRequestCount() {
         return model.getRequestCount();
+    }
+    
+    public boolean isValidStatus(String status) {
+        if (status == null) return false;
+        String s = status.trim().toLowerCase();
+        return s.equals("pending") || s.equals("updated") || s.equals("cancelled");
+    }
+    
+    /**
+     * Updates request status
+     */
+    public boolean updateRequestStatus(RecipeRequest request, String newStatus) {
+       if (request == null || !isValidStatus(newStatus)) {
+           return false;
+       }
+       String s = newStatus.trim().toLowerCase();
+       if (s.equals("pending")) {
+           request.setStatus("Pending");
+       } else if (s.equals("updated")) {
+           request.setStatus("Updated");
+       } else if (s.equals("cancelled")) {
+           request.setStatus("Cancelled");
+       }
+       return true;
     }
 }
