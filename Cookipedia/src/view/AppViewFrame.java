@@ -292,6 +292,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jTextField3 = new javax.swing.JTextField();
+        jButton17 = new javax.swing.JButton();
         manageRequestsPanel = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         reqTableAdmin = new javax.swing.JTable();
@@ -341,6 +342,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
         browseScrollPane = new javax.swing.JScrollPane();
         browseCardsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -792,7 +794,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton14.setBackground(new java.awt.Color(0, 0, 0));
         jButton14.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton14.setForeground(new java.awt.Color(255, 204, 0));
-        jButton14.setText("Name ↑");
+        jButton14.setText("Name (A-Z)");
         jButton14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -831,6 +833,17 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton17.setBackground(new java.awt.Color(0, 0, 0));
+        jButton17.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton17.setForeground(new java.awt.Color(255, 204, 0));
+        jButton17.setText("Name (Z-A)");
+        jButton17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout manageRecipesPanelLayout = new javax.swing.GroupLayout(manageRecipesPanel);
         manageRecipesPanel.setLayout(manageRecipesPanelLayout);
         manageRecipesPanelLayout.setHorizontalGroup(
@@ -848,20 +861,21 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addGap(29, 29, 29)
                         .addComponent(jLabel5))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                        .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(manageRecipesPanelLayout.createSequentialGroup()
-                                .addGap(587, 587, 587)
+                        .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRecipesPanelLayout.createSequentialGroup()
                                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39)
+                                .addGap(18, 18, 18)
                                 .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton14)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton17)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton15)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton16))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
+                        .addGap(72, 72, 72)
                         .addComponent(jLabel2)))
                 .addContainerGap())
         );
@@ -884,11 +898,12 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addComponent(jLabel12)
                         .addGap(10, 10, 10)
                         .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel13)
                             .addComponent(jButton14)
                             .addComponent(jButton15)
                             .addComponent(jButton16)
-                            .addComponent(jTextField3))
+                            .addComponent(jTextField3)
+                            .addComponent(jLabel13)
+                            .addComponent(jButton17))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39))))
@@ -1327,7 +1342,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 204, 0));
-        jButton1.setText("Name ↑");
+        jButton1.setText("Name (A-Z)");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1357,17 +1372,30 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton18.setBackground(new java.awt.Color(0, 0, 0));
+        jButton18.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jButton18.setForeground(new java.awt.Color(255, 204, 0));
+        jButton18.setText("Name (Z-A)");
+        jButton18.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout browseTopPanelLayout = new javax.swing.GroupLayout(browseTopPanel);
         browseTopPanel.setLayout(browseTopPanelLayout);
         browseTopPanelLayout.setHorizontalGroup(
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browseTopPanelLayout.createSequentialGroup()
-                .addGap(331, 331, 331)
+                .addGap(224, 224, 224)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addGap(87, 87, 87)
                 .addComponent(jLabel3)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1378,13 +1406,13 @@ public class AppViewFrame extends javax.swing.JFrame {
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browseTopPanelLayout.createSequentialGroup()
                 .addContainerGap(56, Short.MAX_VALUE)
-                .addGroup(browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(jButton1)
-                        .addComponent(jButton3)
-                        .addComponent(jButton9))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3)
+                    .addComponent(jButton9)
+                    .addComponent(jButton18)
+                    .addComponent(jTextField1))
                 .addGap(23, 23, 23))
         );
 
@@ -3089,6 +3117,14 @@ public class AppViewFrame extends javax.swing.JFrame {
         clearRecipeForm();
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton17ActionPerformed
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton18ActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -3150,6 +3186,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
