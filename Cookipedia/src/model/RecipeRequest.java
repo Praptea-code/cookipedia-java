@@ -17,7 +17,10 @@ public class RecipeRequest {
     private String time;
     private String status;
 
-    // Constructor
+    /*
+    this constructor builds a new reciperequest with basic information
+    it takes username title vegNonVeg notes date and time and sets initial status to pending
+    */
     public RecipeRequest(String username, String title, String vegNonVeg, 
                         String notes, String date, String time) {
         this.username = username;
@@ -86,6 +89,10 @@ public class RecipeRequest {
         this.status = status;
     }
 
+    /*
+    this method returns a short text version of the request
+    it includes username title vegNonVeg and status which is useful for debugging or logs
+    */
     @Override
     public String toString() {
         return "RecipeRequest{" +

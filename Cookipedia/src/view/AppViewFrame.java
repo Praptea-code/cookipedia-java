@@ -6,7 +6,6 @@ package view;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.util.Queue;
 import model.RecipeData;      
 import model.RecipeRequest;
 import controller.AppController;
@@ -896,13 +895,14 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12)
                         .addGap(10, 10, 10)
-                        .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton14)
-                            .addComponent(jButton15)
-                            .addComponent(jButton16)
-                            .addComponent(jTextField3)
-                            .addComponent(jLabel13)
-                            .addComponent(jButton17))
+                        .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton14)
+                                .addComponent(jButton15)
+                                .addComponent(jButton16)
+                                .addComponent(jLabel13)
+                                .addComponent(jButton17)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39))))
