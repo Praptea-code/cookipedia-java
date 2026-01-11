@@ -8,60 +8,70 @@ package model;
  *
  * @author Acer
  */
+import controller.HistoryQueue;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class AppModel {
-    // Data structures
+
     private final List<RecipeData> recipes;
-    private static final int REQUEST_QUEUE_SIZE = 50;
-    private RecipeRequest[] requestItems = new RecipeRequest[REQUEST_QUEUE_SIZE];
-    private int front = -1;
-    private int rear = -1;
-    private final Deque<RecipeData> historyQueue;
-    
-    // Statistics
+    private final HistoryQueue historyQueue;
     private int cookedCount;
     private int requestCount;
-    
-    // Constants
     private static final int HISTORY_LIMIT = 8;
 
-    // Constructor - Initialize data structures and seed data
+    /*
+    this constructor creates a fresh model instance with empty data structures
+    it sets up the recipe list and history queue and calls seedDummyRecipes so ui has data to show
+    */
     public AppModel() {
-        this.recipes = new ArrayList<>();
-        this.historyQueue = new LinkedList<>();
+        this.recipes = new ArrayList<RecipeData>();
+        this.historyQueue = new HistoryQueue(HISTORY_LIMIT);
         this.cookedCount = 0;
         this.requestCount = 0;
-        
         seedDummyRecipes();
     }
 
-    // ===== Recipe CRUD Operations =====
-    
+    //recipe crud operations
+
+    /*
+    this method adds a new recipe into the main recipe list
+    it takes a recipedata object created by the controller and appends it to the list
+    */
     public void addRecipe(RecipeData recipe) {
         recipes.add(recipe);
     }
 
+    /*
+    this method returns a copy of all recipes stored in the model
+    it creates and returns a new arraylist so outside code cannot change the internal list directly
+    */
     public List<RecipeData> getAllRecipes() {
-        return new ArrayList<>(recipes);
+        return new ArrayList<RecipeData>(recipes);
     }
 
+    /*
+    this method searches for a recipe by its unique id
+    it loops through the recipe list and returns the first recipedata whose id matches or null when not found
+    */
     public RecipeData getRecipeById(int id) {
-        for (RecipeData recipe : recipes) {
+        int i = 0;
+        while (i < recipes.size()) {
+            RecipeData recipe = recipes.get(i);
             if (recipe.getId() == id) {
                 return recipe;
             }
+            i = i + 1;
         }
         return null;
     }
 
-    public boolean updateRecipe(int id, String title, String cuisine, String difficulty,
-                               int prepTime, double rating, String imagePath,
-                               String ingredients, String process) {
+    /*
+    this method updates an existing recipe with new field values
+    it takes recipe id and new title cuisine difficulty prepTime rating imagePath ingredients and process
+    it finds the matching recipe and sets all these fields and returns true or returns false if id does not exist
+    */
+    public boolean updateRecipe(int id, String title, String cuisine, String difficulty,int prepTime, double rating, String imagePath,String ingredients, String process) {
         RecipeData recipe = getRecipeById(id);
         if (recipe != null) {
             recipe.setTitle(title);
@@ -77,154 +87,147 @@ public class AppModel {
         return false;
     }
 
+    /*
+    this method removes a recipe from the main list using its id
+    it loops through the list manually and removes the first recipe whose id matches and returns true or false when not found
+    */
     public boolean deleteRecipe(int id) {
-        return recipes.removeIf(r -> r.getId() == id);
+        int i = 0;
+        while (i < recipes.size()) {
+            RecipeData r = recipes.get(i);
+            if (r.getId() == id) {
+                recipes.remove(i);
+                return true;
+            }
+            i = i + 1;
+        }
+        return false;
     }
 
+    /*
+    this method returns a list of most recently added recipes
+    it takes count integer and builds a new list from the end of recipes without using math helpers
+    */
     public List<RecipeData> getRecentlyAdded(int count) {
         int size = recipes.size();
-        int fromIndex = Math.max(0, size - count);
-        return new ArrayList<>(recipes.subList(fromIndex, size));
-    }
-
-    // ===== Manual Request Queue (Array-based) =====
-
-    private boolean isRequestQueueFull() {
-        return front == 0 && rear == REQUEST_QUEUE_SIZE - 1;
-    }
-
-    private boolean isRequestQueueEmpty() {
-        return front == -1;
-    }
-
-    // enqueue
-    private boolean enQueueRequest(RecipeRequest req) {
-        if (isRequestQueueFull()) {
-            System.out.println("Request queue is full");
-            return false;
-        }
-        if (front == -1) {
-            front = 0;
-        }
-        rear++;
-        requestItems[rear] = req;
-        return true;
-    }
-
-    // dequeue (front)
-    public RecipeRequest pollNextRequest() {
-        if (isRequestQueueEmpty()) {
-            System.out.println("Request queue is empty");
-            return null;
+        int fromIndex = 0;
+        if (size - count > 0) {
+            fromIndex = size - count;
         }
 
-        RecipeRequest element = requestItems[front];
-
-        if (front >= rear) {
-            // only one element, reset
-            front = -1;
-            rear = -1;
-        } else {
-            front++;
+        List<RecipeData> result = new ArrayList<RecipeData>();
+        int i = fromIndex;
+        while (i < size) {
+            result.add(recipes.get(i));
+            i = i + 1;
         }
-        return element;
+        return result;
     }
 
-    // remove specific request (by reference)
-    public boolean removeRequest(RecipeRequest target) {
-        if (isRequestQueueEmpty()) return false;
+    //history operations
 
-        int index = -1;
-        for (int i = front; i <= rear; i++) {
-            if (requestItems[i] == target) { 
-                index = i;
-                break;
-            }
-        }
-        if (index == -1) return false;
-
-        // shift left
-        for (int i = index; i < rear; i++) {
-            requestItems[i] = requestItems[i + 1];
-        }
-        requestItems[rear] = null;
-        rear--;
-
-        if (rear < front) {
-            front = -1;
-            rear = -1;
-        }
-        return true;
-    }
-
-    // read-only snapshot for controller/view
-    public RecipeRequest[] getAllRequestsArray() {
-        if (isRequestQueueEmpty()) return new RecipeRequest[0];
-        int size = rear - front + 1;
-        RecipeRequest[] arr = new RecipeRequest[size];
-        for (int i = 0; i < size; i++) {
-            arr[i] = requestItems[front + i];
-        }
-        return arr;
-    }
-
-    public boolean addRequest(RecipeRequest request) {
-        return enQueueRequest(request);
-    }
-    // ===== Request Queue Operations =====
-    
-
-    // ===== History Operations =====
-    
+    /*
+    this method records that user viewed a recipe into the history queue
+    it first checks if this recipe already exists in current history array and skips duplicate insertion
+    if it is not already present it tries to add at front and when full it removes the oldest recipe and then adds at front again
+    */
     public void addToHistory(RecipeData recipe) {
-        // Remove if already exists
-        historyQueue.removeIf(item -> item.getId() == recipe.getId());
-        
-        // Add to front
-        historyQueue.addFirst(recipe);
-        
-        // Maintain limit
-        if (historyQueue.size() > HISTORY_LIMIT) {
+        RecipeData[] current = historyQueue.toArray();
+        int i = 0;
+        while (i < current.length) {
+            if (current[i].getId() == recipe.getId()) {
+                return;
+            }
+            i = i + 1;
+        }
+
+        boolean ok = historyQueue.addFirst(recipe);
+        if (!ok) {
             historyQueue.removeLast();
+            historyQueue.addFirst(recipe);
         }
     }
 
+    /*
+    this method returns viewing history as a list from most recent to oldest
+    it creates and returns a new arraylist built from the internal historyqueue array
+    */
     public List<RecipeData> getHistory() {
-        return new ArrayList<>(historyQueue);
+        RecipeData[] arr = historyQueue.toArray();
+        List<RecipeData> list = new ArrayList<RecipeData>();
+        int i = 0;
+        while (i < arr.length) {
+            list.add(arr[i]);
+            i = i + 1;
+        }
+        return list;
     }
 
+    /*
+    this method clears all elements from the viewing history
+    it repeatedly calls removeLast until the history queue becomes empty
+    */
     public void clearHistory() {
-        historyQueue.clear();
+        while (historyQueue.removeLast() != null) {
+        }
     }
 
-    // ===== Statistics Getters/Setters =====
-    
+    //statistics getters and setters
+
+    /*
+    this method returns how many recipes user has cooked
+    it simply returns the cookedCount field
+    */
     public int getCookedCount() {
         return cookedCount;
     }
 
+    /*
+    this method increases cookedCount by one
+    it is expected to be called when user marks a recipe as cooked
+    */
     public void incrementCookedCount() {
         cookedCount++;
     }
 
+    /*
+    this method returns how many recipe requests have been made so far
+    controller updates this when a request is successfully added to its request queue
+    */
     public int getRequestCount() {
         return requestCount;
     }
 
+    /*
+    this method increases requestCount by one
+    it is expected to be called from controller when a new request is added
+    */
     public void incrementRequestCount() {
         requestCount++;
     }
 
+    /*
+    this method returns total number of recipes stored in the model
+    it uses the size of recipes list
+    */
     public int getTotalRecipes() {
         return recipes.size();
     }
 
+    /*
+    this method computes how many recipes are still left to cook
+    it subtracts cookedCount from total recipes and returns the remaining number
+    */
     public int getYetToCookCount() {
         return getTotalRecipes() - cookedCount;
     }
 
-    // ===== Data Seeding =====
-    
+    //data seeding
+
+    /*
+    this method fills the model with some initial example recipes
+    it is called from the constructor so that the ui has sample data to display at start
+    */
     private void seedDummyRecipes() {
         recipes.add(new RecipeData(
             "Chicken Chowmein", "Chinese", "Easy", 25, 4.3, "/img/chickenChowmein.jpg",

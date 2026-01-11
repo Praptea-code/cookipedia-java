@@ -22,7 +22,11 @@ public class RecipeData {
 
     private static int idCounter = 1;
 
-    // Constructor
+    /*
+    this constructor builds a new recipedata object from basic fields
+    it takes title cuisine difficulty prepTime rating imagePath ingredients and process
+    and assigns a unique id by increasing the static idcounter each time
+    */
     public RecipeData(String title, String cuisine, String difficulty, 
                      int prepTime, double rating, String imagePath, 
                      String ingredients, String process) {
@@ -119,6 +123,10 @@ public class RecipeData {
         this.process = process;
     }
 
+    /*
+    this method returns a short text version of the recipe
+    it includes id title cuisine difficulty prep time and rating which is useful for debugging or logs
+    */
     @Override
     public String toString() {
         return "RecipeData{" +
