@@ -215,28 +215,4 @@ public class Validate {
         }
         return null;
     }
-
-    /*
-    this method checks if a bounded array queue is currently full
-    it takes current size and capacity of the queue as integers usually from model
-    it compares them and returns true when they are equal meaning no more elements can be added
-    */
-    public boolean isQueueFull(int size, int capacity) {
-        if (size >= capacity) {
-            return true;
-        }
-        return false;
-    }
-
-    /*
-    this method checks if a bounded array queue is currently empty
-    it takes current size of the queue as integer usually from model
-    it returns true when size is zero meaning there are no elements to remove
-    */
-    public boolean isQueueEmpty(int size) {
-        if (size == 0) {
-            return true;
-        }
-        return false;
-    }
 }

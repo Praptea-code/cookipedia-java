@@ -10,36 +10,39 @@ import model.RecipeRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  *
  * @author Acer
  */
 public class AppController {
-    private final AppModel model;
+private final AppModel model;
     private final Sort sorter;
     private final Search searcher;
     private final Validate validator;
+    private final Queue requestQueue;
 
     /*
     this constructor prepares the controller with its own model and helper classes
     it creates a new appmodel object and passes it to validate
-    it also creates sort and search so later methods can reuse them
+    it also creates sort search and queue objects so later methods can reuse them
     */
     public AppController() {
         this.model = new AppModel();
         this.sorter = new Sort();
         this.searcher = new Search();
         this.validator = new Validate(model);
+        this.requestQueue = new Queue(50);
     }
 
     /*
-    this method stores a new recipe request into the request queue it takes username and title as required strings and vegNonVeg and notes as optional strings
-    it first checks that username and title are not empty then builds a request with current date and time it returns "success" if the internal queue accepts
-    the request or an error message when queue is full or inputs are missing
+    this method stores a new recipe request into the request queue
+    it takes username and title as required strings and vegNonVeg and notes as optional strings
+    it first checks that username and title are not empty then builds a request with current date and time
+    it returns "success" if the queue accepts the request or an error message when queue is full or inputs are missing
     */
-    public String addRecipeRequest(String username, String title,String vegNonVeg, String notes) {
+    public String addRecipeRequest(String username, String title,
+                                   String vegNonVeg, String notes) {
         if (username == null || username.trim().length() == 0) {
             return "Username is required!";
         }
@@ -65,7 +68,7 @@ public class AppController {
 
         RecipeRequest req = new RecipeRequest(u, t, v, n, date, time);
 
-        boolean ok = model.addRequest(req);
+        boolean ok = requestQueue.enqueue(req);
         if (!ok) {
             return "Request queue is full!";
         }
@@ -74,11 +77,12 @@ public class AppController {
     }
 
     /*
-    this method gives all stored recipe requests as a list it copies the internal fixed size array from the model into a dynamic arraylist
+    this method gives all stored recipe requests as a list
+    it reads the snapshot array from the queue and copies it into an arraylist
     it returns that list so ui can loop and display each request easily
     */
     public List<RecipeRequest> getAllRequests() {
-        RecipeRequest[] arr = model.getAllRequestsArray();
+        RecipeRequest[] arr = requestQueue.toArray();
         List<RecipeRequest> list = new ArrayList<RecipeRequest>();
         int i = 0;
         while (i < arr.length) {
@@ -91,7 +95,7 @@ public class AppController {
     /*
     this method deletes a specific request based on username and title
     it takes username and title strings to uniquely identify the request saved earlier
-    it uses validate helper to search the matching object then asks the model to remove it
+    it uses validate helper to search the matching object then asks the queue to remove it
     it returns true when a request was actually removed or false if no matching request exists
     */
     public boolean deleteRequest(String username, String title) {
@@ -99,7 +103,7 @@ public class AppController {
         if (target == null) {
             return false;
         }
-        return model.removeRequest(target);
+        return requestQueue.remove(target);
     }
 
     /*
@@ -140,7 +144,7 @@ public class AppController {
     /*
     this method adds a new recipe after checking all input fields carefully
     it takes title cuisine difficulty prepTime rating imagePath ingredients and process as strings from ui form
-    it validates everything using validate class then manually converts prepTime and rating and finally builds a recipedata object and stores it
+    it validates everything using validate class then parses prepTime and rating and finally builds a recipedata object and stores it
     it returns "success" when recipe is added or an error message string when validation fails
     */
     public String addRecipe(String title, String cuisine, String difficulty,String prepTime, String rating, String imagePath,String ingredients, String process) {
@@ -161,8 +165,8 @@ public class AppController {
         String pt = prepTime.trim();
         String rt = rating.trim();
 
-        int prep = validator.parseIntManual(pt);
-        double rate = validator.parseDoubleManual(rt);
+        int prep = Integer.parseInt(pt);
+        double rate = Double.parseDouble(rt);
 
         String ing = "";
         String pro = "";
@@ -331,7 +335,7 @@ public class AppController {
     /*
     this method records that user viewed a recipe so it appears in history
     it takes a recipedata object that user just clicked or opened
-    it simply passes this recipe to model history stack or list
+    it simply passes this recipe to model history list
     */
     public void addToHistory(RecipeData recipe) {
         if (recipe != null) {
