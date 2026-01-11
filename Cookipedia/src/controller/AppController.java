@@ -20,7 +20,7 @@ private final AppModel model;
     private final Sort sorter;
     private final Search searcher;
     private final Validate validator;
-    private final Queue requestQueue;
+    private final RequestQueue requestQueue;
 
     /*
     this constructor prepares the controller with its own model and helper classes
@@ -32,7 +32,7 @@ private final AppModel model;
         this.sorter = new Sort();
         this.searcher = new Search();
         this.validator = new Validate(model);
-        this.requestQueue = new Queue(50);
+        this.requestQueue = new RequestQueue(50);
     }
 
     /*

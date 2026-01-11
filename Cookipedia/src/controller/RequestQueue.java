@@ -10,7 +10,7 @@ import model.RecipeRequest;
  *
  * @author Acer
  */
-public class Queue {
+public class RequestQueue {
     private final int capacity;
     private final RecipeRequest[] items;
     private int front;
@@ -21,7 +21,7 @@ public class Queue {
     it takes capacity as integer which tells maximum number of requests allowed
     it sets front and rear to -1 to show that queue is empty
     */
-    public Queue(int capacity) {
+    public RequestQueue(int capacity) {
         this.capacity = capacity;
         this.items = new RecipeRequest[capacity];
         this.front = -1;
