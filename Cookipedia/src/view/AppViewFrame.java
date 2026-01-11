@@ -6,15 +6,13 @@ package view;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.util.Scanner;
-import model.AppModel;
 import java.util.Queue;
-import java.util.LinkedList;
 import model.RecipeData;      
 import model.RecipeRequest;
 import controller.AppController;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -2349,7 +2347,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     // Helper method to sort request table
     private void sortRequestTable(List<RecipeData> sortedRecipes) {
         // Get all requests
-        Queue<RecipeRequest> allRequests = controller.getAllRequests();
+        List<RecipeRequest> allRequests = controller.getAllRequests();
         List<RecipeRequest> requestList = new ArrayList<>(allRequests);
 
         // Sort requests based on sorted recipes order
@@ -2513,19 +2511,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // Call controller method
-        List<RecipeData> sorted = controller.sortRecipesByName();
+        // Sort history by recipe title A–Z
+        List<RecipeData> sortedHistory = controller.getHistorySortedByName();
 
-        // Filter only history items
-        List<RecipeData> historyItems = controller.getHistory();
-        List<RecipeData> sortedHistory = new ArrayList<>();
-        for (RecipeData r : sorted) {
-            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
-                sortedHistory.add(r);
-            }
-        }
-
-        // Update view
         browseHistoryPanel.removeAll();
         for (RecipeData r : sortedHistory) {
             browseHistoryPanel.add(createRecipeCard(r));
@@ -2535,19 +2523,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // Call controller method
-        List<RecipeData> sorted = controller.sortRecipesByTime();
+        // Sort history by preparation time ascending
+        List<RecipeData> sortedHistory = controller.getHistorySortedByTime();
 
-        // Filter only history items
-        List<RecipeData> historyItems = controller.getHistory();
-        List<RecipeData> sortedHistory = new ArrayList<>();
-        for (RecipeData r : sorted) {
-            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
-                sortedHistory.add(r);
-            }
-        }
-
-        // Update view
         browseHistoryPanel.removeAll();
         for (RecipeData r : sortedHistory) {
             browseHistoryPanel.add(createRecipeCard(r));
@@ -2802,12 +2780,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void updateStatusBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtnActionPerformed
         int row = adminReqTable.getSelectedRow();
         if (row < 0) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a request from the table.",
-                    "No Selection",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(this,"Please select a request from the table.","No Selection",javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -2833,33 +2806,12 @@ public class AppViewFrame extends javax.swing.JFrame {
             return;
         }
 
-        // Find matching request object via controller
-        RecipeRequest target = null;
-        for (RecipeRequest req : controller.getAllRequests()) {
-            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                target = req;
-                break;
-            }
-        }
-
-        if (target == null) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Request not found.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        boolean ok = controller.updateRequestStatus(target, newStatus);
+        boolean ok = controller.updateRequestStatus(username, title, newStatus);
         if (!ok) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Status must be Pending, Updated, or Cancelled only.",
-                    "Invalid Status",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this,
+                "Status must be Pending, Updated, or Cancelled only.",
+                "Invalid Status",
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -2878,59 +2830,29 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void deleteRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRequestBtnActionPerformed
         int row = adminReqTable.getSelectedRow();
         if (row < 0) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a request from the table.",
-                    "No Selection",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Please select a request from the table.",
+                                          "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String username = (String) adminReqTable.getValueAt(row, 0);
         String title    = (String) adminReqTable.getValueAt(row, 1);
 
-        int confirm = javax.swing.JOptionPane.showConfirmDialog(
+        int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure you want to delete this request?",
                 "Confirm Delete",
-                javax.swing.JOptionPane.YES_NO_OPTION
+                JOptionPane.YES_NO_OPTION
         );
+        if (confirm != JOptionPane.YES_OPTION) return;
 
-        if (confirm != javax.swing.JOptionPane.YES_OPTION) {
-            return;
-        }
-
-        RecipeRequest target = null;
-        for (RecipeRequest req : controller.getAllRequests()) {
-            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                target = req;
-                break;
-            }
-        }
-
-        if (target == null) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Request not found.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        boolean removed = controller.removeRequest(target);
+        boolean removed = controller.deleteRequest(username, title);
         if (!removed) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to delete request.",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Failed to delete request.",
+                                          "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Sync admin + user views after delete
         loadAdminRequestsTable();
         loadUserRequestHistoryTable();
         updateHomeStats();
@@ -2956,19 +2878,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // Call controller method
-        List<RecipeData> sorted = controller.sortRecipesByRating();
+        List<RecipeData> sortedHistory = controller.getHistorySortedByRating();
 
-        // Filter only history items
-        List<RecipeData> historyItems = controller.getHistory();
-        List<RecipeData> sortedHistory = new ArrayList<>();
-        for (RecipeData r : sorted) {
-            if (historyItems.stream().anyMatch(h -> h.getId() == r.getId())) {
-                sortedHistory.add(r);
-            }
-        }
-
-        // Update view
         browseHistoryPanel.removeAll();
         for (RecipeData r : sortedHistory) {
             browseHistoryPanel.add(createRecipeCard(r));
@@ -3109,11 +3020,35 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        // TODO add your handling code here:
+        List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
+
+        // Update admin table view
+        javax.swing.table.DefaultTableModel dtm = 
+            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        dtm.setRowCount(0);
+
+        for (RecipeData r : sorted) {
+            dtm.addRow(new Object[] {
+                r.getId(),
+                r.getTitle(),
+                r.getCuisine(),
+                r.getDifficulty(),
+                r.getPrepTime(),
+                r.getRating()
+            });
+        }
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        // TODO add your handling code here:
+       List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
+
+        // Update browse cards view
+        browseCardsPanel.removeAll();
+        for (RecipeData r : sorted) {
+            browseCardsPanel.add(createRecipeCard(r));
+        }
+        browseCardsPanel.revalidate();
+        browseCardsPanel.repaint();
     }//GEN-LAST:event_jButton18ActionPerformed
 
     

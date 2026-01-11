@@ -23,6 +23,29 @@ public class AppController {
         this.model = new AppModel();
     }
     
+    public String addRecipeRequest(String username, String title,String vegNonVeg, String notes) {
+        if (username == null || username.trim().isEmpty()) {
+            return "Username is required!";
+        }
+        if (title == null || title.trim().isEmpty()) {
+            return "Recipe title is required!";
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        String date = now.toLocalDate().toString();
+        String time = now.toLocalTime().toString().substring(0, 8);
+
+        RecipeRequest request = new RecipeRequest(username.trim(),title.trim(),vegNonVeg != null ? vegNonVeg.trim() : "",notes != null ? notes.trim() : "",date,time);
+
+        boolean ok = model.addRequest(request);    // uses enQueueRequest internally
+        if (!ok) {
+            return "Request queue is full!";
+        }
+
+        model.incrementRequestCount();
+        return "success";
+    }
+    
     // = Authentication Logic =
     
     /**
@@ -70,12 +93,14 @@ public class AppController {
            return "Recipe title cannot be empty!";
        }
 
-       // Check for duplicate titles
+       // Check for duplicate recipes (title + cuisine + difficulty)
        for (RecipeData existingRecipe : model.getAllRecipes()) {
-           if (existingRecipe.getTitle().equalsIgnoreCase(title.trim())) {
-               return "A recipe with this title already exists!";
-           }
-       }
+            if (existingRecipe.getTitle().equalsIgnoreCase(title.trim()) &&
+                existingRecipe.getCuisine().equalsIgnoreCase(cuisine.trim()) &&
+                existingRecipe.getDifficulty().equalsIgnoreCase(difficulty.trim())) {
+                return "A recipe with this title, cuisine, and difficulty already exists!";
+            }
+        }
 
        // Validate cuisine
        if (cuisine == null || cuisine.trim().isEmpty()) {
@@ -132,22 +157,22 @@ public class AppController {
     * Update recipe with duplicate check
     */
 
-   public boolean updateRecipe(int id, String title, String cuisine, String difficulty,
-                              int prepTime, double rating, String imagePath,
-                              String ingredients, String process) {
-       // Check for duplicate title (excluding current recipe)
-       for (RecipeData existingRecipe : model.getAllRecipes()) {
-           if (existingRecipe.getId() != id && 
-               existingRecipe.getTitle().equalsIgnoreCase(title.trim())) {
-               throw new IllegalArgumentException("A recipe with this title already exists!");
-           }
-       }
+   public boolean updateRecipe(int id, String title, String cuisine, String difficulty,int prepTime, double rating, String imagePath,String ingredients, String process) {
+        // Check for duplicate (title + cuisine + difficulty), excluding current recipe
+        for (RecipeData existingRecipe : model.getAllRecipes()) {
+            if (existingRecipe.getId() != id && 
+                existingRecipe.getTitle().equalsIgnoreCase(title.trim()) &&
+                existingRecipe.getCuisine().equalsIgnoreCase(cuisine.trim()) &&
+                existingRecipe.getDifficulty().equalsIgnoreCase(difficulty.trim())) {
+                throw new IllegalArgumentException(
+                    "A recipe with this title, cuisine, and difficulty already exists!");
+            }
+        }
 
-       RecipeData recipe = model.getRecipeById(id);
-
-       return model.updateRecipe(id, title, cuisine, difficulty, prepTime, 
+        RecipeData recipe = model.getRecipeById(id);
+        return model.updateRecipe(id, title, cuisine, difficulty, prepTime, 
                                 rating, imagePath, ingredients, process);
-   }
+    }
     
     /**
      * Adds a new recipe after validation
@@ -494,46 +519,35 @@ public class AppController {
     // ===== Recipe Request Logic =====
     
     /**
-     * Validates and adds a recipe request
-     */
-    public String addRecipeRequest(String username, String title,
-                                   String vegNonVeg, String notes) {
-        // Validation
-        if (username == null || username.trim().isEmpty()) {
-            return "Username is required!";
-        }
-        if (title == null || title.trim().isEmpty()) {
-            return "Recipe title is required!";
-        }
-        
-        // Generate timestamp
-        LocalDateTime now = LocalDateTime.now();
-        String date = now.toLocalDate().toString();
-        String time = now.toLocalTime().toString().substring(0, 8); // HH:MM:SS
-        
-        // Create and add request
-        RecipeRequest request = new RecipeRequest(
-            username.trim(),
-            title.trim(),
-            vegNonVeg != null ? vegNonVeg.trim() : "",
-            notes != null ? notes.trim() : "",
-            date,
-            time
-        );
-        
-        model.addRequest(request);
-        model.incrementRequestCount();
-        
-        return "success";
-    }
-    
-    /**
      * Gets all recipe requests
      */
-    public Queue<RecipeRequest> getAllRequests() {
-        return model.getAllRequests();
+    public List<RecipeRequest> getAllRequests() {
+        RecipeRequest[] arr = model.getAllRequestsArray();
+        List<RecipeRequest> list = new ArrayList<>();
+        for (RecipeRequest r : arr) {
+            list.add(r);
+        }
+        return list;
     }
+
    
+    public List<RecipeData> getHistorySortedByName() {
+        List<RecipeData> history = new ArrayList<>(model.getHistory());
+        mergeSortByName(history, 0, history.size() - 1);
+        return history;
+    }
+
+    public List<RecipeData> getHistorySortedByTime() {
+        List<RecipeData> history = new ArrayList<>(model.getHistory());
+        selectionSortByTime(history);
+        return history;
+    }
+
+    public List<RecipeData> getHistorySortedByRating() {
+        List<RecipeData> history = new ArrayList<>(model.getHistory());
+        mergeSortByRating(history, 0, history.size() - 1);
+        return history;
+    }
 
     private String capitalizeStatus(String s) {
         s = s.trim().toLowerCase();
@@ -543,13 +557,18 @@ public class AppController {
         return s;
     }
     
-    /**
-     * Removes a recipe request
-     */
-    public boolean removeRequest(RecipeRequest request) {
-        return model.removeRequest(request);
+    public boolean deleteRequest(String username, String title) {
+        RecipeRequest target = null;
+        for (RecipeRequest req : getAllRequests()) {
+            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
+                target = req;
+                break;
+            }
+        }
+        if (target == null) return false;
+        return model.removeRequest(target);
     }
-    
+   
     // ===== History Management Logic =====
     
     /**
@@ -654,5 +673,22 @@ public class AppController {
            request.setStatus("Cancelled");
        }
        return true;
+    }
+    
+    public boolean updateRequestStatus(String username, String title, String newStatus) {
+        if (!isValidStatus(newStatus)) {
+            return false;
+        }
+        RecipeRequest target = null;
+        for (RecipeRequest req : getAllRequests()) {
+            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
+                target = req;
+                break;
+            }
+        }
+        if (target == null) {
+            return false;
+        }
+        return updateRequestStatus(target, newStatus);
     }
 }

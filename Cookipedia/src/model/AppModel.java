@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Queue;
 
 public class AppModel {
-     // Data structures
+    // Data structures
     private final List<RecipeData> recipes;
-    private final Queue<RecipeRequest> requestQueue;
+    private static final int REQUEST_QUEUE_SIZE = 50;
+    private RecipeRequest[] requestItems = new RecipeRequest[REQUEST_QUEUE_SIZE];
+    private int front = -1;
+    private int rear = -1;
     private final Deque<RecipeData> historyQueue;
     
     // Statistics
@@ -30,7 +33,6 @@ public class AppModel {
     // Constructor - Initialize data structures and seed data
     public AppModel() {
         this.recipes = new ArrayList<>();
-        this.requestQueue = new LinkedList<>();
         this.historyQueue = new LinkedList<>();
         this.cookedCount = 0;
         this.requestCount = 0;
@@ -85,23 +87,92 @@ public class AppModel {
         return new ArrayList<>(recipes.subList(fromIndex, size));
     }
 
+    // ===== Manual Request Queue (Array-based) =====
+
+    private boolean isRequestQueueFull() {
+        return front == 0 && rear == REQUEST_QUEUE_SIZE - 1;
+    }
+
+    private boolean isRequestQueueEmpty() {
+        return front == -1;
+    }
+
+    // enqueue
+    private boolean enQueueRequest(RecipeRequest req) {
+        if (isRequestQueueFull()) {
+            System.out.println("Request queue is full");
+            return false;
+        }
+        if (front == -1) {
+            front = 0;
+        }
+        rear++;
+        requestItems[rear] = req;
+        return true;
+    }
+
+    // dequeue (front)
+    public RecipeRequest pollNextRequest() {
+        if (isRequestQueueEmpty()) {
+            System.out.println("Request queue is empty");
+            return null;
+        }
+
+        RecipeRequest element = requestItems[front];
+
+        if (front >= rear) {
+            // only one element, reset
+            front = -1;
+            rear = -1;
+        } else {
+            front++;
+        }
+        return element;
+    }
+
+    // remove specific request (by reference)
+    public boolean removeRequest(RecipeRequest target) {
+        if (isRequestQueueEmpty()) return false;
+
+        int index = -1;
+        for (int i = front; i <= rear; i++) {
+            if (requestItems[i] == target) { 
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) return false;
+
+        // shift left
+        for (int i = index; i < rear; i++) {
+            requestItems[i] = requestItems[i + 1];
+        }
+        requestItems[rear] = null;
+        rear--;
+
+        if (rear < front) {
+            front = -1;
+            rear = -1;
+        }
+        return true;
+    }
+
+    // read-only snapshot for controller/view
+    public RecipeRequest[] getAllRequestsArray() {
+        if (isRequestQueueEmpty()) return new RecipeRequest[0];
+        int size = rear - front + 1;
+        RecipeRequest[] arr = new RecipeRequest[size];
+        for (int i = 0; i < size; i++) {
+            arr[i] = requestItems[front + i];
+        }
+        return arr;
+    }
+
+    public boolean addRequest(RecipeRequest request) {
+        return enQueueRequest(request);
+    }
     // ===== Request Queue Operations =====
     
-    public void addRequest(RecipeRequest request) {
-        requestQueue.offer(request);
-    }
-
-    public Queue<RecipeRequest> getAllRequests() {
-        return new LinkedList<>(requestQueue);
-    }
-
-    public RecipeRequest pollNextRequest() {
-        return requestQueue.poll();
-    }
-
-    public boolean removeRequest(RecipeRequest request) {
-        return requestQueue.remove(request);
-    }
 
     // ===== History Operations =====
     
