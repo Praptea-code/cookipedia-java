@@ -18,16 +18,32 @@ import java.util.Queue;
  */
 public class AppController {
     private final AppModel model;
-    
+    private final Sort sorter;
+    private final Search searcher;
+    private final Validate validator;
+
+    /*
+    this constructor prepares the controller with its own model and helper classes
+    it creates a new appmodel object and passes it to validate
+    it also creates sort and search so later methods can reuse them
+    */
     public AppController() {
         this.model = new AppModel();
+        this.sorter = new Sort();
+        this.searcher = new Search();
+        this.validator = new Validate(model);
     }
-    
+
+    /*
+    this method stores a new recipe request into the request queue it takes username and title as required strings and vegNonVeg and notes as optional strings
+    it first checks that username and title are not empty then builds a request with current date and time it returns "success" if the internal queue accepts
+    the request or an error message when queue is full or inputs are missing
+    */
     public String addRecipeRequest(String username, String title,String vegNonVeg, String notes) {
-        if (username == null || username.trim().isEmpty()) {
+        if (username == null || username.trim().length() == 0) {
             return "Username is required!";
         }
-        if (title == null || title.trim().isEmpty()) {
+        if (title == null || title.trim().length() == 0) {
             return "Recipe title is required!";
         }
 
@@ -35,660 +51,381 @@ public class AppController {
         String date = now.toLocalDate().toString();
         String time = now.toLocalTime().toString().substring(0, 8);
 
-        RecipeRequest request = new RecipeRequest(username.trim(),title.trim(),vegNonVeg != null ? vegNonVeg.trim() : "",notes != null ? notes.trim() : "",date,time);
+        String u = username.trim();
+        String t = title.trim();
+        String v = "";
+        String n = "";
 
-        boolean ok = model.addRequest(request);    // uses enQueueRequest internally
+        if (vegNonVeg != null) {
+            v = vegNonVeg.trim();
+        }
+        if (notes != null) {
+            n = notes.trim();
+        }
+
+        RecipeRequest req = new RecipeRequest(u, t, v, n, date, time);
+
+        boolean ok = model.addRequest(req);
         if (!ok) {
             return "Request queue is full!";
         }
-
         model.incrementRequestCount();
         return "success";
     }
-    
-    // = Authentication Logic =
-    
-    /**
-     * Validates user login credentials
-     * @return "admin" if admin login, "user" if user login, error message otherwise
-     */
-    public String validateLogin(String username, String password) {
-        // Input validation
-        if (username == null || password == null) {
-            return "Please enter username and password.";
+
+    /*
+    this method gives all stored recipe requests as a list it copies the internal fixed size array from the model into a dynamic arraylist
+    it returns that list so ui can loop and display each request easily
+    */
+    public List<RecipeRequest> getAllRequests() {
+        RecipeRequest[] arr = model.getAllRequestsArray();
+        List<RecipeRequest> list = new ArrayList<RecipeRequest>();
+        int i = 0;
+        while (i < arr.length) {
+            list.add(arr[i]);
+            i = i + 1;
         }
-        
-        username = username.trim();
-        password = password.trim();
-        
-        if (username.isEmpty() && password.isEmpty()) {
-            return "Please enter username and password.";
-        }
-        if (username.isEmpty()) {
-            return "Please enter your username.";
-        }
-        if (password.isEmpty()) {
-            return "Please enter your password.";
-        }
-        
-        // Authentication logic
-        if (username.equals("admin") && password.equals("12345")) {
-            return "admin";
-        } else if (username.equals("user") && password.equals("67890")) {
-            return "user";
-        } else {
-            return "Invalid username or password!";
-        }
+        return list;
     }
-    
-    // ===== Recipe Management Logic =====
-    
-    /**
-    * Enhanced validation for recipe fields with specific error messages
-    */
-   public String validateRecipeFields(String title, String cuisine, String difficulty,
-                                     String prepTime, String rating) {
-       // Validate title
-       if (title == null || title.trim().isEmpty()) {
-           return "Recipe title cannot be empty!";
-       }
 
-       // Check for duplicate recipes (title + cuisine + difficulty)
-       for (RecipeData existingRecipe : model.getAllRecipes()) {
-            if (existingRecipe.getTitle().equalsIgnoreCase(title.trim()) &&
-                existingRecipe.getCuisine().equalsIgnoreCase(cuisine.trim()) &&
-                existingRecipe.getDifficulty().equalsIgnoreCase(difficulty.trim())) {
-                return "A recipe with this title, cuisine, and difficulty already exists!";
-            }
+    /*
+    this method deletes a specific request based on username and title
+    it takes username and title strings to uniquely identify the request saved earlier
+    it uses validate helper to search the matching object then asks the model to remove it
+    it returns true when a request was actually removed or false if no matching request exists
+    */
+    public boolean deleteRequest(String username, String title) {
+        RecipeRequest target = validator.findRequest(getAllRequests(), username, title);
+        if (target == null) {
+            return false;
+        }
+        return model.removeRequest(target);
+    }
+
+    /*
+    this method changes the status of a stored request to pending updated or cancelled
+    it takes username and title to find the request and newStatus as the new state text
+    it first checks that the status word is allowed then finds the request and updates its status field
+    it returns true when update is successful or false if status is invalid or request is not found
+    */
+    public boolean updateRequestStatus(String username, String title, String newStatus) {
+        if (!validator.status(newStatus)) {
+            return false;
+        }
+        RecipeRequest target = validator.findRequest(getAllRequests(), username, title);
+        if (target == null) {
+            return false;
         }
 
-       // Validate cuisine
-       if (cuisine == null || cuisine.trim().isEmpty()) {
-           return "Cuisine type cannot be empty!";
-       }
+        String s = newStatus.trim().toLowerCase();
+        if (s.equals("pending")) {
+            target.setStatus("Pending");
+        } else if (s.equals("updated")) {
+            target.setStatus("Updated");
+        } else if (s.equals("cancelled")) {
+            target.setStatus("Cancelled");
+        }
+        return true;
+    }
 
-       // Validate difficulty
-       if (difficulty == null || difficulty.trim().isEmpty()) {
-           return "Difficulty level cannot be empty!";
-       }
-
-       String difficultyLower = difficulty.trim().toLowerCase();
-       if (!difficultyLower.equals("easy") && 
-           !difficultyLower.equals("medium") && 
-           !difficultyLower.equals("hard")) {
-           return "Difficulty must be Easy, Medium, or Hard!";
-       }
-
-       // Validate preparation time
-       if (prepTime == null || prepTime.trim().isEmpty()) {
-           return "Preparation time cannot be empty!";
-       }
-
-       try {
-           int time = Integer.parseInt(prepTime.trim());
-           if (time <= 0) {
-               return "Preparation time must be a positive number!";
-           }
-           if (time > 1440) { // 24 hours in minutes
-               return "Preparation time seems unreasonably long (max 1440 minutes)!";
-           }
-       } catch (NumberFormatException e) {
-           return "Preparation time must be a valid number! Please enter only digits.";
-       }
-
-       // Validate rating
-       if (rating == null || rating.trim().isEmpty()) {
-           return "Rating cannot be empty!";
-       }
-
-       try {
-           double rate = Double.parseDouble(rating.trim());
-           if (rate < 0.0 || rate > 5.0) {
-               return "Rating must be between 0.0 and 5.0!";
-           }
-       } catch (NumberFormatException e) {
-           return "Rating must be a valid decimal number (e.g., 4.5)!";
-       }
-
-       return "valid";
-   }
-
-   /**
-    * Update recipe with duplicate check
+    /*
+    this method checks login credentials and decides what role to give
+    it takes username and password strings entered in the login form
+    it delegates all detailed checks to validate class and just returns whatever message it gets
     */
+    public String validateLogin(String username, String password) {
+        return validator.login(username, password);
+    }
 
-   public boolean updateRecipe(int id, String title, String cuisine, String difficulty,int prepTime, double rating, String imagePath,String ingredients, String process) {
-        // Check for duplicate (title + cuisine + difficulty), excluding current recipe
-        for (RecipeData existingRecipe : model.getAllRecipes()) {
-            if (existingRecipe.getId() != id && 
-                existingRecipe.getTitle().equalsIgnoreCase(title.trim()) &&
-                existingRecipe.getCuisine().equalsIgnoreCase(cuisine.trim()) &&
-                existingRecipe.getDifficulty().equalsIgnoreCase(difficulty.trim())) {
+    /*
+    this method adds a new recipe after checking all input fields carefully
+    it takes title cuisine difficulty prepTime rating imagePath ingredients and process as strings from ui form
+    it validates everything using validate class then manually converts prepTime and rating and finally builds a recipedata object and stores it
+    it returns "success" when recipe is added or an error message string when validation fails
+    */
+    public String addRecipe(String title, String cuisine, String difficulty,String prepTime, String rating, String imagePath,String ingredients, String process) {
+
+        String msg = validator.recipeFields(title, cuisine, difficulty, prepTime, rating);
+        if (!msg.equals("valid")) {
+            return msg;
+        }
+
+        String img = imagePath;
+        if (img == null || img.trim().length() == 0) {
+            img = "/img/default.png";
+        }
+
+        String t = title.trim();
+        String c = cuisine.trim();
+        String d = difficulty.trim();
+        String pt = prepTime.trim();
+        String rt = rating.trim();
+
+        int prep = validator.parseIntManual(pt);
+        double rate = validator.parseDoubleManual(rt);
+
+        String ing = "";
+        String pro = "";
+
+        if (ingredients != null) {
+            ing = ingredients.trim();
+        }
+        if (process != null) {
+            pro = process.trim();
+        }
+
+        RecipeData r = new RecipeData(t, c, d, prep, rate, img.trim(), ing, pro);
+        model.addRecipe(r);
+        return "success";
+    }
+
+    /*
+    this method updates an existing recipe with new details while preventing duplicates
+    it takes recipe id and new title cuisine difficulty prepTime rating imagePath ingredients and process
+    it first scans all recipes to make sure no other record has exactly same title cuisine and difficulty then forwards the update to the model
+    it returns true when model updates successfully or throws an exception if a duplicate combination is found
+    */
+    public boolean updateRecipe(int id, String title, String cuisine, String difficulty,int prepTime, double rating, String imagePath,String ingredients, String process) {
+
+        List<RecipeData> all = model.getAllRecipes();
+        int i = 0;
+        String t = title.trim();
+        String c = cuisine.trim();
+        String d = difficulty.trim();
+
+        while (i < all.size()) {
+            RecipeData r = all.get(i);
+            if (r.getId() != id &&
+                r.getTitle().equalsIgnoreCase(t) &&
+                r.getCuisine().equalsIgnoreCase(c) &&
+                r.getDifficulty().equalsIgnoreCase(d)) {
                 throw new IllegalArgumentException(
                     "A recipe with this title, cuisine, and difficulty already exists!");
             }
+            i = i + 1;
         }
 
-        RecipeData recipe = model.getRecipeById(id);
-        return model.updateRecipe(id, title, cuisine, difficulty, prepTime, 
-                                rating, imagePath, ingredients, process);
+        return model.updateRecipe(id, title, cuisine, difficulty,
+                                  prepTime, rating, imagePath, ingredients, process);
     }
-    
-    /**
-     * Adds a new recipe after validation
-     */
-    public String addRecipe(String title, String cuisine, String difficulty,
-                           String prepTime, String rating, String imagePath,
-                           String ingredients, String process) {
-        // Validate first
-        String validation = validateRecipeFields(title, cuisine, difficulty, prepTime, rating);
-        if (!validation.equals("valid")) {
-            return validation;
-        }
-        
-        // Set default image if empty
-        if (imagePath == null || imagePath.trim().isEmpty()) {
-            imagePath = "/img/default.png";
-        }
-        
-        // Create and add recipe
-        RecipeData recipe = new RecipeData(
-            title.trim(),
-            cuisine.trim(),
-            difficulty.trim(),
-            Integer.parseInt(prepTime.trim()),
-            Double.parseDouble(rating.trim()),
-            imagePath.trim(),
-            ingredients != null ? ingredients.trim() : "",
-            process != null ? process.trim() : ""
-        );
-        
-        model.addRecipe(recipe);
-        return "success";
-    }
-    
-    /**
-     * Deletes a recipe by ID
-     */
+
+    /*
+    this method removes a recipe from storage using its id
+    it takes the integer id of the recipe row in your model
+    it returns true when model finds and deletes it or false when nothing matched that id
+    */
     public boolean deleteRecipe(int id) {
         return model.deleteRecipe(id);
     }
-    
-    /**
-     * Retrieves a recipe by ID
-     */
+
+    /*
+    this method fetches a single recipe for viewing or editing
+    it takes the recipe id as integer
+    it returns the recipedata object from the model or null when id is not present
+    */
     public RecipeData getRecipeById(int id) {
         return model.getRecipeById(id);
     }
-    
-    /**
-     * Gets all recipes
-     */
+
+    /*
+    this method gives full list of recipes stored in the app
+    it does not change the data and simply returns what model keeps
+    it returns list of recipedata so ui can show cards or table directly
+    */
     public List<RecipeData> getAllRecipes() {
         return model.getAllRecipes();
     }
-    
-    /**
-     * Gets recently added recipes
-     */
+
+    /*
+    this method gives the latest few recipes that were added
+    it takes count as integer which tells how many recent items to fetch
+    it returns a list of those recipes according to internal rules in the model
+    */
     public List<RecipeData> getRecentlyAdded(int count) {
         return model.getRecentlyAdded(count);
     }
-    
-    /**
- * Sorts recipes by name using Merge Sort
- */
+
+    /*
+    this method returns recipes sorted by title from a to z
+    it simply forwards the full recipe list to sort helper and gets a new sorted copy
+    it returns that sorted list so ui can display alphabetically
+    */
     public List<RecipeData> sortRecipesByName() {
-        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
-        mergeSortByName(recipes, 0, recipes.size() - 1);
-        return recipes;
+        return sorter.sortByNameAsc(model.getAllRecipes());
     }
 
-    // In AppController
+    /*
+    this method returns recipes sorted by title from z to a
+    it uses sort helper to reverse the order of name sort
+    it returns a new list in descending alphabetical order
+    */
     public List<RecipeData> getRecipesSortedByNameDesc() {
-        List<RecipeData> list = new ArrayList<>(model.getAllRecipes());
-        // merge sort already makes A-Z
-        mergeSortByName(list, 0, list.size() - 1);
-        // manual reverse to stay inside controller, no Swing
-        List<RecipeData> reversed = new ArrayList<>();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            reversed.add(list.get(i));
-        }
-        return reversed;
+        return sorter.sortByNameDesc(model.getAllRecipes());
     }
 
-    
-    private void mergeSortByName(List<RecipeData> recipes, int left, int right) {
-        if (left < right) {
-            int mid = (left + right) / 2;
-            mergeSortByName(recipes, left, mid);
-            mergeSortByName(recipes, mid + 1, right);
-            mergeByName(recipes, left, mid, right);
-        }
-    }
-
-    private void mergeByName(List<RecipeData> recipes, int left, int mid, int right) {
-        List<RecipeData> leftList = new ArrayList<>(recipes.subList(left, mid + 1));
-        List<RecipeData> rightList = new ArrayList<>(recipes.subList(mid + 1, right + 1));
-
-        int i = 0, j = 0, k = left;
-
-        while (i < leftList.size() && j < rightList.size()) {
-            if (leftList.get(i).getTitle().compareToIgnoreCase(rightList.get(j).getTitle()) <= 0) {
-                recipes.set(k++, leftList.get(i++));
-            } else {
-                recipes.set(k++, rightList.get(j++));
-            }
-        }
-
-        while (i < leftList.size()) {
-            recipes.set(k++, leftList.get(i++));
-        }
-
-        while (j < rightList.size()) {
-            recipes.set(k++, rightList.get(j++));
-        }
-    }
-
-    /**
-     * Sorts recipes by preparation time using Selection Sort
-     */
+    /*
+    this method returns recipes sorted by preparation time
+    it calls sort helper which uses selection sort based on prepTime field
+    it returns a new list ordered from shortest time to longest time
+    */
     public List<RecipeData> sortRecipesByTime() {
-        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
-        selectionSortByTime(recipes);
-        return recipes;
+        return sorter.sortByTimeAsc(model.getAllRecipes());
     }
 
-    private void selectionSortByTime(List<RecipeData> recipes) {
-        for (int i = 0; i < recipes.size() - 1; i++) {
-            int minIdx = i;
-            for (int j = i + 1; j < recipes.size(); j++) {
-                if (recipes.get(j).getPrepTime() < recipes.get(minIdx).getPrepTime()) {
-                    minIdx = j;
-                }
-            }
-            if (minIdx != i) {
-                RecipeData temp = recipes.get(i);
-                recipes.set(i, recipes.get(minIdx));
-                recipes.set(minIdx, temp);
-            }
-        }
-    }
-
-    /**
-     * Sorts recipes by rating using Merge Sort (descending)
-     */
+    /*
+    this method returns recipes sorted by rating from best to worst
+    it calls sort helper that uses merge sort based on rating field
+    it returns a new list ordered from highest rating to lowest rating
+    */
     public List<RecipeData> sortRecipesByRating() {
-        List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
-        mergeSortByRating(recipes, 0, recipes.size() - 1);
-        return recipes;
+        return sorter.sortByRatingDesc(model.getAllRecipes());
     }
 
-    private void mergeSortByRating(List<RecipeData> recipes, int left, int right) {
-        if (left < right) {
-            int mid = (left + right) / 2;
-            mergeSortByRating(recipes, left, mid);
-            mergeSortByRating(recipes, mid + 1, right);
-            mergeByRating(recipes, left, mid, right);
-        }
-    }
-
-    private void mergeByRating(List<RecipeData> recipes, int left, int mid, int right) {
-        List<RecipeData> leftList = new ArrayList<>(recipes.subList(left, mid + 1));
-        List<RecipeData> rightList = new ArrayList<>(recipes.subList(mid + 1, right + 1));
-
-        int i = 0, j = 0, k = left;
-
-        while (i < leftList.size() && j < rightList.size()) {
-            // Descending order
-            if (leftList.get(i).getRating() >= rightList.get(j).getRating()) {
-                recipes.set(k++, leftList.get(i++));
-            } else {
-                recipes.set(k++, rightList.get(j++));
-            }
-        }
-
-        while (i < leftList.size()) {
-            recipes.set(k++, leftList.get(i++));
-        }
-
-        while (j < rightList.size()) {
-            recipes.set(k++, rightList.get(j++));
-        }
-    }
-    
-    // Z-A sorting using INSERTION SORT - NO LAMBDAS
-    public List<RecipeRequest> sortRequestsByNameDesc() {
-        List<RecipeRequest> list = new ArrayList<>(getAllRequests());
-
-        // Insertion Sort for descending order (Z-A)
-        for (int i = 1; i < list.size(); i++) {
-            RecipeRequest key = list.get(i);
-            int j = i - 1;
-
-            // Move elements that are smaller than key to one position ahead
-            while (j >= 0 && list.get(j).getTitle().compareToIgnoreCase(key.getTitle()) < 0) {
-                list.set(j + 1, list.get(j));
-                j = j - 1;
-            }
-            list.set(j + 1, key);
-        }
-
-        return list;
-    }
-
-    // A-Z sorting using INSERTION SORT - NO LAMBDAS
+    /*
+    this method returns requests sorted by title from a to z
+    it collects all requests then calls sort helper for insertion sort by title
+    it returns a new list where first items are earliest letters like a or b
+    */
     public List<RecipeRequest> sortRequestsByNameAsc() {
-        List<RecipeRequest> list = new ArrayList<>(getAllRequests());
-
-        // Insertion Sort for ascending order (A-Z)
-        for (int i = 1; i < list.size(); i++) {
-            RecipeRequest key = list.get(i);
-            int j = i - 1;
-
-            // Move elements that are greater than key to one position ahead
-            while (j >= 0 && list.get(j).getTitle().compareToIgnoreCase(key.getTitle()) > 0) {
-                list.set(j + 1, list.get(j));
-                j = j - 1;
-            }
-            list.set(j + 1, key);
-        }
-
-        return list;
+        return sorter.sortRequestsByNameAsc(getAllRequests());
     }
-    
-    /**
-    * Linear Search for partial title matches
+
+    /*
+    this method returns requests sorted by title from z to a
+    it collects all requests and lets sort helper order them descending
+    it returns a new list where first items start from last letters like z or y
     */
-   public List<RecipeData> searchRecipesByTitle(String query) {
-       if (query == null || query.trim().isEmpty()) {
-           return model.getAllRecipes();
-       }
+    public List<RecipeRequest> sortRequestsByNameDesc() {
+        return sorter.sortRequestsByNameDesc(getAllRequests());
+    }
 
-       String lowerQuery = query.trim().toLowerCase();
-       List<RecipeData> results = new ArrayList<>();
-
-       // Linear search for partial matches
-       for (RecipeData recipe : model.getAllRecipes()) {
-           if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
-               results.add(recipe);
-           }
-       }
-
-       return results;
-   }
-
-   /**
-    * Binary Search for exact cuisine match (requires sorted list)
+    /*
+    this method finds recipes whose titles contain some text
+    it takes search query string typed by user in search box
+    it calls search helper which runs a manual linear scan on titles and returns matching recipes
     */
-   public List<RecipeData> searchRecipesByCuisine(String cuisine) {
-       if (cuisine == null || cuisine.trim().isEmpty()) {
-           return model.getAllRecipes();
-       }
+    public List<RecipeData> searchRecipesByTitle(String query) {
+        return searcher.byTitle(model.getAllRecipes(), query);
+    }
 
-       List<RecipeData> allRecipes = sortRecipesByCuisine(); // Sort first
-       List<RecipeData> results = new ArrayList<>();
-
-       String lowerCuisine = cuisine.trim().toLowerCase();
-
-       // Binary search for first occurrence
-       int index = binarySearchCuisine(allRecipes, lowerCuisine);
-
-       if (index != -1) {
-           // Add all recipes with matching cuisine
-           int i = index;
-           while (i >= 0 && allRecipes.get(i).getCuisine().toLowerCase().equals(lowerCuisine)) {
-               results.add(0, allRecipes.get(i));
-               i--;
-           }
-
-           i = index + 1;
-           while (i < allRecipes.size() && 
-                  allRecipes.get(i).getCuisine().toLowerCase().equals(lowerCuisine)) {
-               results.add(allRecipes.get(i));
-               i++;
-           }
-       }
-
-       return results;
-   }
-
-   private List<RecipeData> sortRecipesByCuisine() {
-       List<RecipeData> recipes = new ArrayList<>(model.getAllRecipes());
-       recipes.sort((r1, r2) -> r1.getCuisine().compareToIgnoreCase(r2.getCuisine()));
-       return recipes;
-   }
-
-   private int binarySearchCuisine(List<RecipeData> recipes, String cuisine) {
-       int left = 0;
-       int right = recipes.size() - 1;
-
-       while (left <= right) {
-           int mid = left + (right - left) / 2;
-           int comparison = recipes.get(mid).getCuisine().toLowerCase().compareTo(cuisine);
-
-           if (comparison == 0) {
-               return mid;
-           } else if (comparison < 0) {
-               left = mid + 1;
-           } else {
-               right = mid - 1;
-           }
-       }
-
-       return -1;
-   }
-
-   /**
-    * Multi-criteria search using Linear Search
+    /*
+    this method finds recipes that match a given cuisine name exactly
+    it takes cuisine text like nepali indian or italian
+    it first sorts recipes by cuisine with selection sort then calls binary search helper to find all matches
+    it returns list of all recipes whose cuisine equals the given text ignoring case
     */
-   public List<RecipeData> searchRecipes(String title, String cuisine, String difficulty) {
-       List<RecipeData> results = new ArrayList<>();
-
-       boolean searchTitle = title != null && !title.trim().isEmpty();
-       boolean searchCuisine = cuisine != null && !cuisine.trim().isEmpty();
-       boolean searchDifficulty = difficulty != null && !difficulty.trim().isEmpty();
-
-       String lowerTitle = searchTitle ? title.trim().toLowerCase() : "";
-       String lowerCuisine = searchCuisine ? cuisine.trim().toLowerCase() : "";
-       String lowerDifficulty = searchDifficulty ? difficulty.trim().toLowerCase() : "";
-
-       for (RecipeData recipe : model.getAllRecipes()) {
-           boolean matches = true;
-
-           if (searchTitle) {
-               matches = matches && recipe.getTitle().toLowerCase().contains(lowerTitle);
-           }
-
-           if (searchCuisine) {
-               matches = matches && recipe.getCuisine().toLowerCase().contains(lowerCuisine);
-           }
-
-           if (searchDifficulty) {
-               matches = matches && recipe.getDifficulty().toLowerCase().equals(lowerDifficulty);
-           }
-
-           if (matches) {
-               results.add(recipe);
-           }
-       }
-
-       return results;
-   }
-    
-    // ===== Recipe Request Logic =====
-    
-    /**
-     * Gets all recipe requests
-     */
-    public List<RecipeRequest> getAllRequests() {
-        RecipeRequest[] arr = model.getAllRequestsArray();
-        List<RecipeRequest> list = new ArrayList<>();
-        for (RecipeRequest r : arr) {
-            list.add(r);
-        }
-        return list;
+    public List<RecipeData> searchRecipesByCuisine(String cuisine) {
+        List<RecipeData> all = sorter.sortByCuisineName(model.getAllRecipes());
+        return searcher.byCuisine(all, cuisine);
     }
 
-   
-    public List<RecipeData> getHistorySortedByName() {
-        List<RecipeData> history = new ArrayList<>(model.getHistory());
-        mergeSortByName(history, 0, history.size() - 1);
-        return history;
+    /*
+    this method searches using title cuisine and difficulty at once
+    it takes three filter strings which may be empty or null
+    it returns only those recipes that satisfy every filter that user actually filled
+    */
+    public List<RecipeData> searchRecipes(String title, String cuisine, String difficulty) {
+        return searcher.multi(model.getAllRecipes(), title, cuisine, difficulty);
     }
 
-    public List<RecipeData> getHistorySortedByTime() {
-        List<RecipeData> history = new ArrayList<>(model.getHistory());
-        selectionSortByTime(history);
-        return history;
-    }
-
-    public List<RecipeData> getHistorySortedByRating() {
-        List<RecipeData> history = new ArrayList<>(model.getHistory());
-        mergeSortByRating(history, 0, history.size() - 1);
-        return history;
-    }
-
-    private String capitalizeStatus(String s) {
-        s = s.trim().toLowerCase();
-        if (s.equals("pending")) return "Pending";
-        if (s.equals("updated")) return "Updated";
-        if (s.equals("cancelled")) return "Cancelled";
-        return s;
-    }
-    
-    public boolean deleteRequest(String username, String title) {
-        RecipeRequest target = null;
-        for (RecipeRequest req : getAllRequests()) {
-            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                target = req;
-                break;
-            }
-        }
-        if (target == null) return false;
-        return model.removeRequest(target);
-    }
-   
-    // ===== History Management Logic =====
-    
-    /**
-     * Adds a recipe to viewing history
-     */
+    /*
+    this method records that user viewed a recipe so it appears in history
+    it takes a recipedata object that user just clicked or opened
+    it simply passes this recipe to model history stack or list
+    */
     public void addToHistory(RecipeData recipe) {
         if (recipe != null) {
             model.addToHistory(recipe);
         }
     }
-    
-    /**
-     * Gets recipe viewing history
-     */
+
+    /*
+    this method gives the whole viewing history
+    it returns whatever list of recipes the model remembers as viewed
+    ui can use it to build a history panel or recent views section
+    */
     public List<RecipeData> getHistory() {
         return model.getHistory();
     }
-    
-    /**
-     * Clears viewing history
-     */
+
+    /*
+    this method clears all previously viewed history records
+    it tells the model to discard its history list
+    this is useful for a clear history button in settings
+    */
     public void clearHistory() {
         model.clearHistory();
     }
-    
-    /**
-     * Searches history by title
-     */
-    public List<RecipeData> searchHistory(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            return model.getHistory();
-        }
-        
-        String lowerQuery = query.trim().toLowerCase();
-        List<RecipeData> results = new java.util.ArrayList<>();
-        
-        for (RecipeData recipe : model.getHistory()) {
-            if (recipe.getTitle().toLowerCase().contains(lowerQuery)) {
-                results.add(recipe);
-            }
-        }
-        
-        return results;
+
+    /*
+    this method returns viewing history sorted by recipe name
+    it calls sort helper on the history list instead of full recipe list
+    it returns a new list where history entries are ordered from a to z
+    */
+    public List<RecipeData> getHistorySortedByName() {
+        return sorter.sortByNameAsc(model.getHistory());
     }
-    
-    // ===== Statistics Logic =====
-    
-    /**
-     * Marks a recipe as cooked
-     */
+
+    /*
+    this method returns viewing history sorted by prep time
+    it uses sort helper to reorder history from quickest recipes to slowest ones
+    it returns a new sorted list so ui can show which viewed recipes are fastest to cook
+    */
+    public List<RecipeData> getHistorySortedByTime() {
+        return sorter.sortByTimeAsc(model.getHistory());
+    }
+
+    /*
+    this method returns viewing history sorted by rating
+    it uses sort helper to arrange viewed recipes from highest rating to lowest rating
+    it returns a new list so ui can show the best rated viewed items first
+    */
+    public List<RecipeData> getHistorySortedByRating() {
+        return sorter.sortByRatingDesc(model.getHistory());
+    }
+
+    /*
+    this method increases the count of cooked recipes
+    it is intended to be called when user marks a recipe as cooked
+    it simply tells model to increment its cooked counter
+    */
     public void markRecipeAsCooked() {
         model.incrementCookedCount();
     }
-    
-    /**
-     * Gets count of cooked recipes
-     */
+
+    /*
+    this method reports how many recipes user has cooked in total
+    it returns the cooked count integer stored in the model
+    ui can use this number in stats cards or progress bars
+    */
     public int getCookedCount() {
         return model.getCookedCount();
     }
-    
-    /**
-     * Gets count of recipes yet to cook
-     */
+
+    /*
+    this method reports how many recipes are still left to cook
+    it returns yet to cook count integer from the model
+    this helps to show remaining recipes user has not tried
+    */
     public int getYetToCookCount() {
         return model.getYetToCookCount();
     }
-    
-    /**
-     * Gets total recipe count
-     */
+
+    /*
+    this method tells how many recipes are stored in total
+    it returns integer total recipe count from the model
+    it is useful for summary numbers in dashboard or header
+    */
     public int getTotalRecipes() {
         return model.getTotalRecipes();
     }
-    
-    /**
-     * Gets total request count
-     */
+
+    /*
+    this method tells how many recipe requests have been made
+    it returns integer total request count from the model
+    it can be used to show how active users are in requesting recipes
+    */
     public int getRequestCount() {
         return model.getRequestCount();
-    }
-    
-    public boolean isValidStatus(String status) {
-        if (status == null) return false;
-        String s = status.trim().toLowerCase();
-        return s.equals("pending") || s.equals("updated") || s.equals("cancelled");
-    }
-    
-    /**
-     * Updates request status
-     */
-    public boolean updateRequestStatus(RecipeRequest request, String newStatus) {
-       if (request == null || !isValidStatus(newStatus)) {
-           return false;
-       }
-       String s = newStatus.trim().toLowerCase();
-       if (s.equals("pending")) {
-           request.setStatus("Pending");
-       } else if (s.equals("updated")) {
-           request.setStatus("Updated");
-       } else if (s.equals("cancelled")) {
-           request.setStatus("Cancelled");
-       }
-       return true;
-    }
-    
-    public boolean updateRequestStatus(String username, String title, String newStatus) {
-        if (!isValidStatus(newStatus)) {
-            return false;
-        }
-        RecipeRequest target = null;
-        for (RecipeRequest req : getAllRequests()) {
-            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                target = req;
-                break;
-            }
-        }
-        if (target == null) {
-            return false;
-        }
-        return updateRequestStatus(target, newStatus);
     }
 }
