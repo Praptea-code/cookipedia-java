@@ -66,7 +66,7 @@ public class HistoryQueue {
         while (i >= front) {
             items[i + 1] = items[i];
             i = i - 1;
-        }
+        } 
         items[front] = element;
         rear = rear + 1;
         return true;

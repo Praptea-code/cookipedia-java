@@ -84,44 +84,6 @@ public class RequestQueue {
     }
 
     /*
-    this method removes a specific request from the queue if it exists
-    it takes target reciperequest reference to search between front and rear
-    it shifts later elements left to fill the gap and updates rear and front when needed and returns true on success
-    */
-    public boolean remove(RecipeRequest target) {
-        if (isEmpty()) {
-            return false;
-        }
-
-        int index = -1;
-        int i = front;
-        while (i <= rear) {
-            if (items[i] == target) {
-                index = i;
-                break;
-            }
-            i = i + 1;
-        }
-        if (index == -1) {
-            return false;
-        }
-
-        int j = index;
-        while (j < rear) {
-            items[j] = items[j + 1];
-            j = j + 1;
-        }
-        items[rear] = null;
-        rear = rear - 1;
-
-        if (rear < front) {
-            front = -1;
-            rear = -1;
-        }
-        return true;
-    }
-
-    /*
     this method copies all active requests from front to rear into a new array
     it returns an empty array when queue is empty or an array of exact active size when it has elements
     */

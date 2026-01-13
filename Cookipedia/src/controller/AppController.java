@@ -10,6 +10,10 @@ import model.RecipeRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import controller.RecipeDeleteStack;
+import java.util.LinkedList;
+import controller.RecentlyAddedQueue;
+
 
 /**
  *
@@ -21,7 +25,11 @@ private final AppModel model;
     private final Search searcher;
     private final Validate validator;
     private final RequestQueue requestQueue;
-
+    private final RecipeDeleteStack deletedRecipesStack;
+    private final LinkedList<RecipeRequest> pendingRequests; 
+    private final List<RecipeRequest> deletedRequestsList;
+    private final RecentlyAddedQueue recentlyAddedQueue;
+    
     /*
     this constructor prepares the controller with its own model and helper classes
     it creates a new appmodel object and passes it to validate
@@ -33,6 +41,10 @@ private final AppModel model;
         this.searcher = new Search();
         this.validator = new Validate(model);
         this.requestQueue = new RequestQueue(50);
+        this.deletedRecipesStack = new RecipeDeleteStack(20); 
+        this.pendingRequests = new LinkedList<>();
+        this.deletedRequestsList = new ArrayList<>(); 
+        this.recentlyAddedQueue = new RecentlyAddedQueue(4);
     }
 
     /*
@@ -72,6 +84,7 @@ private final AppModel model;
         if (!ok) {
             return "Request queue is full!";
         }
+        pendingRequests.addFirst(req); 
         model.incrementRequestCount();
         return "success";
     }
@@ -93,19 +106,61 @@ private final AppModel model;
     }
 
     /*
-    this method deletes a specific request based on username and title
-    it takes username and title strings to uniquely identify the request saved earlier
-    it uses validate helper to search the matching object then asks the queue to remove it
-    it returns true when a request was actually removed or false if no matching request exists
+    this method permanently removes a cancelled request from the queue using dequeue
+    it takes username and title to identify the request
+    it first checks if request status is cancelled before allowing deletion
+    it dequeues all requests rebuilds queue without target and saves deleted request to list
+    it returns "success" when deleted or error message when not cancelled or not found
     */
-    public boolean deleteRequest(String username, String title) {
+    public String deleteRequest(String username, String title) {
         RecipeRequest target = validator.findRequest(getAllRequests(), username, title);
         if (target == null) {
-            return false;
+            return "Request not found!";
         }
-        return requestQueue.remove(target);
+
+        // CHECK IF STATUS IS CANCELLED ✅
+        if (!target.getStatus().equals("Cancelled")) {
+            return "Cannot delete! Request must be cancelled first.";
+        }
+
+        // Temporarily store all requests
+        List<RecipeRequest> temp = new ArrayList<>();
+        boolean found = false;
+
+        // Dequeue all requests ✅
+        while (!requestQueue.isEmpty()) {
+            RecipeRequest req = requestQueue.dequeue(); // DEQUEUE operation ✅
+
+            // Check if this is the one to delete
+            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
+                deletedRequestsList.add(req); // Save to deleted list ✅
+                pendingRequests.remove(req); // Remove from LinkedList
+                found = true;
+                // Don't add to temp (this deletes it)
+            } else {
+                temp.add(req); // Keep this one
+            }
+        }
+
+        // Re-enqueue all kept requests ✅
+        int i = 0;
+        while (i < temp.size()) {
+            requestQueue.enqueue(temp.get(i));
+            i = i + 1;
+        }
+
+        return found ? "success" : "Request not found!";
     }
 
+
+    /*
+    this method returns physically deleted requests that were removed using dequeue
+    it returns the list of requests that were permanently deleted from the queue
+    */
+    public List<RecipeRequest> getDeletedRequests() {
+        return new ArrayList<>(deletedRequestsList);
+    }
+    
     /*
     this method changes the status of a stored request to pending updated or cancelled
     it takes username and title to find the request and newStatus as the new state text
@@ -126,8 +181,10 @@ private final AppModel model;
             target.setStatus("Pending");
         } else if (s.equals("updated")) {
             target.setStatus("Updated");
+            pendingRequests.remove(target);
         } else if (s.equals("cancelled")) {
             target.setStatus("Cancelled");
+            pendingRequests.remove(target);
         }
         return true;
     }
@@ -179,7 +236,7 @@ private final AppModel model;
         }
 
         RecipeData r = new RecipeData(t, c, d, prep, rate, img.trim(), ing, pro);
-        model.addRecipe(r);
+        recentlyAddedQueue.enqueue(r);
         return "success";
     }
 
@@ -219,9 +276,36 @@ private final AppModel model;
     it returns true when model finds and deletes it or false when nothing matched that id
     */
     public boolean deleteRecipe(int id) {
+        RecipeData recipe = model.getRecipeById(id);
+        if (recipe != null) {
+            deletedRecipesStack.push(recipe);
+            recentlyAddedQueue.removeById(id);
+        }
         return model.deleteRecipe(id);
     }
+    
+    /*
+    this method restores the most recently deleted recipe
+    it pops from the delete stack and adds the recipe back to the model
+    it returns the restored recipe or null when no deleted recipes exist
+    */
+    public RecipeData undoLastDelete() {
+        RecipeData restored = deletedRecipesStack.pop();
+        if (restored != null) {
+            model.addRecipe(restored);
+        }
+        return restored;
+    }
 
+    /*
+    this method checks if undo is available
+    it returns true when there are deleted recipes that can be restored
+    */
+    public boolean canUndo() {
+        return !deletedRecipesStack.isEmpty();
+    }
+
+    
     /*
     this method fetches a single recipe for viewing or editing
     it takes the recipe id as integer
@@ -249,6 +333,34 @@ private final AppModel model;
         return model.getRecentlyAdded(count);
     }
 
+    /*
+    * this method returns recipes from the recently added queue
+    * it fetches the queue array and converts it to a list for ui display
+    * it returns list of most recently added recipes in fifo order
+    */
+   public List<RecipeData> getRecentlyAddedFromQueue() {
+       RecipeData[] arr = recentlyAddedQueue.toArray();
+       List<RecipeData> list = new ArrayList<>();
+       int i = 0;
+       while (i < arr.length) {
+           if (arr[i] != null) {
+               list.add(arr[i]);
+           }
+           i = i + 1;
+       }
+       return list;
+   }
+
+   /*
+    * this method removes the oldest recipe from recently added queue
+    * it uses dequeue operation to remove from front following fifo principle
+    * it returns the removed recipe or null if queue is empty
+    */
+   public RecipeData removeOldestFromRecentlyAdded() {
+       return recentlyAddedQueue.dequeue();
+   }
+
+    
     /*
     this method returns recipes sorted by title from a to z
     it simply forwards the full recipe list to sort helper and gets a new sorted copy
@@ -431,5 +543,13 @@ private final AppModel model;
     */
     public int getRequestCount() {
         return model.getRequestCount();
+    }
+    
+    /*
+    this method returns only pending requests from the linked list
+    it converts the linked list to an arraylist for the view layer
+    */
+    public List<RecipeRequest> getPendingRequests() {
+        return new ArrayList<>(pendingRequests);
     }
 }
