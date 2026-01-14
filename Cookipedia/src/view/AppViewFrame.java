@@ -722,6 +722,28 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
     
     /*
+    this method handles clear button for deleted requests table
+    it pops the most recently deleted request from the delete stack and reloads the table
+    it is useful to demonstrate lifo clearing of deleted requests one by one
+    */
+    private void clearDeletedRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        model.RecipeRequest removed = controller.popDeletedRequest();
+        if (removed != null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Cleared last deleted request:\n" + removed.getTitle(),
+                    "Clear Deleted Request",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadDeletedRequestsTable();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No deleted requests to clear!",
+                    "Clear Deleted Request",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    
+    /*
     this method loads all deleted cancelled requests into the deleted requests table
     it calls controller to get filtered cancelled requests and fills the table rows
     */
@@ -1611,7 +1633,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         updateStatusBtn1.setBackground(new java.awt.Color(153, 51, 0));
         updateStatusBtn1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         updateStatusBtn1.setForeground(new java.awt.Color(255, 255, 255));
-        updateStatusBtn1.setText("Clear");
+        updateStatusBtn1.setText("Delete");
         updateStatusBtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateStatusBtn1ActionPerformed(evt);
@@ -3146,7 +3168,19 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void updateStatusBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtn1ActionPerformed
-        // TODO add your handling code here:
+        model.RecipeRequest removed = controller.popDeletedRequest();
+        if (removed != null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Removed from Deleted Requests (LIFO):\n" + removed.getTitle(),
+                    "Deleted Request Removed",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            loadDeletedRequestsTable();  // refresh table from stack snapshot
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No deleted requests to remove!",
+                    "Deleted Requests",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_updateStatusBtn1ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed

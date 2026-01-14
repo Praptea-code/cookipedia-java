@@ -21,7 +21,9 @@ import controller.RecentlyAddedQueue;
  */
 public class AppController {
 private final AppModel model;
-    private final Sort sorter;
+    private final MergeSort mergeSort;
+    private final SelectionSort selectionSort;
+    private final InsertionSort insertionSort;
     private final Search searcher;
     private final Validate validator;
     private final RequestQueue requestQueue;
@@ -37,7 +39,9 @@ private final AppModel model;
     */
     public AppController() {
         this.model = new AppModel();
-        this.sorter = new Sort();
+        this.mergeSort = new MergeSort();
+        this.selectionSort = new SelectionSort();
+        this.insertionSort = new InsertionSort();
         this.searcher = new Search();
         this.validator = new Validate(model);
         this.requestQueue = new RequestQueue(50);
@@ -116,7 +120,7 @@ private final AppModel model;
     this method permanently removes a cancelled request from the queue using dequeue
     it takes username and title to identify the request
     it first checks if request status is cancelled before allowing deletion
-    it dequeues all requests rebuilds queue without target and saves deleted request to list
+    it dequeues all requests rebuilds queue without target and saves deleted request to stack
     it returns "success" when deleted or error message when not cancelled or not found
     */
     public String deleteRequest(String username, String title) {
@@ -125,31 +129,29 @@ private final AppModel model;
             return "Request not found!";
         }
 
-        // CHECK IF STATUS IS CANCELLED ✅
         if (!target.getStatus().equals("Cancelled")) {
             return "Cannot delete! Request must be cancelled first.";
         }
 
-        // Temporarily store all requests
         List<RecipeRequest> temp = new ArrayList<>();
         boolean found = false;
 
-        // Dequeue all requests ✅
+        // Dequeue all requests from requestQueue
         while (!requestQueue.isEmpty()) {
-            RecipeRequest req = requestQueue.dequeue(); // DEQUEUE operation ✅
+            RecipeRequest req = requestQueue.dequeue();
 
-            // Check if this is the one to delete
             if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                deletedRequestsList.add(req); // Save to deleted list ✅
-                pendingRequests.remove(req); // Remove from LinkedList
+                // push deleted request onto stack following lifo principle
+                deletedRequestsStack.push(req);
+                pendingRequests.remove(req);
                 found = true;
-                // Don't add to temp (this deletes it)
+                // do not add this one back to temp so it is deleted
             } else {
-                temp.add(req); // Keep this one
+                temp.add(req);
             }
         }
 
-        // Re-enqueue all kept requests ✅
+        // Re-enqueue all kept requests back into requestQueue
         int i = 0;
         while (i < temp.size()) {
             requestQueue.enqueue(temp.get(i));
@@ -158,15 +160,33 @@ private final AppModel model;
 
         return found ? "success" : "Request not found!";
     }
-
-
+    
     /*
-    this method returns physically deleted requests that were removed using dequeue
-    it returns the list of requests that were permanently deleted from the queue
+    this method returns deleted requests that were removed using deleteRequest
+    it builds a list from the internal delete stack from most recent to oldest
+    it is useful for filling the deleted requests table in the admin panel
     */
     public List<RecipeRequest> getDeletedRequests() {
-        return new ArrayList<>(deletedRequestsList);
+        RecipeRequest[] arr = deletedRequestsStack.toArray();
+        List<RecipeRequest> list = new ArrayList<RecipeRequest>();
+
+        int i = arr.length - 1;
+        while (i >= 0) {
+            list.add(arr[i]);
+            i = i - 1;
+        }
+        return list;
     }
+
+    /*
+    this method removes the most recently deleted request from the delete stack
+    it uses pop operation so last deleted request is cleared first following lifo principle
+    it returns the removed request or null when no deleted requests exist
+    */
+    public RecipeRequest popDeletedRequest() {
+        return deletedRequestsStack.pop();
+    }
+
     
     /*
     this method changes the status of a stored request to pending updated or cancelled
@@ -414,56 +434,56 @@ private final AppModel model;
     
     /*
     this method returns recipes sorted by title from a to z
-    it simply forwards the full recipe list to sort helper and gets a new sorted copy
-    it returns that sorted list so ui can display alphabetically
+    it uses merge sort helper to order full model list by title field
+    it is used in admin section to show recipes alphabetically
     */
     public List<RecipeData> sortRecipesByName() {
-        return sorter.sortByNameAsc(model.getAllRecipes());
+        return mergeSort.mergeSortByNameAsc(model.getAllRecipes());
     }
 
     /*
     this method returns recipes sorted by title from z to a
-    it uses sort helper to reverse the order of name sort
-    it returns a new list in descending alphabetical order
+    it calls merge sort helper for descending title order
+    it is used when admin selects sort by name descending
     */
     public List<RecipeData> getRecipesSortedByNameDesc() {
-        return sorter.sortByNameDesc(model.getAllRecipes());
+        return mergeSort.mergeSortByNameDesc(model.getAllRecipes());
     }
 
     /*
     this method returns recipes sorted by preparation time
-    it calls sort helper which uses selection sort based on prepTime field
-    it returns a new list ordered from shortest time to longest time
+    it calls selection sort helper based on prepTime field
+    it is used to show quickest recipes first in admin or user views
     */
     public List<RecipeData> sortRecipesByTime() {
-        return sorter.sortByTimeAsc(model.getAllRecipes());
+        return selectionSort.selectionSortByTimeAsc(model.getAllRecipes());
     }
 
     /*
     this method returns recipes sorted by rating from best to worst
-    it calls sort helper that uses merge sort based on rating field
-    it returns a new list ordered from highest rating to lowest rating
+    it calls merge sort helper that sorts by rating in descending order
+    it is used to display top rated recipes at the top of the list
     */
     public List<RecipeData> sortRecipesByRating() {
-        return sorter.sortByRatingDesc(model.getAllRecipes());
+        return mergeSort.mergeSortByRatingDesc(model.getAllRecipes());
     }
 
     /*
     this method returns requests sorted by title from a to z
-    it collects all requests then calls sort helper for insertion sort by title
-    it returns a new list where first items are earliest letters like a or b
+    it collects all requests and uses insertion sort helper on their title field
+    it is used in admin request table when sorting in ascending order
     */
     public List<RecipeRequest> sortRequestsByNameAsc() {
-        return sorter.sortRequestsByNameAsc(getAllRequests());
+        return insertionSort.insertionSortByNameAsc(getAllRequests());
     }
 
     /*
     this method returns requests sorted by title from z to a
-    it collects all requests and lets sort helper order them descending
-    it returns a new list where first items start from last letters like z or y
+    it uses insertion sort helper to arrange requests in reverse alphabetical order
+    it is used in admin request table when sorting in descending order
     */
     public List<RecipeRequest> sortRequestsByNameDesc() {
-        return sorter.sortRequestsByNameDesc(getAllRequests());
+        return insertionSort.insertionSortByNameDesc(getAllRequests());
     }
 
     /*
@@ -476,13 +496,13 @@ private final AppModel model;
     }
 
     /*
-    this method finds recipes that match a given cuisine name exactly
-    it takes cuisine text like nepali indian or italian
-    it first sorts recipes by cuisine with selection sort then calls binary search helper to find all matches
-    it returns list of all recipes whose cuisine equals the given text ignoring case
+    this method returns recipes that match a given cuisine exactly
+    it first sorts recipes by cuisine using selection sort then uses binary search in search class
+    it is used in cuisine search feature so binary search works on sorted cuisine list
     */
     public List<RecipeData> searchRecipesByCuisine(String cuisine) {
-        List<RecipeData> all = sorter.sortByCuisineName(model.getAllRecipes());
+        List<RecipeData> all =
+                selectionSort.selectionSortByCuisineName(model.getAllRecipes());
         return searcher.byCuisine(all, cuisine);
     }
 
@@ -526,29 +546,29 @@ private final AppModel model;
 
     /*
     this method returns viewing history sorted by recipe name
-    it calls sort helper on the history list instead of full recipe list
-    it returns a new list where history entries are ordered from a to z
+    it calls merge sort helper on history list instead of full recipe list
+    it is used in history tab when user chooses sort by name
     */
     public List<RecipeData> getHistorySortedByName() {
-        return sorter.sortByNameAsc(model.getHistory());
+        return mergeSort.mergeSortByNameAsc(model.getHistory());
     }
 
     /*
     this method returns viewing history sorted by prep time
-    it uses sort helper to reorder history from quickest recipes to slowest ones
-    it returns a new sorted list so ui can show which viewed recipes are fastest to cook
+    it calls selection sort helper on history to order from quickest to slowest
+    it is used in history tab when user selects sort by time
     */
     public List<RecipeData> getHistorySortedByTime() {
-        return sorter.sortByTimeAsc(model.getHistory());
+        return selectionSort.selectionSortByTimeAsc(model.getHistory());
     }
 
     /*
     this method returns viewing history sorted by rating
-    it uses sort helper to arrange viewed recipes from highest rating to lowest rating
-    it returns a new list so ui can show the best rated viewed items first
+    it calls merge sort helper on history so highest rated viewed recipes appear first
+    it is used in history tab when user selects sort by rating
     */
     public List<RecipeData> getHistorySortedByRating() {
-        return sorter.sortByRatingDesc(model.getHistory());
+        return mergeSort.mergeSortByRatingDesc(model.getHistory());
     }
 
     /*
