@@ -43,7 +43,7 @@ private final AppModel model;
         this.requestQueue = new RequestQueue(50);
         this.deletedRecipesStack = new RecipeDeleteStack(20); 
         this.pendingRequests = new LinkedList<>();
-        this.deletedRequestsList = new ArrayList<>(); 
+        this.deletedRequestsStack = new RequestDeleteStack(50); 
         this.recentlyAddedQueue = new RecentlyAddedQueue(100);
         
         List<RecipeData> allAtStart = model.getAllRecipes();
