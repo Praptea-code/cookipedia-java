@@ -11,9 +11,9 @@ import model.RecipeData;
  * @author Acer
  */
 public class RecentlyAddedQueue {
-    private final RecipeData[] items; // fixed size array to hold recipes
-    private final int capacity;       // maximum number of recipes allowed
-    private int size;                 // current number of recipes stored
+    private final RecipeData[] items; 
+    private final int capacity;       
+    private int size;                
 
     /*
      * this constructor creates a new empty queue with given capacity
@@ -39,7 +39,7 @@ public class RecentlyAddedQueue {
 
         // when full, drop the oldest by shifting everything one step to left
         if (isFull()) {
-            // shift items[1]..items[size-1] to items[0]..items[size-2]
+            // shift items
             int i = 1;
             while (i < size) {
                 items[i - 1] = items[i];
@@ -91,7 +91,7 @@ public class RecentlyAddedQueue {
         int index = 0;
         boolean found = false;
 
-        // find the index of the recipe to delete
+        //finding the index of the recipe to delete
         while (index < size) {
             RecipeData current = items[index];
             if (current != null && current.getId() == recipeId) {
@@ -105,7 +105,7 @@ public class RecentlyAddedQueue {
             return false;
         }
 
-        // shift elements after index to the left
+        // shifting elements after index to the left
         int i = index + 1;
         while (i < size) {
             items[i - 1] = items[i];

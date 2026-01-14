@@ -46,9 +46,9 @@ public class AppViewFrame extends javax.swing.JFrame {
 
 
     /*
-        this constructor sets up the main application frame
-        it initializes swing components and layouts and prepares home, history and admin sections
-        it is useful as the entry point for building the full ui before any interaction
+    this constructor sets up the main application frame
+    it initializes swing components and layouts and prepares home, history and admin sections
+    it is useful as the entry point for building the full ui before any interaction
     */
     public AppViewFrame() {
         initComponents();                  
@@ -85,16 +85,16 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminProcessArea = processAdmin;
         adminRecipeTable = recipesTable;
         adminIngredientsArea = ingredientsAdmin;  
-        adminRecipeTable.setDefaultEditor(Object.class, null);  // inbuilt: JTable api
+        adminRecipeTable.setDefaultEditor(Object.class, null);  
         
         adminReqTable = reqTableAdmin;
-        reqHistoryTable.setDefaultEditor(Object.class, null);   // inbuilt: JTable api
+        reqHistoryTable.setDefaultEditor(Object.class, null);  
         adminReqTable.setDefaultEditor(Object.class, null);
         adminRecipeTable.setDefaultEditor(Object.class, null);
 
-        adminRecipeTable.getSelectionModel().addListSelectionListener(e -> { // inbuilt: ListSelectionModel
+        adminRecipeTable.getSelectionModel().addListSelectionListener(e -> { 
             if (!e.getValueIsAdjusting()) {
-                int selectedRow = adminRecipeTable.getSelectedRow();         // inbuilt: JTable api
+                int selectedRow = adminRecipeTable.getSelectedRow();         
                 if (selectedRow >= 0) {
                     populateRecipeFormFromTable(selectedRow);
                 }
@@ -109,29 +109,26 @@ public class AppViewFrame extends javax.swing.JFrame {
     */
     private void populateRecipeFormFromTable(int row) {
         try {
-            javax.swing.table.TableModel tableModel = adminRecipeTable.getModel();  // inbuilt: TableModel
-
-            // Validate row
+            javax.swing.table.TableModel tableModel = adminRecipeTable.getModel();  
             if (row < 0 || row >= tableModel.getRowCount()) {
                 return;
             }
 
-            // Get recipe ID safely
-            Object idValue = tableModel.getValueAt(row, 0);                          // inbuilt: TableModel api
+            Object idValue = tableModel.getValueAt(row, 0);                          
             if (idValue == null) {
                 System.err.println("Recipe ID is null at row " + row);
                 return;
             }
 
-            int recipeId = Integer.parseInt(idValue.toString());                     // inbuilt: Integer.parseInt
+            int recipeId = Integer.parseInt(idValue.toString());                     
             RecipeData recipe = controller.getRecipeById(recipeId);
 
             if (recipe != null) {
-                adminRecipeTable.putClientProperty("selectedRecipeId", recipe.getId()); // inbuilt: JComponent clientProperty
+                adminRecipeTable.putClientProperty("selectedRecipeId", recipe.getId()); 
                 adminTitleField.setText(recipe.getTitle() != null ? recipe.getTitle() : "");
                 adminCuisineField.setText(recipe.getCuisine() != null ? recipe.getCuisine() : "");
                 adminDifficultyField.setText(recipe.getDifficulty() != null ? recipe.getDifficulty() : "");
-                adminPrepTimeField.setText(String.valueOf(recipe.getPrepTime()));       // inbuilt: String.valueOf
+                adminPrepTimeField.setText(String.valueOf(recipe.getPrepTime()));       
                 adminRatingField.setText(String.valueOf(recipe.getRating()));
                 adminImagePathField.setText(recipe.getImagePath() != null ? recipe.getImagePath() : "");
                 adminIngredientsArea.setText(recipe.getIngredients() != null ? recipe.getIngredients() : "");
@@ -159,7 +156,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminDifficultyField.setText("");
         adminIngredientsArea.setText("");
         adminProcessArea.setText("");
-        adminRecipeTable.clearSelection();                         // inbuilt: JTable api
+        adminRecipeTable.clearSelection();                         
         adminRecipeTable.putClientProperty("selectedRecipeId", null);
     }
     
@@ -169,8 +166,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful to ensure consistent spacing and styling of home recipe cards
     */
     private void setupHomeCardLayouts() {
-        recentlyAddedPanel.setLayout(new java.awt.GridLayout(1, 3, 60, 0)); // inbuilt: GridLayout
-        recentlyAddedPanel.setBackground(java.awt.Color.WHITE);             // inbuilt: Color
+        recentlyAddedPanel.setLayout(new java.awt.GridLayout(1, 3, 60, 0)); 
+        recentlyAddedPanel.setBackground(java.awt.Color.WHITE);             
     }
     
     /*
@@ -183,13 +180,13 @@ public class AppViewFrame extends javax.swing.JFrame {
         recentlyAddedPanel.removeAll();
         browseCardsPanel.removeAll();
 
-        // Recently Added = last 4 from the recipes queue
+        //recently Added = last 4 from the recipes queue
         List<RecipeData> recent = controller.getLast4FromRecipesQueue();
         for (RecipeData r : recent) {
             recentlyAddedPanel.add(createRecipeCard(r));
         }
 
-        // Browse: table = all recipes from model
+        //browse: table = all recipes from model
         browseCardsPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));
         browseCardsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         List<RecipeData> allRecipes = controller.getAllRecipes();
@@ -285,29 +282,27 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel createRecipeCard(RecipeData r) {
         if (r == null) {
             System.err.println("Error: RecipeData is null!");
-            return new javax.swing.JPanel(); // inbuilt: JPanel default ctor
+            return new javax.swing.JPanel();
         }
 
         javax.swing.JPanel card = new javax.swing.JPanel();
-        card.setPreferredSize(new java.awt.Dimension(220, 260));            // inbuilt: Dimension
+        card.setPreferredSize(new java.awt.Dimension(220, 260));           
         card.setBackground(java.awt.Color.WHITE);
-        card.setBorder(javax.swing.BorderFactory.createLineBorder(
-            new java.awt.Color(230, 230, 230), 1, true));
-        card.setLayout(new java.awt.BorderLayout(0, 0));                    // inbuilt: BorderLayout
+        card.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 1, true));
+        card.setLayout(new java.awt.BorderLayout(0, 0));                    
 
         javax.swing.JLabel imgLabel = new javax.swing.JLabel();
         imgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         imgLabel.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
         imgLabel.setOpaque(true);
-        imgLabel.setBackground(new Color(245, 245, 245));                   // inbuilt: Color
+        imgLabel.setBackground(new Color(245, 245, 245));                   
 
         String imgPath = r.getImagePath();
         if (imgPath != null) {
-            java.net.URL imgUrl = getClass().getResource(imgPath);          // inbuilt: Class.getResource
+            java.net.URL imgUrl = getClass().getResource(imgPath);         
             if (imgUrl != null) {
-                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgUrl); // inbuilt: ImageIcon
-                java.awt.Image scaled = icon.getImage().getScaledInstance(
-                    218, 150, java.awt.Image.SCALE_SMOOTH);                 // inbuilt: Image scaling
+                javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgUrl); 
+                java.awt.Image scaled = icon.getImage().getScaledInstance(218, 150, java.awt.Image.SCALE_SMOOTH);                 
                 imgLabel.setIcon(new javax.swing.ImageIcon(scaled));
             } else {
                 imgLabel.setText("No image");
@@ -320,23 +315,18 @@ public class AppViewFrame extends javax.swing.JFrame {
             r.getTitle() != null ? r.getTitle() : "Untitled");
         lblTitle.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 15));
 
-        String infoText = String.format(
-            "%s • %s • %d min • %.1f ★",                                     // inbuilt: String.format
-            r.getCuisine() != null ? r.getCuisine() : "Cuisine",
-            r.getDifficulty() != null ? r.getDifficulty() : "Difficulty",
-            r.getPrepTime(),
-            r.getRating()
-        );
+        String infoText = String.format("%s • %s • %d min • %.1f ★",r.getCuisine() != null ? r.getCuisine() : "Cuisine",
+                r.getDifficulty() != null ? r.getDifficulty() : "Difficulty",r.getPrepTime(),r.getRating());
         javax.swing.JLabel lblInfo = new javax.swing.JLabel(infoText);
         lblInfo.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12)); 
         lblInfo.setForeground(new java.awt.Color(120, 120, 120));
 
         javax.swing.JPanel center = new javax.swing.JPanel();
         center.setBackground(java.awt.Color.WHITE);
-        center.setLayout(new javax.swing.BoxLayout(center, javax.swing.BoxLayout.Y_AXIS)); // inbuilt: BoxLayout
+        center.setLayout(new javax.swing.BoxLayout(center, javax.swing.BoxLayout.Y_AXIS)); 
         center.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 5, 10)); 
         center.add(lblTitle);
-        center.add(javax.swing.Box.createVerticalStrut(3));                 // inbuilt: Box
+        center.add(javax.swing.Box.createVerticalStrut(3));                
         center.add(lblInfo);
 
         javax.swing.JButton btnView = new javax.swing.JButton("View");
@@ -346,10 +336,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         btnView.setBorderPainted(false);
         btnView.setContentAreaFilled(true);
         btnView.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 14));
-        btnView.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR)); // inbuilt: Cursor
+        btnView.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR)); 
         btnView.setPreferredSize(new java.awt.Dimension(80, 30));
 
-        btnView.addMouseListener(new java.awt.event.MouseAdapter() {        // inbuilt: MouseAdapter
+        btnView.addMouseListener(new java.awt.event.MouseAdapter() {        
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
                 btnView.setBackground(viewHoverBg);
@@ -363,8 +353,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.JPanel bottom = new javax.swing.JPanel(
-            new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));      // inbuilt: FlowLayout
+        javax.swing.JPanel bottom = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));     
         bottom.setBackground(java.awt.Color.WHITE);
         bottom.add(btnView);
 
@@ -372,7 +361,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         card.add(center, java.awt.BorderLayout.CENTER);
         card.add(bottom, java.awt.BorderLayout.SOUTH);
 
-        btnView.addActionListener(new java.awt.event.ActionListener() {      // inbuilt: ActionListener
+        btnView.addActionListener(new java.awt.event.ActionListener() {     
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 try {
@@ -416,7 +405,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             basePanel.revalidate();
             basePanel.repaint();
 
-            javax.swing.SwingUtilities.invokeLater(() -> {                 // inbuilt: SwingUtilities
+            javax.swing.SwingUtilities.invokeLater(() -> {                
                 baseCL.show(basePanel, "card5");
                 basePanel.revalidate();
                 basePanel.repaint();
@@ -445,14 +434,14 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         jScrollPane5.setBorder(null);
         jScrollPane5.setBackground(viewPanel.getBackground());
-        jScrollPane5.getViewport().setBackground(viewPanel.getBackground()); // inbuilt: JViewport
+        jScrollPane5.getViewport().setBackground(viewPanel.getBackground()); 
         viewPanel.setBorder(null);
 
         jPanel4.removeAll();
-        jPanel4.setLayout(new java.awt.GridBagLayout());                    // inbuilt: GridBagLayout
+        jPanel4.setLayout(new java.awt.GridBagLayout());                   
         jPanel4.setBackground(viewPanel.getBackground());
 
-        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints(); // inbuilt: GridBagConstraints
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints(); 
         gbc.insets = new java.awt.Insets(12, 24, 20, 24);
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -463,8 +452,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         gbc.weightx = 1.0;
         gbc.anchor = java.awt.GridBagConstraints.CENTER;
 
-        javax.swing.JLabel titleLabel = new javax.swing.JLabel(
-            recipe.getTitle() != null ? recipe.getTitle().trim() : "Recipe");
+        javax.swing.JLabel titleLabel = new javax.swing.JLabel(recipe.getTitle() != null ? recipe.getTitle().trim() : "Recipe");
         titleLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jPanel4.add(titleLabel, gbc);
@@ -485,15 +473,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         markCookedBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         markCookedBtn.setPreferredSize(new java.awt.Dimension(130, 36));
 
-        markCookedBtn.addActionListener(e -> {
-           controller.markRecipeAsCooked();
-           updateHomeStats();  
-           javax.swing.JOptionPane.showMessageDialog(
-            this,
-            "Recipe marked as cooked successfully!",
-            "Success",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-        );
+        markCookedBtn.addActionListener(e -> {controller.markRecipeAsCooked();updateHomeStats();  javax.swing.JOptionPane.showMessageDialog(this,
+                "Recipe marked as cooked successfully!","Success",javax.swing.JOptionPane.INFORMATION_MESSAGE);
         });
         jPanel4.add(markCookedBtn, gbc);
 
@@ -525,12 +506,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         imgLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         imgLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220,220,220), 1));
 
-        if (recipe.getImagePath() != null && !recipe.getImagePath().isBlank()) {   // inbuilt: String.isBlank
+        if (recipe.getImagePath() != null && !recipe.getImagePath().isBlank()) {  
             try {
                 java.net.URL url = getClass().getResource(recipe.getImagePath());
-                if (url != null) {
-                    javax.swing.ImageIcon icon = new javax.swing.ImageIcon(url);
-                    java.awt.Image scaled = icon.getImage().getScaledInstance(520, 380, java.awt.Image.SCALE_SMOOTH);
+                if (url != null) {javax.swing.ImageIcon icon = new javax.swing.ImageIcon(url);
+                java.awt.Image scaled = icon.getImage().getScaledInstance(520, 380, java.awt.Image.SCALE_SMOOTH);
                     imgLabel.setIcon(new javax.swing.ImageIcon(scaled));
                 } else {
                     imgLabel.setText("Image not found");
@@ -616,20 +596,10 @@ public class AppViewFrame extends javax.swing.JFrame {
             updateHomeStats();
             loadHistoryCards();
 
-            javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Marked as cooked!",
-                "Success",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(this,"Marked as cooked!","Success",javax.swing.JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             ex.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(
-                this,
-                "Could not mark as cooked: " + ex.getMessage(),
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(this,"Could not mark as cooked: " + ex.getMessage(),"Error",javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -681,8 +651,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful for admins to see all incoming recipe requests in one view
     */
     private void loadAdminRequestsTable() {
-        javax.swing.table.DefaultTableModel dtm =
-            (javax.swing.table.DefaultTableModel) adminReqTable.getModel();
+        javax.swing.table.DefaultTableModel dtm =(javax.swing.table.DefaultTableModel) adminReqTable.getModel();
         dtm.setRowCount(0);
 
         for (RecipeRequest req : controller.getAllRequests()) {
@@ -704,8 +673,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful for admins to browse, select and edit recipes in tabular form
     */
     private void loadAdminRecipesTable() {
-        javax.swing.table.DefaultTableModel dtm =
-            (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
+        javax.swing.table.DefaultTableModel dtm =(javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
 
         for (RecipeData r : controller.getAllRecipes()) {
@@ -750,8 +718,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void loadDeletedRequestsTable() {
         List<RecipeRequest> deleted = controller.getDeletedRequests();
 
-        javax.swing.table.DefaultTableModel dtm = 
-            (javax.swing.table.DefaultTableModel) deletedRequestsTable.getModel();
+        javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) deletedRequestsTable.getModel();
         dtm.setRowCount(0);
 
         for (RecipeRequest req : deleted) {
@@ -774,8 +741,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful so users can review and track status of their recipe requests
     */
     private void loadUserRequestHistoryTable() {
-        javax.swing.table.DefaultTableModel dtm =
-                (javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
+        javax.swing.table.DefaultTableModel dtm =(javax.swing.table.DefaultTableModel) reqHistoryTable.getModel();
         dtm.setRowCount(0);
         for (RecipeRequest req : controller.getAllRequests()) {
             dtm.addRow(new Object[]{
@@ -2616,10 +2582,10 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // Call controller method
+        //calling controller method
         List<RecipeData> sorted = controller.sortRecipesByTime();
 
-        // Update view
+        //for updating view
         browseCardsPanel.removeAll();
         for (RecipeData r : sorted) {
             browseCardsPanel.add(createRecipeCard(r));
@@ -2673,8 +2639,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_homeButtonActionPerformed
 
     private void homeButtonFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_homeButtonFocusGained
-        CardLayout cl = (CardLayout) basePanel.getLayout();
-        cl.show(basePanel, "card2");
+
     }//GEN-LAST:event_homeButtonFocusGained
 
     private void logoutButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutButtonMouseEntered
@@ -2716,17 +2681,12 @@ public class AppViewFrame extends javax.swing.JFrame {
     
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         String query = jTextField2.getText().trim();
-    
-        // Clear placeholder text
         if (query.equals("Search recipe in your history")) {
             query = "";
         }
-
-        // Get all history from controller
         List<RecipeData> allHistory = controller.getHistory();
         List<RecipeData> results = new ArrayList<>();
 
-        // Filter history locally (controller doesn't have searchHistory method)
         if (query.isEmpty()) {
             results = allHistory;
         } else {
@@ -2739,7 +2699,6 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         }
 
-        // Update view
         browseHistoryPanel.removeAll();
         for (RecipeData r : results) {
             browseHistoryPanel.add(createRecipeCard(r));
@@ -2749,7 +2708,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // Sort history by recipe title A–Z
+
         List<RecipeData> sortedHistory = controller.getHistorySortedByName();
 
         browseHistoryPanel.removeAll();
@@ -2761,7 +2720,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // Sort history by preparation time ascending
+
         List<RecipeData> sortedHistory = controller.getHistorySortedByTime();
 
         browseHistoryPanel.removeAll();
@@ -2793,16 +2752,13 @@ public class AppViewFrame extends javax.swing.JFrame {
                     javax.swing.JOptionPane.INFORMATION_MESSAGE
             );
 
-            // reload history from controller for both MVC correctness and sync
             loadUserRequestHistoryTable();
 
-            // Clear text fields
             reqUsernameTextField.setText("");
             recipeTitleTextfield.setText("");
             vegNonvegTextField.setText("");
             noteTextField.setText("");
-
-            // Update statistics labels properly from model
+            
             updateHomeStats();
 
         } else {
@@ -2856,13 +2812,13 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void logoutButtonAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonAdminActionPerformed
         int choice = javax.swing.JOptionPane.showConfirmDialog(this,"Are you sure you want to log out?","Confirm Logout",javax.swing.JOptionPane.YES_NO_OPTION,javax.swing.JOptionPane.QUESTION_MESSAGE);
 
-    if (choice == javax.swing.JOptionPane.YES_OPTION) {
-        CardLayout cl = (CardLayout) getContentPane().getLayout();
-        cl.show(getContentPane(), "card3");
-        usernameField.setText("");
-        passwordField.setText("");
-        currentViewingRecipe = null;
-    }
+        if (choice == javax.swing.JOptionPane.YES_OPTION) {
+            CardLayout cl = (CardLayout) getContentPane().getLayout();
+            cl.show(getContentPane(), "card3");
+            usernameField.setText("");
+            passwordField.setText("");
+            currentViewingRecipe = null;
+        }
     }//GEN-LAST:event_logoutButtonAdminActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -2875,10 +2831,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         String ingredients = adminIngredientsArea.getText().trim();
         String process = adminProcessArea.getText().trim();
 
-        String result = controller.addRecipe(
-                title, cuisine, difficulty,
-                prepTime, rating, imagePath,
-                ingredients, process
+        String result = controller.addRecipe(title, cuisine, difficulty,prepTime, rating, imagePath,ingredients, process
         );
 
         if ("success".equals(result)) {
@@ -2935,9 +2888,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 imagePath = "/img/default.png";
             }
 
-            boolean updated = controller.updateRecipe(recipeId, title, cuisine, 
-                                                difficulty, prepTime, rating, imagePath,
-                                                ingredients, process);
+            boolean updated = controller.updateRecipe(recipeId, title, cuisine,difficulty, prepTime, rating, imagePath,ingredients, process);
 
             if (updated) {
                 loadAdminRecipesTable();
@@ -2973,8 +2924,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         if (choice == JOptionPane.YES_OPTION) {
             RecipeData removed = controller.dequeueOldestRecipe();
             if (removed != null) {
-                loadAdminRecipesTable(); // admin table from model -> now without that recipe
-                loadHomeCards();         // home Recently Added from queue
+                loadAdminRecipesTable(); 
+                loadHomeCards();        
                 clearRecipeForm();
                 JOptionPane.showMessageDialog(this,
                         "Deleted oldest recipe using dequeue:\n" + removed.getTitle(),
@@ -2996,8 +2947,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // Call controller method
-        List<RecipeData> sorted = controller.sortRecipesByRating();
+          List<RecipeData> sorted = controller.sortRecipesByRating();
 
         // Update view
         browseCardsPanel.removeAll();
@@ -3038,10 +2988,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_nameAscActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // Call controller method
+
         List<RecipeData> sorted = controller.sortRecipesByName();
 
-        // Update view
         javax.swing.table.DefaultTableModel dtm = 
             (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
@@ -3065,10 +3014,8 @@ public class AppViewFrame extends javax.swing.JFrame {
             query = "";
         }
 
-        // Call controller method
         List<RecipeData> results = controller.searchRecipesByTitle(query);
 
-        // Update view
         javax.swing.table.DefaultTableModel dtm = 
             (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
@@ -3086,10 +3033,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        // Call controller method
+
         List<RecipeData> sorted = controller.sortRecipesByTime();
 
-        // Update view
         javax.swing.table.DefaultTableModel dtm = 
             (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
@@ -3107,10 +3053,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        // Call controller method
+
         List<RecipeData> sorted = controller.sortRecipesByRating();
 
-        // Update view
         javax.swing.table.DefaultTableModel dtm = 
             (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
@@ -3130,7 +3075,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
          List<RecipeRequest> sorted = controller.sortRequestsByNameDesc();
     
-        //View only updates display
         DefaultTableModel dtm = (DefaultTableModel) reqHistoryTable.getModel();
         dtm.setRowCount(0);
         for (RecipeRequest req : sorted) {
@@ -3153,7 +3097,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
 
-        // Update admin table view
         javax.swing.table.DefaultTableModel dtm = 
             (javax.swing.table.DefaultTableModel) adminRecipeTable.getModel();
         dtm.setRowCount(0);
@@ -3172,8 +3115,6 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
        List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
-
-        // Update browse cards view
         browseCardsPanel.removeAll();
         for (RecipeData r : sorted) {
             browseCardsPanel.add(createRecipeCard(r));
@@ -3235,7 +3176,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     String username = (String) adminReqTable.getValueAt(row, 0);
     String title = (String) adminReqTable.getValueAt(row, 1);
-    String status = (String) adminReqTable.getValueAt(row, 6); // Get status
+    String status = (String) adminReqTable.getValueAt(row, 6);
 
     int confirm = JOptionPane.showConfirmDialog(
         this,
@@ -3245,7 +3186,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     );
     if (confirm != JOptionPane.YES_OPTION) return;
 
-    // Call deleteRequest - now returns String ✅
     String result = controller.deleteRequest(username, title);
 
     if ("success".equals(result)) {
@@ -3254,13 +3194,12 @@ public class AppViewFrame extends javax.swing.JFrame {
             "Success", 
             JOptionPane.INFORMATION_MESSAGE);
         loadAdminRequestsTable();
-        loadDeletedRequestsTable(); // Update deleted table ✅
+        loadDeletedRequestsTable(); 
         loadUserRequestHistoryTable();
         updateHomeStats();
     } else {
-        // Show error message from controller ✅
         JOptionPane.showMessageDialog(this, 
-            result, // Will show "Cannot delete! Request must be cancelled first." or "Request not found!"
+            result, 
             "Error", 
             JOptionPane.ERROR_MESSAGE);
     }
@@ -3274,11 +3213,9 @@ public class AppViewFrame extends javax.swing.JFrame {
             return;
         }
 
-        // Identify request using username + title from selected row
         String username = (String) adminReqTable.getValueAt(row, 0);
         String title    = (String) adminReqTable.getValueAt(row, 1);
 
-        // Dialog is View responsibility
         String[] options = {"Pending", "Updated", "Cancelled"};
         String currentStatus = (String) adminReqTable.getValueAt(row, 6);
         String newStatus = (String) javax.swing.JOptionPane.showInputDialog(
@@ -3305,7 +3242,6 @@ public class AppViewFrame extends javax.swing.JFrame {
             return;
         }
 
-        // Sync admin + user views from same controller data
         loadAdminRequestsTable();
         loadUserRequestHistoryTable();
 

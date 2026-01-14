@@ -12,9 +12,9 @@ import model.RecipeRequest;
  */
 
 public class RequestDeleteStack {
-    private final int capacity;          //maximum number of deleted requests to store
-    private final RecipeRequest[] items; //array to hold deleted requests
-    private int top;                     //index of last pushed request -1 means empty
+    private final int capacity;          
+    private final RecipeRequest[] items; 
+    private int top;                     
 
     /*
     this constructor creates a new request delete stack with given capacity
