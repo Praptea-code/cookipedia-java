@@ -175,34 +175,39 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
     
     /*
-        this method loads recipe cards for home and browse sections
-        it fetches recent and all recipes from the controller and adds cards to panels
-        it is useful for refreshing home and browse ui when data changes or on login
+    * this method loads recipe cards for home and browse sections
+    * it fetches recent recipes from the queue and all recipes from the model
+    * it creates cards with delete buttons for recently added section
+    * it is useful for refreshing home and browse ui when data changes or on login
     */
     private void loadHomeCards() {
-        recentlyAddedPanel.removeAll();                                     // inbuilt: Container api
-        browseCardsPanel.removeAll(); 
-        browseCardsPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));  // inbuilt: GridLayout
-        browseCardsPanel.setBorder(
-            javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)     // inbuilt: BorderFactory
-        );
-        
-        List<RecipeData> recent = controller.getRecentlyAdded(4);  
+        recentlyAddedPanel.removeAll();
+        browseCardsPanel.removeAll();
+
+        // Recently Added (from queue)
+        List<RecipeData> recent = controller.getRecentlyAddedFromQueue();
         for (RecipeData r : recent) {
             recentlyAddedPanel.add(createRecipeCard(r));
         }
-        List<RecipeData> allRecipes = controller.getAllRecipes();  
+
+        // Browse: all recipes from model
+        browseCardsPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));
+        browseCardsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        List<RecipeData> allRecipes = controller.getAllRecipes();
         for (RecipeData r : allRecipes) {
             browseCardsPanel.add(createRecipeCard(r));
         }
-        
+
         updateHomeStats();
-        
-        recentlyAddedPanel.revalidate();                                    // inbuilt: JComponent api
+        recentlyAddedPanel.revalidate();
         recentlyAddedPanel.repaint();
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
     }
+
+
+
+
     
     /*
         this method updates the stats numbers shown on the home screen
@@ -393,6 +398,9 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         return card;
     }
+    
+    
+
     
     /*
         this method opens the detailed recipe view screen
@@ -2925,49 +2933,45 @@ public class AppViewFrame extends javax.swing.JFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         try {
-            Integer recipeId = (Integer) adminRecipeTable.getClientProperty("selectedRecipeId");
+        int confirm = JOptionPane.showConfirmDialog(
+            AppViewFrame.this,
+            "This will remove the OLDEST recipe from Recently Added. you sure?",
+            "Confirm Dequeue",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
 
-            if (recipeId == null) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Please select a recipe from the table to delete!",
-                    "No Selection",
-                    javax.swing.JOptionPane.WARNING_MESSAGE);
-                return;
+        if (confirm == JOptionPane.YES_OPTION) {
+            // DEQUEUE from queue (remove oldest)
+            RecipeData removed = controller.removeOldestFromRecentlyAdded();
+            if (removed != null) {
+                System.out.println("Dequeued recipe " + removed.getTitle() + " ID " + removed.getId());
+                // Reload home so panel matches queue
+                loadHomeCards();
+                JOptionPane.showMessageDialog(
+                    AppViewFrame.this,
+                    "Removed " + removed.getTitle() + "\nOldest recipe removed using dequeue",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                    AppViewFrame.this,
+                    "Queue is empty! No recipes to remove.",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
             }
-
-            // Confirm deletion
-            int choice = javax.swing.JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this recipe?",
-                "Confirm Delete",
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-
-            if (choice == javax.swing.JOptionPane.YES_OPTION) {
-                boolean deleted = controller.deleteRecipe(recipeId);
-
-                if (deleted) {
-                    loadAdminRecipesTable();
-                    loadHomeCards();
-                    clearRecipeForm();
-
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                        "Recipe deleted successfully!",
-                        "Success",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                        "Recipe not found!",
-                        "Error",
-                        javax.swing.JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-        } catch (NumberFormatException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Invalid Recipe ID!",
-                "Input Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
         }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(
+            AppViewFrame.this,
+            "Error removing recipe: " + ex.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed

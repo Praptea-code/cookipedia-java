@@ -44,7 +44,14 @@ private final AppModel model;
         this.deletedRecipesStack = new RecipeDeleteStack(20); 
         this.pendingRequests = new LinkedList<>();
         this.deletedRequestsList = new ArrayList<>(); 
-        this.recentlyAddedQueue = new RecentlyAddedQueue(4);
+        this.recentlyAddedQueue = new RecentlyAddedQueue(100);
+        
+        List<RecipeData> allAtStart = model.getAllRecipes();
+        int i = 0;
+        while (i < allAtStart.size()) {
+            recentlyAddedQueue.enqueue(allAtStart.get(i));
+            i = i + 1;
+        }
     }
 
     /*
@@ -204,7 +211,9 @@ private final AppModel model;
     it validates everything using validate class then parses prepTime and rating and finally builds a recipedata object and stores it
     it returns "success" when recipe is added or an error message string when validation fails
     */
-    public String addRecipe(String title, String cuisine, String difficulty,String prepTime, String rating, String imagePath,String ingredients, String process) {
+    public String addRecipe(String title, String cuisine, String difficulty,
+                        String prepTime, String rating, String imagePath,
+                        String ingredients, String process) {
 
         String msg = validator.recipeFields(title, cuisine, difficulty, prepTime, rating);
         if (!msg.equals("valid")) {
@@ -225,20 +234,22 @@ private final AppModel model;
         int prep = Integer.parseInt(pt);
         double rate = Double.parseDouble(rt);
 
-        String ing = "";
-        String pro = "";
-
-        if (ingredients != null) {
-            ing = ingredients.trim();
-        }
-        if (process != null) {
-            pro = process.trim();
-        }
+        String ing = (ingredients != null) ? ingredients.trim() : "";
+        String pro = (process != null) ? process.trim() : "";
 
         RecipeData r = new RecipeData(t, c, d, prep, rate, img.trim(), ing, pro);
+
+        // 1) Enqueue into queue (primary storage)
         recentlyAddedQueue.enqueue(r);
+
+        // 2) Mirror into model list so existing code using model still works
+        model.addRecipe(r);
+
         return "success";
     }
+
+
+
 
     /*
     this method updates an existing recipe with new details while preventing duplicates
@@ -279,9 +290,28 @@ private final AppModel model;
         RecipeData recipe = model.getRecipeById(id);
         if (recipe != null) {
             deletedRecipesStack.push(recipe);
-            recentlyAddedQueue.removeById(id);
         }
-        return model.deleteRecipe(id);
+
+        boolean removed = model.deleteRecipe(id);
+        if (removed) {
+            // Rebuild queue so it always holds the last 4 recipes in table
+            recentlyAddedQueue.clear();
+
+            List<RecipeData> all = model.getAllRecipes();
+            int size = all.size();
+            int fromIndex = 0;
+            if (size - 4 > 0) {
+                fromIndex = size - 4;   // last up to 4
+            }
+
+            int i = fromIndex;
+            while (i < size) {
+                recentlyAddedQueue.enqueue(all.get(i));
+                i = i + 1;
+            }
+        }
+
+        return removed;
     }
     
     /*
@@ -338,27 +368,46 @@ private final AppModel model;
     * it fetches the queue array and converts it to a list for ui display
     * it returns list of most recently added recipes in fifo order
     */
-   public List<RecipeData> getRecentlyAddedFromQueue() {
-       RecipeData[] arr = recentlyAddedQueue.toArray();
-       List<RecipeData> list = new ArrayList<>();
-       int i = 0;
-       while (i < arr.length) {
-           if (arr[i] != null) {
-               list.add(arr[i]);
-           }
-           i = i + 1;
-       }
-       return list;
-   }
+    public List<RecipeData> getRecentlyAddedFromQueue() {
+        RecipeData[] arr = recentlyAddedQueue.toArray();
+        List<RecipeData> list = new ArrayList<>();
+        int i = 0;
+        while (i < arr.length) {
+            if (arr[i] != null) {
+                list.add(arr[i]);
+            }
+            i = i + 1;
+        }
+        return list;
+    }
 
    /*
     * this method removes the oldest recipe from recently added queue
     * it uses dequeue operation to remove from front following fifo principle
     * it returns the removed recipe or null if queue is empty
     */
-   public RecipeData removeOldestFromRecentlyAdded() {
-       return recentlyAddedQueue.dequeue();
-   }
+    public RecipeData removeOldestFromRecentlyAdded() {
+        RecipeData removed = recentlyAddedQueue.dequeue();
+        if (removed != null) {
+            // delete from main table as well
+            model.deleteRecipe(removed.getId());
+
+            // rebuild queue again from table tail to keep 4 items
+            recentlyAddedQueue.clear();
+            List<RecipeData> all = model.getAllRecipes();
+            int size = all.size();
+            int fromIndex = 0;
+            if (size - 4 > 0) {
+                fromIndex = size - 4;
+            }
+            int i = fromIndex;
+            while (i < size) {
+                recentlyAddedQueue.enqueue(all.get(i));
+                i = i + 1;
+            }
+        }
+        return removed;
+    }
 
     
     /*
