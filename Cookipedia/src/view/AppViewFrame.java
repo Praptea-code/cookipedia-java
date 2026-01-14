@@ -3242,6 +3242,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             return;
         }
 
+
         loadAdminRequestsTable();
         loadUserRequestHistoryTable();
 
