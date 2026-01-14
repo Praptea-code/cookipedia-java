@@ -24,7 +24,7 @@ private final AppModel model;
     private final MergeSort mergeSort;
     private final SelectionSort selectionSort;
     private final InsertionSort insertionSort;
-    private final Search searcher;
+    private final LinearSearchTitle linearSearchTitle;
     private final Validate validator;
     private final RequestQueue requestQueue;
     private final RecipeDeleteStack deletedRecipesStack;
@@ -42,7 +42,7 @@ private final AppModel model;
         this.mergeSort = new MergeSort();
         this.selectionSort = new SelectionSort();
         this.insertionSort = new InsertionSort();
-        this.searcher = new Search();
+        this.linearSearchTitle = new LinearSearchTitle();
         this.validator = new Validate(model);
         this.requestQueue = new RequestQueue(50);
         this.deletedRecipesStack = new RecipeDeleteStack(20); 
@@ -488,11 +488,11 @@ private final AppModel model;
 
     /*
     this method finds recipes whose titles contain some text
-    it takes search query string typed by user in search box
-    it calls search helper which runs a manual linear scan on titles and returns matching recipes
+    it calls linear title search helper which scans all titles for partial matches
+    it is used in browse search box when user types part of a recipe name
     */
     public List<RecipeData> searchRecipesByTitle(String query) {
-        return searcher.byTitle(model.getAllRecipes(), query);
+        return linearSearchTitle.byTitle(model.getAllRecipes(), query);
     }
 
     /*
