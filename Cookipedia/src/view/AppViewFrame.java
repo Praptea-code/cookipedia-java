@@ -810,17 +810,17 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful for guiding users on what they can search in the browse section
     */
     private void setupBrowseSearchField() {
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        searchField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().equals("Search any recipe")) {
-                    jTextField1.setText("");
-                    jTextField1.setForeground(Color.BLACK);
+                if (searchField.getText().equals("Search any recipe")) {
+                    searchField.setText("");
+                    searchField.setForeground(Color.BLACK);
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().trim().isEmpty()) {
-                    jTextField1.setText("Search any recipe");
-                    jTextField1.setForeground(new Color(102, 102, 102));
+                if (searchField.getText().trim().isEmpty()) {
+                    searchField.setText("Search any recipe");
+                    searchField.setForeground(new Color(102, 102, 102));
                 }
             }
         });
@@ -989,12 +989,13 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseRecipesPanel = new javax.swing.JPanel();
         browsePanel = new javax.swing.JPanel();
         browseTopPanel = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        searchField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
+        comboBoxSearch = new javax.swing.JComboBox<>();
         browseScrollPane = new javax.swing.JScrollPane();
         browseCardsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -1591,9 +1592,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         ));
         jScrollPane6.setViewportView(reqTableAdmin);
 
-        updateStatusBtn.setBackground(new java.awt.Color(0, 0, 0));
+        updateStatusBtn.setBackground(new java.awt.Color(0, 102, 0));
         updateStatusBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        updateStatusBtn.setForeground(new java.awt.Color(255, 204, 0));
+        updateStatusBtn.setForeground(new java.awt.Color(255, 255, 255));
         updateStatusBtn.setText("Update Status");
         updateStatusBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1601,9 +1602,9 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
-        deleteRequestBtn.setBackground(new java.awt.Color(0, 0, 0));
+        deleteRequestBtn.setBackground(new java.awt.Color(153, 0, 0));
         deleteRequestBtn.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        deleteRequestBtn.setForeground(new java.awt.Color(255, 204, 0));
+        deleteRequestBtn.setForeground(new java.awt.Color(255, 255, 255));
         deleteRequestBtn.setText("Delete Request");
         deleteRequestBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1630,7 +1631,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel9.setText("Deleted Request");
 
-        updateStatusBtn1.setBackground(new java.awt.Color(153, 51, 0));
+        updateStatusBtn1.setBackground(new java.awt.Color(153, 0, 0));
         updateStatusBtn1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         updateStatusBtn1.setForeground(new java.awt.Color(255, 255, 255));
         updateStatusBtn1.setText("Delete");
@@ -2065,12 +2066,12 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         browseTopPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextField1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField1.setText("Search any recipe");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        searchField.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        searchField.setForeground(new java.awt.Color(102, 102, 102));
+        searchField.setText("Search any recipe");
+        searchField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                searchFieldActionPerformed(evt);
             }
         });
 
@@ -2121,22 +2122,27 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        comboBoxSearch.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        comboBoxSearch.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "By Title", "By Cuisine" }));
+
         javax.swing.GroupLayout browseTopPanelLayout = new javax.swing.GroupLayout(browseTopPanel);
         browseTopPanel.setLayout(browseTopPanelLayout);
         browseTopPanelLayout.setHorizontalGroup(
             browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(browseTopPanelLayout.createSequentialGroup()
-                .addGap(224, 224, 224)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(106, 106, 106)
-                .addComponent(jLabel3)
+                .addGap(255, 255, 255)
+                .addComponent(comboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton9)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -2150,7 +2156,8 @@ public class AppViewFrame extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton9)
                     .addComponent(jButton18)
-                    .addComponent(jTextField1))
+                    .addComponent(searchField)
+                    .addComponent(comboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23))
         );
 
@@ -2680,24 +2687,32 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoutButton.setForeground(loginNormalFg);
     }//GEN-LAST:event_logoutButtonMouseExited
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        String query = jTextField1.getText().trim();
-    
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        String query = searchField.getText().trim();
         if (query.equals("Search any recipe")) {
             query = "";
         }
 
-        // Call controller method
-        List<RecipeData> results = controller.searchRecipesByTitle(query);
+        String mode = (String) comboBoxSearch.getSelectedItem();
+        List<RecipeData> results;
 
-        // Update view
+        if ("By Title".equals(mode)) {
+            // Linear search
+            results = controller.searchRecipesByTitle(query);
+        } else if ("By Cuisine".equals(mode)) {
+            // Binary search
+            results = controller.searchRecipesByCuisine(query);
+        } else {
+            results = controller.getAllRecipes();
+        }
+
         browseCardsPanel.removeAll();
         for (RecipeData r : results) {
             browseCardsPanel.add(createRecipeCard(r));
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_searchFieldActionPerformed
     
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         String query = jTextField2.getText().trim();
@@ -3370,6 +3385,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel browseRecipesPanel;
     private javax.swing.JScrollPane browseScrollPane;
     private javax.swing.JPanel browseTopPanel;
+    private javax.swing.JComboBox<String> comboBoxSearch;
     private javax.swing.JTextField cuisineAdmin;
     private javax.swing.JLabel cuisineLabelAdmin;
     private javax.swing.JButton deleteRequestBtn;
@@ -3436,7 +3452,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator9;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JButton loginButton;
@@ -3486,6 +3501,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel requestedLogo;
     private javax.swing.JLabel requestedNumber;
     private javax.swing.JLabel requestedNumber1;
+    private javax.swing.JTextField searchField;
     private javax.swing.JLabel subTitleLabel;
     private javax.swing.JTextField timeAdmin;
     private javax.swing.JLabel timeLabelAdmin;
