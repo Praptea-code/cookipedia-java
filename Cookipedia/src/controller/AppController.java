@@ -27,7 +27,7 @@ private final AppModel model;
     private final RequestQueue requestQueue;
     private final RecipeDeleteStack deletedRecipesStack;
     private final LinkedList<RecipeRequest> pendingRequests; 
-    private final List<RecipeRequest> deletedRequestsList;
+    private final RequestDeleteStack deletedRequestsStack;
     private final RecentlyAddedQueue recentlyAddedQueue;
     
     /*
@@ -323,6 +323,8 @@ private final AppModel model;
         RecipeData restored = deletedRecipesStack.pop();
         if (restored != null) {
             model.addRecipe(restored);
+
+            recentlyAddedQueue.enqueue(restored);
         }
         return restored;
     }
@@ -380,35 +382,35 @@ private final AppModel model;
         }
         return list;
     }
+    
+    public List<RecipeData> getLast4FromRecipesQueue() {
+        RecipeData[] arr = recentlyAddedQueue.toArray(); // arr[0] = oldest, arr[size-1] = newest
+        List<RecipeData> list = new ArrayList<>();
 
-   /*
-    * this method removes the oldest recipe from recently added queue
-    * it uses dequeue operation to remove from front following fifo principle
-    * it returns the removed recipe or null if queue is empty
-    */
-    public RecipeData removeOldestFromRecentlyAdded() {
+        int size = arr.length;
+        int fromIndex = 0;
+        if (size - 4 > 0) {
+            fromIndex = size - 4;
+        }
+
+        int i = fromIndex;
+        while (i < size) {
+            list.add(arr[i]);
+            i = i + 1;
+        }
+        return list;
+    }
+
+
+   // Dequeue from recipes queue and also remove from model
+    public RecipeData dequeueOldestRecipe() {
         RecipeData removed = recentlyAddedQueue.dequeue();
         if (removed != null) {
-            // delete from main table as well
+            deletedRecipesStack.push(removed); 
             model.deleteRecipe(removed.getId());
-
-            // rebuild queue again from table tail to keep 4 items
-            recentlyAddedQueue.clear();
-            List<RecipeData> all = model.getAllRecipes();
-            int size = all.size();
-            int fromIndex = 0;
-            if (size - 4 > 0) {
-                fromIndex = size - 4;
-            }
-            int i = fromIndex;
-            while (i < size) {
-                recentlyAddedQueue.enqueue(all.get(i));
-                i = i + 1;
-            }
         }
         return removed;
     }
-
     
     /*
     this method returns recipes sorted by title from a to z

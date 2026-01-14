@@ -43,7 +43,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppViewFrame.class.getName());
     private final AppController controller = new AppController();
     private RecipeData currentViewingRecipe = null;
-    private javax.swing.JButton undoDeleteBtn;
 
 
     /*
@@ -184,13 +183,13 @@ public class AppViewFrame extends javax.swing.JFrame {
         recentlyAddedPanel.removeAll();
         browseCardsPanel.removeAll();
 
-        // Recently Added (from queue)
-        List<RecipeData> recent = controller.getRecentlyAddedFromQueue();
+        // Recently Added = last 4 from the recipes queue
+        List<RecipeData> recent = controller.getLast4FromRecipesQueue();
         for (RecipeData r : recent) {
             recentlyAddedPanel.add(createRecipeCard(r));
         }
 
-        // Browse: all recipes from model
+        // Browse: table = all recipes from model
         browseCardsPanel.setLayout(new java.awt.GridLayout(0, 4, 20, 20));
         browseCardsPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         List<RecipeData> allRecipes = controller.getAllRecipes();
@@ -205,10 +204,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseCardsPanel.repaint();
     }
 
-
-
-
-    
     /*
         this method updates the stats numbers shown on the home screen
         it sets total, cooked, yet to cook and requested counts from the controller
@@ -734,7 +729,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         List<RecipeRequest> deleted = controller.getDeletedRequests();
 
         javax.swing.table.DefaultTableModel dtm = 
-            (javax.swing.table.DefaultTableModel) loadDeletedRequestsTable.getModel();
+            (javax.swing.table.DefaultTableModel) deletedRequestsTable.getModel();
         dtm.setRowCount(0);
 
         for (RecipeRequest req : deleted) {
@@ -928,7 +923,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         deleteRequestBtn = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        loadDeletedRequestsTable = new javax.swing.JTable();
+        deletedRequestsTable = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
         updateStatusBtn1 = new javax.swing.JButton();
         updateStatusBtn2 = new javax.swing.JButton();
@@ -1597,7 +1592,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel7.setText("Requests");
 
-        loadDeletedRequestsTable.setModel(new javax.swing.table.DefaultTableModel(
+        deletedRequestsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -1608,7 +1603,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 "Username", "Recipe Title", "Veg/Non-Veg", "Dietary Notes", "Date", "Time", "Status"
             }
         ));
-        jScrollPane7.setViewportView(loadDeletedRequestsTable);
+        jScrollPane7.setViewportView(deletedRequestsTable);
 
         jLabel9.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel9.setText("Deleted Request");
@@ -2932,46 +2927,29 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        try {
-        int confirm = JOptionPane.showConfirmDialog(
-            AppViewFrame.this,
-            "This will remove the OLDEST recipe from Recently Added. you sure?",
-            "Confirm Dequeue",
+        int choice = JOptionPane.showConfirmDialog(this,
+            "This will delete the OLDEST recipe (FIFO dequeue).\nAre you sure?",
+            "Confirm Dequeue Delete",
             JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
+            JOptionPane.WARNING_MESSAGE);
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            // DEQUEUE from queue (remove oldest)
-            RecipeData removed = controller.removeOldestFromRecentlyAdded();
+        if (choice == JOptionPane.YES_OPTION) {
+            RecipeData removed = controller.dequeueOldestRecipe();
             if (removed != null) {
-                System.out.println("Dequeued recipe " + removed.getTitle() + " ID " + removed.getId());
-                // Reload home so panel matches queue
-                loadHomeCards();
-                JOptionPane.showMessageDialog(
-                    AppViewFrame.this,
-                    "Removed " + removed.getTitle() + "\nOldest recipe removed using dequeue",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
+                loadAdminRecipesTable(); // admin table from model -> now without that recipe
+                loadHomeCards();         // home Recently Added from queue
+                clearRecipeForm();
+                JOptionPane.showMessageDialog(this,
+                        "Deleted oldest recipe using dequeue:\n" + removed.getTitle(),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(
-                    AppViewFrame.this,
-                    "Queue is empty! No recipes to remove.",
-                    "Info",
-                    JOptionPane.INFORMATION_MESSAGE
-                );
+                JOptionPane.showMessageDialog(this,
+                        "No recipes to delete (queue is empty)!",
+                        "Info",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(
-            AppViewFrame.this,
-            "Error removing recipe: " + ex.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE
-        );
-    }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -3172,19 +3150,27 @@ public class AppViewFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_updateStatusBtn1ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        if (!controller.canUndo()) {
+        JOptionPane.showMessageDialog(this,
+                "No deleted recipes to undo!",
+                "Undo",
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
         RecipeData restored = controller.undoLastDelete();
         if (restored != null) {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "Recipe '" + restored.getTitle() + "' restored successfully!", 
-                "Undo Successful", 
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            loadAdminRecipesTable(); 
-            loadHomeCards(); 
+            loadAdminRecipesTable();
+            loadHomeCards();  // refresh Recently Added from queue
+            JOptionPane.showMessageDialog(this,
+                    "Restored: " + restored.getTitle(),
+                    "Undo Success",
+                    JOptionPane.INFORMATION_MESSAGE);
         } else {
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                "No deleted recipes to restore!", 
-                "Cannot Undo", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Undo failed. Nothing to restore.",
+                    "Undo",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_jButton12ActionPerformed
 
@@ -3353,6 +3339,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextField cuisineAdmin;
     private javax.swing.JLabel cuisineLabelAdmin;
     private javax.swing.JButton deleteRequestBtn;
+    private javax.swing.JTable deletedRequestsTable;
     private javax.swing.JTextField difficultyAdmin;
     private javax.swing.JLabel difficultyLabelAdmin;
     private javax.swing.JPanel historyPanel;
@@ -3418,7 +3405,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTable loadDeletedRequestsTable;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel loginPageImage;
     private javax.swing.JPanel loginPanel;
