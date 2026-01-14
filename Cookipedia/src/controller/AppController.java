@@ -25,6 +25,7 @@ private final AppModel model;
     private final SelectionSort selectionSort;
     private final InsertionSort insertionSort;
     private final LinearSearchTitle linearSearchTitle;
+    private final BinarySearchCuisine binarySearchCuisine;
     private final Validate validator;
     private final RequestQueue requestQueue;
     private final RecipeDeleteStack deletedRecipesStack;
@@ -43,6 +44,7 @@ private final AppModel model;
         this.selectionSort = new SelectionSort();
         this.insertionSort = new InsertionSort();
         this.linearSearchTitle = new LinearSearchTitle();
+        this.binarySearchCuisine = new BinarySearchCuisine();
         this.validator = new Validate(model);
         this.requestQueue = new RequestQueue(50);
         this.deletedRecipesStack = new RecipeDeleteStack(20); 
@@ -496,23 +498,14 @@ private final AppModel model;
     }
 
     /*
-    this method returns recipes that match a given cuisine exactly
-    it first sorts recipes by cuisine using selection sort then uses binary search in search class
-    it is used in cuisine search feature so binary search works on sorted cuisine list
+    this method finds recipes that match a given cuisine name exactly
+    it first sorts recipes by cuisine using selection sort then calls binary search helper to find all matches
+    it is used in cuisine search feature so binary search always works on a sorted cuisine list
     */
     public List<RecipeData> searchRecipesByCuisine(String cuisine) {
         List<RecipeData> all =
                 selectionSort.selectionSortByCuisineName(model.getAllRecipes());
-        return searcher.byCuisine(all, cuisine);
-    }
-
-    /*
-    this method searches using title cuisine and difficulty at once
-    it takes three filter strings which may be empty or null
-    it returns only those recipes that satisfy every filter that user actually filled
-    */
-    public List<RecipeData> searchRecipes(String title, String cuisine, String difficulty) {
-        return searcher.multi(model.getAllRecipes(), title, cuisine, difficulty);
+        return binarySearchCuisine.byCuisine(all, cuisine);
     }
 
     /*
