@@ -12,13 +12,13 @@ import model.RecipeRequest;
  */
 
 public class RequestDeleteStack {
-    private final int capacity;          // maximum number of deleted requests to store
-    private final RecipeRequest[] items; // array to hold deleted requests
-    private int top;                     // index of last pushed request, -1 means empty
+    private final int capacity;          //maximum number of deleted requests to store
+    private final RecipeRequest[] items; //array to hold deleted requests
+    private int top;                     //index of last pushed request -1 means empty
 
     /*
-     * this constructor creates a new request delete stack with given capacity
-     * it allocates the array and sets top to minus one to indicate empty stack
+    this constructor creates a new request delete stack with given capacity
+    it allocates the array and sets top to minus one to indicate empty stack
      */
     public RequestDeleteStack(int capacity) {
         this.capacity = capacity;
@@ -27,9 +27,9 @@ public class RequestDeleteStack {
     }
 
     /*
-     * this method pushes a deleted request onto the stack
-     * it takes a reciperequest object to remember as deleted
-     * it returns true when push succeeds or false when the stack is already full
+    this method pushes a deleted request onto the stack
+    it takes a reciperequest object to remember as deleted
+    it returns true when push succeeds or false when the stack is already full
      */
     public boolean push(RecipeRequest req) {
         if (isFull() || req == null) {
@@ -41,8 +41,8 @@ public class RequestDeleteStack {
     }
 
     /*
-     * this method pops the most recently deleted request from the stack
-     * it returns the request at the top or null when the stack is empty
+    this method pops the most recently deleted request from the stack
+     it returns the request at the top or null when the stack is empty
      */
     public RecipeRequest pop() {
         if (isEmpty()) {
@@ -55,32 +55,32 @@ public class RequestDeleteStack {
     }
 
     /*
-     * this method checks if the stack is empty
-     * it returns true when top is minus one meaning no deleted requests are stored
+    this method checks if the stack is empty
+    it returns true when top is minus one meaning no deleted requests are stored
      */
     public boolean isEmpty() {
         return top == -1;
     }
 
     /*
-     * this method checks if the stack is full
-     * it returns true when top has reached capacity minus one
+    this method checks if the stack is full
+    it returns true when top has reached capacity minus one
      */
     public boolean isFull() {
         return top == capacity - 1;
     }
 
     /*
-     * this method returns the current number of deleted requests stored
-     * it adds one to top since top starts at minus one for empty
+    this method returns the current number of deleted requests stored
+    it adds one to top since top starts at minus one for empty
      */
     public int size() {
         return top + 1;
     }
 
     /*
-     * this method clears all deleted requests from the stack
-     * it loops from zero up to top and sets each position to null then resets top to minus one
+    this method clears all deleted requests from the stack
+    it loops from zero up to top and sets each position to null then resets top to minus one
      */
     public void clear() {
         int i = 0;
@@ -92,8 +92,8 @@ public class RequestDeleteStack {
     }
 
     /*
-     * this method returns a snapshot array of deleted requests in stack order
-     * it creates and returns a new array from index zero to top so ui can display it safely
+    this method returns a snapshot array of deleted requests in stack order
+    it creates and returns a new array from index zero to top so ui can display it safely
      */
     public RecipeRequest[] toArray() {
         int size = size();
