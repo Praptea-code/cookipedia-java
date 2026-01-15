@@ -3317,17 +3317,14 @@ public class AppViewFrame extends javax.swing.JFrame {
 
             if (selectedFile != null) {
                 try {
-                    // Get project's img folder
                     String projectDir = System.getProperty("user.dir");
                     String imgFolderPath = projectDir + java.io.File.separator + "img";
                     java.io.File imgFolder = new java.io.File(imgFolderPath);
 
-                    // Create img folder if it doesn't exist
                     if (!imgFolder.exists()) {
                         imgFolder.mkdirs();
                     }
 
-                    // Copy file to img folder
                     String fileName = selectedFile.getName();
                     java.io.File destFile = new java.io.File(imgFolderPath + java.io.File.separator + fileName);
 
@@ -3337,13 +3334,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                         java.nio.file.StandardCopyOption.REPLACE_EXISTING
                     );
 
-                    // Save relative path - SAME FORMAT AS YOUR DUMMY RECIPES!
                     String relativePath = "/img/" + fileName;
                     imagePathAdmin.setText(relativePath);
                     imagePathAdmin.setEditable(false);
-
-                    System.out.println("✅ Image copied to: " + destFile.getAbsolutePath());
-                    System.out.println("✅ Saved path: " + relativePath);
 
                 } catch (Exception ex) {
                     javax.swing.JOptionPane.showMessageDialog(
