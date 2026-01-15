@@ -3315,38 +3315,16 @@ public class AppViewFrame extends javax.swing.JFrame {
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File selectedFile = fileChooser.getSelectedFile();
 
-            if (selectedFile != null) {
-                try {
-                    String projectDir = System.getProperty("user.dir");
-                    String imgFolderPath = projectDir + java.io.File.separator + "img";
-                    java.io.File imgFolder = new java.io.File(imgFolderPath);
-
-                    if (!imgFolder.exists()) {
-                        imgFolder.mkdirs();
-                    }
-
-                    String fileName = selectedFile.getName();
-                    java.io.File destFile = new java.io.File(imgFolderPath + java.io.File.separator + fileName);
-
-                    java.nio.file.Files.copy(
-                        selectedFile.toPath(),
-                        destFile.toPath(),
-                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                    );
-
-                    String relativePath = "/img/" + fileName;
-                    imagePathAdmin.setText(relativePath);
-                    imagePathAdmin.setEditable(false);
-
-                } catch (Exception ex) {
-                    javax.swing.JOptionPane.showMessageDialog(
-                        this,
-                        "Error copying image: " + ex.getMessage(),
-                        "Error",
-                        javax.swing.JOptionPane.ERROR_MESSAGE
-                    );
-                    ex.printStackTrace();
-                }
+            try {
+                String imgPath = System.getProperty("user.dir") + java.io.File.separator + "src" + java.io.File.separator + "img" + java.io.File.separator + selectedFile.getName();
+                java.nio.file.Files.copy(
+                    selectedFile.toPath(),
+                    new java.io.File(imgPath).toPath(),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                );
+                imagePathAdmin.setText("/img/" + selectedFile.getName());
+            } catch (Exception ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_jButton19ActionPerformed
