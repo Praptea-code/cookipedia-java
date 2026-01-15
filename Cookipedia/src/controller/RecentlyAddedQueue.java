@@ -11,76 +11,106 @@ import model.RecipeData;
  * @author Acer
  */
 public class RecentlyAddedQueue {
-    private final RecipeData[] items; 
-    private final int capacity;       
-    private int size;                
+    private final int capacity;
+    private final RecipeData[] items;
+    private int front;  //index of most recent recipe
+    private int rear;   //index of oldest recipe
 
     /*
-     * this constructor creates a new empty queue with given capacity
-     * it allocates the array and sets size to zero
-     * it is useful for storing a small recent list for home panel
+     * this constructor creates an empty recently added queue with fixed capacity
+     * it sets front and rear to -1 to show that the queue is empty at the start
      */
     public RecentlyAddedQueue(int capacity) {
         this.capacity = capacity;
         this.items = new RecipeData[capacity];
-        this.size = 0;
+        this.front = -1;
+        this.rear = -1;
     }
 
     /*
-     * this method adds a recipe at the rear end of the queue
-     * it takes a recipedata object and appends it at the end
-     * when the queue is full it removes the oldest recipe at index 0 by shifting
-     * it returns true when the recipe is stored successfully or false when recipe is null
+     * this method checks whether the queue is empty
+     * it returns true when front is -1
+     */
+    public boolean isEmpty() {
+        return front == -1;
+    }
+
+    /*
+     * this method checks whether the queue is full
+     * it returns true when rear is at last index and front is 0
+     */
+    public boolean isFull() {
+        return front == 0 && rear == capacity - 1;
+    }
+
+    /*
+     * this method adds a recipe at the front side (index 0) of recently added queue
+     * when empty it sets front and rear to 0 and inserts element
+     * when not empty it shifts all existing elements one step to the right,
+     * writes new element at index 0 and updates rear
+     * when full it first removes the oldest element at rear by shifting elements left,
+     * then inserts new recipe at front
+     * it returns true when insert succeeds or false when recipe is null
      */
     public boolean enqueue(RecipeData recipe) {
         if (recipe == null) {
             return false;
         }
 
-        // when full, drop the oldest by shifting everything one step to left
+        // if full, drop the oldest (rear) by shifting left once
         if (isFull()) {
-            // shift items
-            int i = 1;
-            while (i < size) {
-                items[i - 1] = items[i];
-                i = i + 1;
+            int i = rear - 1;
+            while (i >= front) {
+                items[i + 1] = items[i];
+                i = i - 1;
             }
-            // now size stays same but last position will be overwritten below
-            size = size - 1;
+            // after this, front stays 0 and rear stays capacity-1,
+            // but the oldest at rear is overwritten by shift
         }
 
-        items[size] = recipe;
-        size = size + 1;
+        if (isEmpty()) {
+            front = 0;
+            rear = 0;
+            items[0] = recipe;
+            return true;
+        }
+
+        // shift all elements one step to the right
+        int i = rear;
+        while (i >= front) {
+            items[i + 1] = items[i];
+            i = i - 1;
+        }
+        items[front] = recipe;
+        rear = rear + 1;
         return true;
     }
 
     /*
-     * this method removes and returns the recipe at the front of the queue
-     * it follows fifo rule by always deleting the oldest recipe at index 0
-     * it returns the removed recipe or null when the queue is empty
+     * this method removes and returns the recipe at the back side (rear) of the queue
+     * it always deletes the oldest recipe
+     * it returns null when queue is empty
      */
     public RecipeData dequeue() {
         if (isEmpty()) {
             return null;
         }
 
-        RecipeData removed = items[0];
+        RecipeData element = items[rear];
+        items[rear] = null;
 
-        // shift remaining elements one position to the left
-        int i = 1;
-        while (i < size) {
-            items[i - 1] = items[i];
-            i = i + 1;
+        if (front >= rear) {
+            front = -1;
+            rear = -1;
+        } else {
+            rear = rear - 1;
         }
-
-        items[size - 1] = null;
-        size = size - 1;
-        return removed;
+        return element;
     }
 
     /*
      * this method removes a recipe with a given id from the queue
-     * it scans the array and when id matches it shifts later items to fill the gap
+     * it scans from front to rear, when id matches it shifts later items left
      * it returns true when a recipe is found and removed or false when id is not present
      */
     public boolean removeById(int recipeId) {
@@ -88,11 +118,10 @@ public class RecentlyAddedQueue {
             return false;
         }
 
-        int index = 0;
+        int index = front;
         boolean found = false;
 
-        //finding the index of the recipe to delete
-        while (index < size) {
+        while (index <= rear) {
             RecipeData current = items[index];
             if (current != null && current.getId() == recipeId) {
                 found = true;
@@ -105,76 +134,73 @@ public class RecentlyAddedQueue {
             return false;
         }
 
-        // shifting elements after index to the left
+        // shift elements after index to the left
         int i = index + 1;
-        while (i < size) {
+        while (i <= rear) {
             items[i - 1] = items[i];
             i = i + 1;
         }
 
-        items[size - 1] = null;
-        size = size - 1;
+        items[rear] = null;
+        rear = rear - 1;
+
+        if (rear < front) {
+            front = -1;
+            rear = -1;
+        }
+
         return true;
     }
 
     /*
-     * this method checks if the queue is empty
-     * it returns true when size is zero
-     */
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    /*
-     * this method checks if the queue is full
-     * it returns true when size equals capacity
-     */
-    public boolean isFull() {
-        return size == capacity;
-    }
-
-    /*
      * this method returns the current number of recipes stored
-     * it is useful for stats or debugging
      */
     public int getSize() {
-        return size;
+        if (isEmpty()) {
+            return 0;
+        }
+        return rear - front + 1;
     }
 
     /*
      * this method returns the fixed capacity of this queue
-     * it is useful for ui or validation
      */
     public int getCapacity() {
         return capacity;
     }
 
     /*
-     * this method returns a snapshot array of all recipes in correct order
-     * it creates a new array from index 0 to size minus one
-     * it lets ui display recent recipes without modifying internal storage
+     * this method returns a snapshot array of all recipes from front to rear
+     * index 0 of result is the most recent recipe
      */
     public RecipeData[] toArray() {
-        RecipeData[] result = new RecipeData[size];
+        if (isEmpty()) {
+            return new RecipeData[0];
+        }
+        int size = rear - front + 1;
+        RecipeData[] arr = new RecipeData[size];
         int i = 0;
         while (i < size) {
-            result[i] = items[i];
+            arr[i] = items[front + i];
             i = i + 1;
         }
-        return result;
+        return arr;
     }
 
     /*
      * this method clears all recipes from the queue
-     * it sets all slots to null and resets size back to zero
-     * it is useful when resetting recently added section
+     * it sets all active slots to null and resets front and rear
      */
     public void clear() {
-        int i = 0;
-        while (i < size) {
+        if (isEmpty()) {
+            return;
+        }
+        int i = front;
+        while (i <= rear) {
             items[i] = null;
             i = i + 1;
         }
-        size = 0;
+        front = -1;
+        rear = -1;
     }
 }

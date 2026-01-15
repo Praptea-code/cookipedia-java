@@ -406,7 +406,7 @@ private final AppModel model;
     }
     
     public List<RecipeData> getLast4FromRecipesQueue() {
-        RecipeData[] arr = recentlyAddedQueue.toArray(); // arr[0] = oldest, arr[size-1] = newest
+        RecipeData[] arr = recentlyAddedQueue.toArray(); 
         List<RecipeData> list = new ArrayList<>();
 
         int size = arr.length;

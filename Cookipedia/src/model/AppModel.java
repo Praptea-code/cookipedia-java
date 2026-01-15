@@ -141,10 +141,10 @@ public class AppModel {
             i = i + 1;
         }
 
-        boolean ok = historyQueue.addFirst(recipe);
+        boolean ok = historyQueue.enqueue(recipe);
         if (!ok) {
-            historyQueue.removeLast();
-            historyQueue.addFirst(recipe);
+            historyQueue.dequeue();
+            historyQueue.enqueue(recipe);
         }
     }
 
@@ -168,7 +168,7 @@ public class AppModel {
     it repeatedly calls removeLast until the history queue becomes empty
     */
     public void clearHistory() {
-        while (historyQueue.removeLast() != null) {
+        while (historyQueue.dequeue() != null) {
         }
     }
 

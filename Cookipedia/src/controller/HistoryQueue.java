@@ -50,7 +50,7 @@ public class HistoryQueue {
     when not empty it shifts all existing elements one step to the right and writes new element at index 0 and updates rear
     it returns true when insert succeeds or false when the queue is full
     */
-    public boolean addFirst(RecipeData element) {
+    public boolean enqueue(RecipeData element) {
         if (isFull()) {
             System.out.println("history queue is full");
             return false;
@@ -77,7 +77,7 @@ public class HistoryQueue {
     it always deletes from rear where the oldest recipe is stored
     it returns null when queue is empty or the last recipe when not empty and resets front and rear for last element
     */
-    public RecipeData removeLast() {
+    public RecipeData dequeue() {
         if (isEmpty()) {
             System.out.println("history queue is empty");
             return null;
