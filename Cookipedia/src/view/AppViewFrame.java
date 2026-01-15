@@ -916,6 +916,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         updateStatusBtn3 = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
         userPanel = new javax.swing.JPanel();
         navMainPanel = new javax.swing.JPanel();
         navigationPanel = new javax.swing.JPanel();
@@ -1632,16 +1633,12 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bannerRequestPage.png"))); // NOI18N
+
         javax.swing.GroupLayout manageRequestsPanelLayout = new javax.swing.GroupLayout(manageRequestsPanel);
         manageRequestsPanel.setLayout(manageRequestsPanelLayout);
         manageRequestsPanelLayout.setHorizontalGroup(
             manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRequestsPanelLayout.createSequentialGroup()
-                .addGap(834, 834, 834)
-                .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel15)
-                    .addComponent(jLabel14))
-                .addGap(360, 360, 360))
             .addGroup(manageRequestsPanelLayout.createSequentialGroup()
                 .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(manageRequestsPanelLayout.createSequentialGroup()
@@ -1654,7 +1651,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addComponent(jLabel9)
                                 .addGap(887, 887, 887)
                                 .addComponent(updateStatusBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(manageRequestsPanelLayout.createSequentialGroup()
                                     .addComponent(jLabel7)
                                     .addGap(527, 527, 527)
@@ -1665,7 +1662,14 @@ public class AppViewFrame extends javax.swing.JFrame {
                                     .addComponent(updateStatusBtn)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(deleteRequestBtn))
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRequestsPanelLayout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel15)
+                                        .addComponent(jLabel14))
+                                    .addGap(314, 314, 314)))
+                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING))))
                 .addGap(46, 46, 46))
         );
         manageRequestsPanelLayout.setVerticalGroup(
@@ -1687,11 +1691,13 @@ public class AppViewFrame extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72)
+                .addGap(42, 42, 42)
+                .addComponent(jLabel16)
+                .addGap(14, 14, 14)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel15)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         baseAdminPAnel.add(manageRequestsPanel, "card3");
@@ -3365,6 +3371,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
