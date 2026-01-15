@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 /**
@@ -85,6 +87,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         adminRecipeTable = recipesTable;
         adminIngredientsArea = ingredientsAdmin;  
         adminRecipeTable.setDefaultEditor(Object.class, null);  
+        imagePathAdmin.setEditable(false);
         
         adminReqTable = reqTableAdmin;
         reqHistoryTable.setDefaultEditor(Object.class, null);  
@@ -180,7 +183,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseCardsPanel.removeAll();
 
         //recently Added = last 4 from the recipes queue
-        List<RecipeData> recent = controller.getLast4FromRecipesQueue();
+        List<RecipeData> recent = controller.getRecentlyAdded(4);
         for (RecipeData r : recent) {
             recentlyAddedPanel.add(createRecipeCard(r));
         }
@@ -834,8 +837,6 @@ public class AppViewFrame extends javax.swing.JFrame {
         });
     }
 
- 
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -890,6 +891,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         recipesTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
@@ -1297,6 +1299,13 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton19.setText("Select Img");
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1327,13 +1336,19 @@ public class AppViewFrame extends javax.swing.JFrame {
                                 .addGap(36, 36, 36)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(ratingAdmin, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(titleAdmin, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(timeAdmin, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(imagePathAdmin, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton19))
+                                    .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
@@ -1375,7 +1390,8 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(imagePathLevelAdmin)
-                            .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton19)))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1529,7 +1545,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addGap(168, 168, 168)
                         .addComponent(jLabel2)
-                        .addContainerGap(266, Short.MAX_VALUE))
+                        .addContainerGap(265, Short.MAX_VALUE))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12)
@@ -2558,7 +2574,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         userPanel.setLayout(userPanelLayout);
         userPanelLayout.setHorizontalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(basePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(basePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
             .addComponent(navMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1233, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         userPanelLayout.setVerticalGroup(
@@ -3290,7 +3306,58 @@ public class AppViewFrame extends javax.swing.JFrame {
         javax.swing.JOptionPane.showMessageDialog(this, "Showing all requests from Queue!", "All Requests", javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_updateStatusBtn3ActionPerformed
 
-    
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);
+
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File selectedFile = fileChooser.getSelectedFile();
+
+            if (selectedFile != null) {
+                try {
+                    // Get project's img folder
+                    String projectDir = System.getProperty("user.dir");
+                    String imgFolderPath = projectDir + java.io.File.separator + "img";
+                    java.io.File imgFolder = new java.io.File(imgFolderPath);
+
+                    // Create img folder if it doesn't exist
+                    if (!imgFolder.exists()) {
+                        imgFolder.mkdirs();
+                    }
+
+                    // Copy file to img folder
+                    String fileName = selectedFile.getName();
+                    java.io.File destFile = new java.io.File(imgFolderPath + java.io.File.separator + fileName);
+
+                    java.nio.file.Files.copy(
+                        selectedFile.toPath(),
+                        destFile.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    );
+
+                    // Save relative path - SAME FORMAT AS YOUR DUMMY RECIPES!
+                    String relativePath = "/img/" + fileName;
+                    imagePathAdmin.setText(relativePath);
+                    imagePathAdmin.setEditable(false);
+
+                    System.out.println("✅ Image copied to: " + destFile.getAbsolutePath());
+                    System.out.println("✅ Saved path: " + relativePath);
+
+                } catch (Exception ex) {
+                    javax.swing.JOptionPane.showMessageDialog(
+                        this,
+                        "Error copying image: " + ex.getMessage(),
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE
+                    );
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton19ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -3356,6 +3423,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
