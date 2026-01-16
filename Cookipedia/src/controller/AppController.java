@@ -119,48 +119,17 @@ private final AppModel model;
     }
 
     /*
-    this method permanently removes a cancelled request from the queue using dequeue
-    it takes username and title to identify the request
-    it first checks if request status is cancelled before allowing deletion
-    it dequeues all requests rebuilds queue without target and saves deleted request to stack
-    it returns "success" when deleted or error message when not cancelled or not found
+     This method removes the oldest request from the queue using dequeue.
+     It ignores username, title, and status, and simply returns the dequeued request
+     or null if the queue is empty.
     */
-    public String deleteRequest(String username, String title) {
-        RecipeRequest target = validator.findRequest(getAllRequests(), username, title);
-        if (target == null) {
-            return "Request not found!";
-        }
-
-        if (!target.getStatus().equals("Cancelled")) {
-            return "Cannot delete! Request must be cancelled first.";
-        }
-
-        List<RecipeRequest> temp = new ArrayList<>();
-        boolean found = false;
-
-        // Dequeue all requests from requestQueue
-        while (!requestQueue.isEmpty()) {
-            RecipeRequest req = requestQueue.dequeue();
-
-            if (req.getUsername().equals(username) && req.getTitle().equals(title)) {
-                // push deleted request onto stack following lifo principle
-                deletedRequestsStack.push(req);
-                pendingRequests.remove(req);
-                found = true;
-                // do not add this one back to temp so it is deleted
-            } else {
-                temp.add(req);
-            }
-        }
-
-        // Re-enqueue all kept requests back into requestQueue
-        int i = 0;
-        while (i < temp.size()) {
-            requestQueue.enqueue(temp.get(i));
-            i = i + 1;
-        }
-
-        return found ? "success" : "Request not found!";
+    public RecipeRequest deleteRequest() {
+       RecipeRequest removed = requestQueue.dequeue();
+       if (removed != null) {
+           deletedRequestsStack.push(removed);
+           pendingRequests.remove(removed);
+       }
+       return removed;
     }
     
     /*
@@ -323,7 +292,7 @@ private final AppModel model;
             int size = all.size();
             int fromIndex = 0;
             if (size - 4 > 0) {
-                fromIndex = size - 4;   // last up to 4
+                fromIndex = size - 4;  
             }
 
             int i = fromIndex;
@@ -404,25 +373,6 @@ private final AppModel model;
         }
         return list;
     }
-    
-    public List<RecipeData> getLast4FromRecipesQueue() {
-        RecipeData[] arr = recentlyAddedQueue.toArray(); 
-        List<RecipeData> list = new ArrayList<>();
-
-        int size = arr.length;
-        int fromIndex = 0;
-        if (size - 4 > 0) {
-            fromIndex = size - 4;
-        }
-
-        int i = fromIndex;
-        while (i < size) {
-            list.add(arr[i]);
-            i = i + 1;
-        }
-        return list;
-    }
-
 
    // Dequeue from recipes queue and also remove from model
     public RecipeData dequeueOldestRecipe() {

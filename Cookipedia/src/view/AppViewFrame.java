@@ -433,14 +433,14 @@ public class AppViewFrame extends javax.swing.JFrame {
             return;
         }
 
-        jScrollPane5.setBorder(null);
-        jScrollPane5.setBackground(viewPanel.getBackground());
-        jScrollPane5.getViewport().setBackground(viewPanel.getBackground()); 
+        recipeViewScrollPane.setBorder(null);
+        recipeViewScrollPane.setBackground(viewPanel.getBackground());
+        recipeViewScrollPane.getViewport().setBackground(viewPanel.getBackground()); 
         viewPanel.setBorder(null);
 
-        jPanel4.removeAll();
-        jPanel4.setLayout(new java.awt.GridBagLayout());                   
-        jPanel4.setBackground(viewPanel.getBackground());
+        recipeViewPanel.removeAll();
+        recipeViewPanel.setLayout(new java.awt.GridBagLayout());                   
+        recipeViewPanel.setBackground(viewPanel.getBackground());
 
         java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints(); 
         gbc.insets = new java.awt.Insets(12, 24, 20, 24);
@@ -456,7 +456,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         javax.swing.JLabel titleLabel = new javax.swing.JLabel(recipe.getTitle() != null ? recipe.getTitle().trim() : "Recipe");
         titleLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jPanel4.add(titleLabel, gbc);
+        recipeViewPanel.add(titleLabel, gbc);
         
         gbc.gridy = 2;
         gbc.gridx = 1;
@@ -477,7 +477,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         markCookedBtn.addActionListener(e -> {controller.markRecipeAsCooked();updateHomeStats();  javax.swing.JOptionPane.showMessageDialog(this,
                 "Recipe marked as cooked successfully!","Success",javax.swing.JOptionPane.INFORMATION_MESSAGE);
         });
-        jPanel4.add(markCookedBtn, gbc);
+        recipeViewPanel.add(markCookedBtn, gbc);
 
         gbc.gridy = 3;
         gbc.gridx = 0;
@@ -485,7 +485,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         gbc.weighty = 1.0;
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.anchor = java.awt.GridBagConstraints.NORTH;
-        jPanel4.add(new javax.swing.JLabel(), gbc);
+        recipeViewPanel.add(new javax.swing.JLabel(), gbc);
 
         gbc.gridwidth = 1;
         gbc.gridy = 1;
@@ -497,7 +497,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         javax.swing.JPanel leftPanel = new javax.swing.JPanel();
         leftPanel.setLayout(new javax.swing.BoxLayout(leftPanel, javax.swing.BoxLayout.Y_AXIS));
-        leftPanel.setBackground(jPanel4.getBackground());
+        leftPanel.setBackground(recipeViewPanel.getBackground());
         leftPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 10, 20));
 
         javax.swing.JLabel imgLabel = new javax.swing.JLabel();
@@ -536,7 +536,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         infoLabel.setAlignmentX(0.0f);
         leftPanel.add(infoLabel);
 
-        jPanel4.add(leftPanel, gbc);
+        recipeViewPanel.add(leftPanel, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 0.45;
@@ -545,7 +545,7 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         javax.swing.JPanel rightPanel = new javax.swing.JPanel();
         rightPanel.setLayout(new javax.swing.BoxLayout(rightPanel, javax.swing.BoxLayout.Y_AXIS));
-        rightPanel.setBackground(jPanel4.getBackground());
+        rightPanel.setBackground(recipeViewPanel.getBackground());
         rightPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 10, 0));
 
         rightPanel.add(createSectionLabel("Ingredients"));
@@ -556,12 +556,12 @@ public class AppViewFrame extends javax.swing.JFrame {
         rightPanel.add(createSectionLabel("Process"));
         rightPanel.add(createContentTextArea(recipe.getProcess() != null ? recipe.getProcess() : "No instructions available."));
 
-        jPanel4.add(rightPanel, gbc);
+        recipeViewPanel.add(rightPanel, gbc);
 
-        jPanel4.revalidate();
-        jPanel4.repaint();
-        jScrollPane5.revalidate();
-        jScrollPane5.repaint();
+        recipeViewPanel.revalidate();
+        recipeViewPanel.repaint();
+        recipeViewScrollPane.revalidate();
+        recipeViewScrollPane.repaint();
     }
     
     /*
@@ -689,29 +689,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         loadDeletedRequestsTable(); 
     }
-    
-    /*
-    this method handles clear button for deleted requests table
-    it pops the most recently deleted request from the delete stack and reloads the table
-    it is useful to demonstrate lifo clearing of deleted requests one by one
-    */
-    private void clearDeletedRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {
-        model.RecipeRequest removed = controller.popDeletedRequest();
-        if (removed != null) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Cleared last deleted request:\n" + removed.getTitle(),
-                    "Clear Deleted Request",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            loadDeletedRequestsTable();
-        } else {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "No deleted requests to clear!",
-                    "Clear Deleted Request",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
-    
+      
     /*
     this method loads all deleted cancelled requests into the deleted requests table
     it calls controller to get filtered cancelled requests and fills the table rows
@@ -777,17 +755,17 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful for guiding users on what they can search in the browse section
     */
     private void setupBrowseSearchField() {
-        searchField.addFocusListener(new java.awt.event.FocusAdapter() {
+        searchFieldUser.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (searchField.getText().equals("Search any recipe")) {
-                    searchField.setText("");
-                    searchField.setForeground(Color.BLACK);
+                if (searchFieldUser.getText().equals("Search any recipe")) {
+                    searchFieldUser.setText("");
+                    searchFieldUser.setForeground(Color.BLACK);
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (searchField.getText().trim().isEmpty()) {
-                    searchField.setText("Search any recipe");
-                    searchField.setForeground(new Color(102, 102, 102));
+                if (searchFieldUser.getText().trim().isEmpty()) {
+                    searchFieldUser.setText("Search any recipe");
+                    searchFieldUser.setForeground(new Color(102, 102, 102));
                 }
             }
         });
@@ -799,17 +777,17 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful to keep the history search box user friendly and self explanatory
     */
     private void setupHistorySearchField() {
-        jTextField2.addFocusListener(new java.awt.event.FocusAdapter() {
+        searchBarHistory.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField2.getText().equals("Search recipe in your history")) {
-                    jTextField2.setText("");
-                    jTextField2.setForeground(Color.BLACK);
+                if (searchBarHistory.getText().equals("Search recipe in your history")) {
+                    searchBarHistory.setText("");
+                    searchBarHistory.setForeground(Color.BLACK);
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField2.getText().trim().isEmpty()) {
-                    jTextField2.setText("Search recipe in your history");
-                    jTextField2.setForeground(new Color(102, 102, 102));
+                if (searchBarHistory.getText().trim().isEmpty()) {
+                    searchBarHistory.setText("Search recipe in your history");
+                    searchBarHistory.setForeground(new Color(102, 102, 102));
                 }
             }
         });
@@ -821,17 +799,17 @@ public class AppViewFrame extends javax.swing.JFrame {
         it is useful so admins immediately know they can search recipes in the table
     */
     private void setupAdminSearchField() {
-        jTextField3.addFocusListener(new java.awt.event.FocusAdapter() {
+        searchRecipesAdmin.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField3.getText().equals("Search any recipe")) {
-                    jTextField3.setText("");
-                    jTextField3.setForeground(Color.BLACK);
+                if (searchRecipesAdmin.getText().equals("Search any recipe")) {
+                    searchRecipesAdmin.setText("");
+                    searchRecipesAdmin.setForeground(Color.BLACK);
                 }
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField3.getText().trim().isEmpty()) {
-                    jTextField3.setText("Search any recipe");
-                    jTextField3.setForeground(new Color(102, 102, 102));
+                if (searchRecipesAdmin.getText().trim().isEmpty()) {
+                    searchRecipesAdmin.setText("Search any recipe");
+                    searchRecipesAdmin.setForeground(new Color(102, 102, 102));
                 }
             }
         });
@@ -867,7 +845,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoAdmin = new javax.swing.JLabel();
         baseAdminPAnel = new javax.swing.JPanel();
         manageRecipesPanel = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        recipesFormPanel = new javax.swing.JPanel();
         titleLabelAdmin = new javax.swing.JLabel();
         cuisineLabelAdmin = new javax.swing.JLabel();
         imagePathLevelAdmin = new javax.swing.JLabel();
@@ -883,14 +861,14 @@ public class AppViewFrame extends javax.swing.JFrame {
         titleAdmin = new javax.swing.JTextField();
         imagePathAdmin = new javax.swing.JTextField();
         cuisineAdmin = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        addRecipeButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
         difficultyLabelAdmin = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         ingredientsAdmin = new javax.swing.JTextArea();
-        jButton11 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        undoButton = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         recipesTable = new javax.swing.JTable();
@@ -899,11 +877,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jButton14 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
-        jButton17 = new javax.swing.JButton();
+        nameAscAdmin = new javax.swing.JButton();
+        timeAscAdmin = new javax.swing.JButton();
+        ratingDescAdmin = new javax.swing.JButton();
+        searchRecipesAdmin = new javax.swing.JTextField();
+        nameDescAdmin = new javax.swing.JButton();
         manageRequestsPanel = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         reqTableAdmin = new javax.swing.JTable();
@@ -913,9 +891,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         jScrollPane7 = new javax.swing.JScrollPane();
         deletedRequestsTable = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
-        updateStatusBtn1 = new javax.swing.JButton();
-        updateStatusBtn2 = new javax.swing.JButton();
-        updateStatusBtn3 = new javax.swing.JButton();
+        deleteStackButton = new javax.swing.JButton();
+        showPending = new javax.swing.JButton();
+        showAll = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -956,29 +934,29 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseRecipesPanel = new javax.swing.JPanel();
         browsePanel = new javax.swing.JPanel();
         browseTopPanel = new javax.swing.JPanel();
-        searchField = new javax.swing.JTextField();
+        searchFieldUser = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
+        sortByNameAsc = new javax.swing.JButton();
+        sortByTime = new javax.swing.JButton();
+        sortByRating = new javax.swing.JButton();
+        sortByNameDesc = new javax.swing.JButton();
         comboBoxSearch = new javax.swing.JComboBox<>();
         browseScrollPane = new javax.swing.JScrollPane();
         browseCardsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         myHistoryPanel = new javax.swing.JPanel();
         historyPanel = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
+        searchBarHistory = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        clearHistory = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         historyScrollPane = new java.awt.ScrollPane();
         browseHistoryPanel = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         recipeRequestPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        requestRecipePanel = new javax.swing.JPanel();
         reqUsernameLabel = new javax.swing.JLabel();
         recipeTitleLabel = new javax.swing.JLabel();
         vegNonvegLabel = new javax.swing.JLabel();
@@ -998,8 +976,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         nameAsc = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         viewPanel = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jPanel4 = new javax.swing.JPanel();
+        recipeViewScrollPane = new javax.swing.JScrollPane();
+        recipeViewPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1237,23 +1215,23 @@ public class AppViewFrame extends javax.swing.JFrame {
         jScrollPane3.setHorizontalScrollBarPolicy(
             javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        jButton6.setBackground(new java.awt.Color(0, 102, 0));
-        jButton6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Add");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        addRecipeButton.setBackground(new java.awt.Color(0, 102, 0));
+        addRecipeButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        addRecipeButton.setForeground(new java.awt.Color(255, 255, 255));
+        addRecipeButton.setText("Add");
+        addRecipeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                addRecipeButtonActionPerformed(evt);
             }
         });
 
-        jButton7.setBackground(new java.awt.Color(0, 51, 153));
-        jButton7.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("Update");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        updateButton.setBackground(new java.awt.Color(0, 51, 153));
+        updateButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                updateButtonActionPerformed(evt);
             }
         });
 
@@ -1269,33 +1247,33 @@ public class AppViewFrame extends javax.swing.JFrame {
         jScrollPane2.setHorizontalScrollBarPolicy(
             javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        jButton11.setBackground(new java.awt.Color(0, 0, 0));
-        jButton11.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton11.setForeground(new java.awt.Color(255, 255, 255));
-        jButton11.setText("Clear");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        clearButton.setBackground(new java.awt.Color(0, 0, 0));
+        clearButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        clearButton.setForeground(new java.awt.Color(255, 255, 255));
+        clearButton.setText("Clear");
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                clearButtonActionPerformed(evt);
             }
         });
 
-        jButton8.setBackground(new java.awt.Color(153, 0, 0));
-        jButton8.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton8.setForeground(new java.awt.Color(255, 255, 255));
-        jButton8.setText("Delete");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        deleteButton.setBackground(new java.awt.Color(153, 0, 0));
+        deleteButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                deleteButtonActionPerformed(evt);
             }
         });
 
-        jButton12.setBackground(new java.awt.Color(153, 0, 0));
-        jButton12.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton12.setForeground(new java.awt.Color(255, 255, 255));
-        jButton12.setText("Undo");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        undoButton.setBackground(new java.awt.Color(153, 0, 0));
+        undoButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        undoButton.setForeground(new java.awt.Color(255, 255, 255));
+        undoButton.setText("Undo");
+        undoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                undoButtonActionPerformed(evt);
             }
         });
 
@@ -1306,116 +1284,116 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout recipesFormPanelLayout = new javax.swing.GroupLayout(recipesFormPanel);
+        recipesFormPanel.setLayout(recipesFormPanelLayout);
+        recipesFormPanelLayout.setHorizontalGroup(
+            recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(recipesFormPanelLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
                         .addComponent(difficultyLabelAdmin)
                         .addGap(247, 247, 247)
                         .addComponent(processLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(recipesFormPanelLayout.createSequentialGroup()
+                                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(imagePathLevelAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
                                         .addComponent(cuisineLabelAdmin)
                                         .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipesFormPanelLayout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
                                         .addComponent(ratingLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(recipesFormPanelLayout.createSequentialGroup()
                                 .addComponent(titleLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(36, 36, 36)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(ratingAdmin, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(recipesFormPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(titleAdmin, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(timeAdmin, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, recipesFormPanelLayout.createSequentialGroup()
+                                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
                                         .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jButton19))
                                     .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(recipesFormPanelLayout.createSequentialGroup()
                                 .addGap(20, 20, 20)
                                 .addComponent(ingredientsLabelAmin, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, recipesFormPanelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton8)
+                                .addComponent(deleteButton)
                                 .addGap(60, 60, 60)
-                                .addComponent(jButton12)
+                                .addComponent(undoButton)
                                 .addGap(30, 30, 30))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, recipesFormPanelLayout.createSequentialGroup()
                         .addComponent(timeLabelAdmin)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton6)
+                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
+                        .addComponent(addRecipeButton)
                         .addGap(54, 54, 54)
-                        .addComponent(jButton7)
+                        .addComponent(updateButton)
                         .addGap(57, 57, 57)
-                        .addComponent(jButton11)
+                        .addComponent(clearButton)
                         .addGap(294, 294, 294)))
                 .addGap(16, 16, 16))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        recipesFormPanelLayout.setVerticalGroup(
+            recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(recipesFormPanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ingredientsLabelAmin)
                             .addComponent(titleLabelAdmin)
                             .addComponent(titleAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cuisineLabelAdmin)
                             .addComponent(cuisineAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(imagePathLevelAdmin)
                             .addComponent(imagePathAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton19)))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(recipesFormPanelLayout.createSequentialGroup()
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(difficultyLabelAdmin)
                             .addComponent(difficultyAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(processLabelAdmin))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(timeLabelAdmin)
                             .addComponent(timeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(ratingLabelAdmin)
                             .addComponent(ratingAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7)
-                    .addComponent(jButton11)
-                    .addComponent(jButton8)
-                    .addComponent(jButton12))
+                .addGroup(recipesFormPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addRecipeButton)
+                    .addComponent(updateButton)
+                    .addComponent(clearButton)
+                    .addComponent(deleteButton)
+                    .addComponent(undoButton))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -1443,56 +1421,56 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel13.setText("Sort By:");
 
-        jButton14.setBackground(new java.awt.Color(0, 0, 0));
-        jButton14.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton14.setForeground(new java.awt.Color(255, 204, 0));
-        jButton14.setText("Name (A-Z)");
-        jButton14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
+        nameAscAdmin.setBackground(new java.awt.Color(0, 0, 0));
+        nameAscAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        nameAscAdmin.setForeground(new java.awt.Color(255, 204, 0));
+        nameAscAdmin.setText("Name (A-Z)");
+        nameAscAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        nameAscAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
+                nameAscAdminActionPerformed(evt);
             }
         });
 
-        jButton15.setBackground(new java.awt.Color(0, 0, 0));
-        jButton15.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton15.setForeground(new java.awt.Color(255, 204, 0));
-        jButton15.setText(" Time ↑");
-        jButton15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
+        timeAscAdmin.setBackground(new java.awt.Color(0, 0, 0));
+        timeAscAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        timeAscAdmin.setForeground(new java.awt.Color(255, 204, 0));
+        timeAscAdmin.setText(" Time ↑");
+        timeAscAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        timeAscAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
+                timeAscAdminActionPerformed(evt);
             }
         });
 
-        jButton16.setBackground(new java.awt.Color(0, 0, 0));
-        jButton16.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton16.setForeground(new java.awt.Color(255, 204, 0));
-        jButton16.setText("Rating ↓");
-        jButton16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
+        ratingDescAdmin.setBackground(new java.awt.Color(0, 0, 0));
+        ratingDescAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        ratingDescAdmin.setForeground(new java.awt.Color(255, 204, 0));
+        ratingDescAdmin.setText("Rating ↓");
+        ratingDescAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ratingDescAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
+                ratingDescAdminActionPerformed(evt);
             }
         });
 
-        jTextField3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField3.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField3.setText("Search any recipe");
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        searchRecipesAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        searchRecipesAdmin.setForeground(new java.awt.Color(102, 102, 102));
+        searchRecipesAdmin.setText("Search any recipe");
+        searchRecipesAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                searchRecipesAdminActionPerformed(evt);
             }
         });
 
-        jButton17.setBackground(new java.awt.Color(0, 0, 0));
-        jButton17.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton17.setForeground(new java.awt.Color(255, 204, 0));
-        jButton17.setText("Name (Z-A)");
-        jButton17.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
+        nameDescAdmin.setBackground(new java.awt.Color(0, 0, 0));
+        nameDescAdmin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        nameDescAdmin.setForeground(new java.awt.Color(255, 204, 0));
+        nameDescAdmin.setText("Name (Z-A)");
+        nameDescAdmin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        nameDescAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton17ActionPerformed(evt);
+                nameDescAdminActionPerformed(evt);
             }
         });
 
@@ -1509,24 +1487,24 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, manageRecipesPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel12)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(recipesFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel5))
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                                 .addGap(471, 471, 471)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(searchRecipesAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton14)
+                                .addComponent(nameAscAdmin)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton17)
+                                .addComponent(nameDescAdmin)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton15)
+                                .addComponent(timeAscAdmin)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton16))
+                                .addComponent(ratingDescAdmin))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1169, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(42, 42, 42)
                         .addComponent(jLabel2)))
@@ -1540,7 +1518,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(recipesFormPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(manageRecipesPanelLayout.createSequentialGroup()
                         .addGap(168, 168, 168)
@@ -1552,12 +1530,12 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(manageRecipesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton14)
-                                .addComponent(jButton15)
-                                .addComponent(jButton16)
+                                .addComponent(nameAscAdmin)
+                                .addComponent(timeAscAdmin)
+                                .addComponent(ratingDescAdmin)
                                 .addComponent(jLabel13)
-                                .addComponent(jButton17))
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(nameDescAdmin))
+                            .addComponent(searchRecipesAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(39, 39, 39))))
@@ -1619,33 +1597,33 @@ public class AppViewFrame extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel9.setText("Deleted Request");
 
-        updateStatusBtn1.setBackground(new java.awt.Color(153, 0, 0));
-        updateStatusBtn1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        updateStatusBtn1.setForeground(new java.awt.Color(255, 255, 255));
-        updateStatusBtn1.setText("Delete");
-        updateStatusBtn1.addActionListener(new java.awt.event.ActionListener() {
+        deleteStackButton.setBackground(new java.awt.Color(153, 0, 0));
+        deleteStackButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        deleteStackButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteStackButton.setText("Delete");
+        deleteStackButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateStatusBtn1ActionPerformed(evt);
+                deleteStackButtonActionPerformed(evt);
             }
         });
 
-        updateStatusBtn2.setBackground(new java.awt.Color(0, 0, 0));
-        updateStatusBtn2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        updateStatusBtn2.setForeground(new java.awt.Color(255, 204, 0));
-        updateStatusBtn2.setText("Show Pending");
-        updateStatusBtn2.addActionListener(new java.awt.event.ActionListener() {
+        showPending.setBackground(new java.awt.Color(0, 0, 0));
+        showPending.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        showPending.setForeground(new java.awt.Color(255, 204, 0));
+        showPending.setText("Show Pending");
+        showPending.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateStatusBtn2ActionPerformed(evt);
+                showPendingActionPerformed(evt);
             }
         });
 
-        updateStatusBtn3.setBackground(new java.awt.Color(0, 0, 0));
-        updateStatusBtn3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        updateStatusBtn3.setForeground(new java.awt.Color(255, 204, 0));
-        updateStatusBtn3.setText("Show All");
-        updateStatusBtn3.addActionListener(new java.awt.event.ActionListener() {
+        showAll.setBackground(new java.awt.Color(0, 0, 0));
+        showAll.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        showAll.setForeground(new java.awt.Color(255, 204, 0));
+        showAll.setText("Show All");
+        showAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateStatusBtn3ActionPerformed(evt);
+                showAllActionPerformed(evt);
             }
         });
 
@@ -1666,14 +1644,14 @@ public class AppViewFrame extends javax.swing.JFrame {
                             .addGroup(manageRequestsPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel9)
                                 .addGap(887, 887, 887)
-                                .addComponent(updateStatusBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(deleteStackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(manageRequestsPanelLayout.createSequentialGroup()
                                     .addComponent(jLabel7)
                                     .addGap(527, 527, 527)
-                                    .addComponent(updateStatusBtn3, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(showAll, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(updateStatusBtn2)
+                                    .addComponent(showPending)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(updateStatusBtn)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1697,13 +1675,13 @@ public class AppViewFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(deleteRequestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(updateStatusBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(updateStatusBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(updateStatusBtn3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(showPending, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(showAll, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(45, 45, 45)
                 .addGroup(manageRequestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(updateStatusBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteStackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2060,59 +2038,59 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         browseTopPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        searchField.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        searchField.setForeground(new java.awt.Color(102, 102, 102));
-        searchField.setText("Search any recipe");
-        searchField.addActionListener(new java.awt.event.ActionListener() {
+        searchFieldUser.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        searchFieldUser.setForeground(new java.awt.Color(102, 102, 102));
+        searchFieldUser.setText("Search any recipe");
+        searchFieldUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchFieldActionPerformed(evt);
+                searchFieldUserActionPerformed(evt);
             }
         });
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel3.setText("Sort By:");
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 0));
-        jButton1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 204, 0));
-        jButton1.setText("Name (A-Z)");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        sortByNameAsc.setBackground(new java.awt.Color(0, 0, 0));
+        sortByNameAsc.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        sortByNameAsc.setForeground(new java.awt.Color(255, 204, 0));
+        sortByNameAsc.setText("Name (A-Z)");
+        sortByNameAsc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sortByNameAsc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                sortByNameAscActionPerformed(evt);
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(0, 0, 0));
-        jButton3.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 204, 0));
-        jButton3.setText("Time ↑");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        sortByTime.setBackground(new java.awt.Color(0, 0, 0));
+        sortByTime.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        sortByTime.setForeground(new java.awt.Color(255, 204, 0));
+        sortByTime.setText("Time ↑");
+        sortByTime.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sortByTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                sortByTimeActionPerformed(evt);
             }
         });
 
-        jButton9.setBackground(new java.awt.Color(0, 0, 0));
-        jButton9.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton9.setForeground(new java.awt.Color(255, 204, 0));
-        jButton9.setText("Rating ↓");
-        jButton9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        sortByRating.setBackground(new java.awt.Color(0, 0, 0));
+        sortByRating.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        sortByRating.setForeground(new java.awt.Color(255, 204, 0));
+        sortByRating.setText("Rating ↓");
+        sortByRating.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sortByRating.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                sortByRatingActionPerformed(evt);
             }
         });
 
-        jButton18.setBackground(new java.awt.Color(0, 0, 0));
-        jButton18.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton18.setForeground(new java.awt.Color(255, 204, 0));
-        jButton18.setText("Name (Z-A)");
-        jButton18.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton18.addActionListener(new java.awt.event.ActionListener() {
+        sortByNameDesc.setBackground(new java.awt.Color(0, 0, 0));
+        sortByNameDesc.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        sortByNameDesc.setForeground(new java.awt.Color(255, 204, 0));
+        sortByNameDesc.setText("Name (Z-A)");
+        sortByNameDesc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        sortByNameDesc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton18ActionPerformed(evt);
+                sortByNameDescActionPerformed(evt);
             }
         });
 
@@ -2127,17 +2105,17 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(255, 255, 255)
                 .addComponent(comboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(sortByNameAsc)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton18)
+                .addComponent(sortByNameDesc)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(sortByTime)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton9)
+                .addComponent(sortByRating)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         browseTopPanelLayout.setVerticalGroup(
@@ -2146,11 +2124,11 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addContainerGap(56, Short.MAX_VALUE)
                 .addGroup(browseTopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3)
-                    .addComponent(jButton9)
-                    .addComponent(jButton18)
-                    .addComponent(searchField)
+                    .addComponent(sortByNameAsc)
+                    .addComponent(sortByTime)
+                    .addComponent(sortByRating)
+                    .addComponent(sortByNameDesc)
+                    .addComponent(searchFieldUser)
                     .addComponent(comboBoxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23))
         );
@@ -2206,12 +2184,12 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         historyPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextField2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jTextField2.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField2.setText("Search recipe in your history");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        searchBarHistory.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        searchBarHistory.setForeground(new java.awt.Color(102, 102, 102));
+        searchBarHistory.setText("Search recipe in your history");
+        searchBarHistory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                searchBarHistoryActionPerformed(evt);
             }
         });
 
@@ -2240,14 +2218,14 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(102, 0, 51));
-        jButton5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Clear History");
-        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        clearHistory.setBackground(new java.awt.Color(102, 0, 51));
+        clearHistory.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        clearHistory.setForeground(new java.awt.Color(255, 255, 255));
+        clearHistory.setText("Clear History");
+        clearHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        clearHistory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                clearHistoryActionPerformed(evt);
             }
         });
 
@@ -2268,7 +2246,7 @@ public class AppViewFrame extends javax.swing.JFrame {
             historyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(historyPanelLayout.createSequentialGroup()
                 .addGap(170, 170, 170)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchBarHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(109, 109, 109)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2278,7 +2256,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
+                .addComponent(clearHistory)
                 .addGap(156, 156, 156))
         );
         historyPanelLayout.setVerticalGroup(
@@ -2289,8 +2267,8 @@ public class AppViewFrame extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jButton2)
                     .addComponent(jButton4)
-                    .addComponent(jTextField2)
-                    .addComponent(jButton5)
+                    .addComponent(searchBarHistory)
+                    .addComponent(clearHistory)
                     .addComponent(jButton10))
                 .addGap(23, 23, 23))
         );
@@ -2373,44 +2351,44 @@ public class AppViewFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout requestRecipePanelLayout = new javax.swing.GroupLayout(requestRecipePanel);
+        requestRecipePanel.setLayout(requestRecipePanelLayout);
+        requestRecipePanelLayout.setHorizontalGroup(
+            requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(requestRecipePanelLayout.createSequentialGroup()
                 .addGap(94, 94, 94)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(reqUsernameLabel)
                     .addComponent(recipeTitleLabel)
                     .addComponent(noteLabel)
                     .addComponent(vegNonvegLabel))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(requestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(vegNonvegTextField)
                         .addComponent(recipeTitleTextfield)
                         .addComponent(reqUsernameTextField)
                         .addComponent(noteTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)))
                 .addContainerGap(113, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        requestRecipePanelLayout.setVerticalGroup(
+            requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(requestRecipePanelLayout.createSequentialGroup()
                 .addGap(84, 84, 84)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(reqUsernameLabel)
                     .addComponent(reqUsernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(recipeTitleLabel)
                     .addComponent(recipeTitleTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(vegNonvegLabel)
                     .addComponent(vegNonvegTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(requestRecipePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(noteLabel)
                     .addComponent(noteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
@@ -2472,7 +2450,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(64, 64, 64)
                 .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(recipeRequestPanelLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(requestRecipePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2506,7 +2484,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(recipeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(banner)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(requestRecipePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(33, 33, 33)
                 .addComponent(reqHistoryLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2523,18 +2501,18 @@ public class AppViewFrame extends javax.swing.JFrame {
 
         viewPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout recipeViewPanelLayout = new javax.swing.GroupLayout(recipeViewPanel);
+        recipeViewPanel.setLayout(recipeViewPanelLayout);
+        recipeViewPanelLayout.setHorizontalGroup(
+            recipeViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1157, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        recipeViewPanelLayout.setVerticalGroup(
+            recipeViewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 685, Short.MAX_VALUE)
         );
 
-        jScrollPane5.setViewportView(jPanel4);
+        recipeViewScrollPane.setViewportView(recipeViewPanel);
 
         backButton.setBackground(new java.awt.Color(102, 0, 51));
         backButton.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
@@ -2555,7 +2533,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(50, 50, 50)
                 .addGroup(viewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backButton)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(recipeViewScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1134, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(49, Short.MAX_VALUE))
         );
         viewPanelLayout.setVerticalGroup(
@@ -2564,7 +2542,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 .addGap(25, 25, 25)
                 .addComponent(backButton)
                 .addGap(48, 48, 48)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(recipeViewScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -2574,7 +2552,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         userPanel.setLayout(userPanelLayout);
         userPanelLayout.setHorizontalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(basePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(basePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(navMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1233, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         userPanelLayout.setVerticalGroup(
@@ -2598,7 +2576,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         handleLogin();
     }//GEN-LAST:event_loginButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void sortByNameAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByNameAscActionPerformed
         List<RecipeData> sorted = controller.sortRecipesByName();
 
         browseCardsPanel.removeAll();
@@ -2607,9 +2585,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_sortByNameAscActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void sortByTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByTimeActionPerformed
         //calling controller method
         List<RecipeData> sorted = controller.sortRecipesByTime();
 
@@ -2620,7 +2598,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_sortByTimeActionPerformed
 
     private void loginButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginButtonMouseEntered
         loginButton.setBackground(loginHoverBg);
@@ -2679,8 +2657,8 @@ public class AppViewFrame extends javax.swing.JFrame {
         logoutButton.setForeground(loginNormalFg);
     }//GEN-LAST:event_logoutButtonMouseExited
 
-    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        String query = searchField.getText().trim();
+    private void searchFieldUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldUserActionPerformed
+        String query = searchFieldUser.getText().trim();
         if (query.equals("Search any recipe")) {
             query = "";
         }
@@ -2704,10 +2682,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_searchFieldActionPerformed
+    }//GEN-LAST:event_searchFieldUserActionPerformed
     
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        String query = jTextField2.getText().trim();
+    private void searchBarHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBarHistoryActionPerformed
+        String query = searchBarHistory.getText().trim();
         if (query.equals("Search recipe in your history")) {
             query = "";
         }
@@ -2732,7 +2710,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseHistoryPanel.revalidate();
         browseHistoryPanel.repaint();
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_searchBarHistoryActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
@@ -2758,10 +2736,10 @@ public class AppViewFrame extends javax.swing.JFrame {
         browseHistoryPanel.repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void clearHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearHistoryActionPerformed
         controller.clearHistory();
         loadHistoryCards();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_clearHistoryActionPerformed
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestBtnActionPerformed
         String username = reqUsernameTextField.getText().trim();
@@ -2847,7 +2825,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_logoutButtonAdminActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void addRecipeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRecipeButtonActionPerformed
         String title = adminTitleField.getText().trim();
         String cuisine = adminCuisineField.getText().trim();
         String difficulty = adminDifficultyField.getText().trim();
@@ -2874,9 +2852,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                     "Validation Error",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_addRecipeButtonActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         try {
             Integer recipeId = (Integer) adminRecipeTable.getClientProperty("selectedRecipeId");
 
@@ -2921,26 +2899,17 @@ public class AppViewFrame extends javax.swing.JFrame {
                 loadHomeCards();
                 clearRecipeForm();
 
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Recipe updated successfully!",
-                    "Success",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this,"Recipe updated successfully!","Success",javax.swing.JOptionPane.INFORMATION_MESSAGE);
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                    "Recipe not found!",
-                    "Error",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(this,"Recipe not found!","Error",javax.swing.JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (NumberFormatException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                "Please enter valid numbers for Time and Rating!",
-                "Input Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(this,"Please enter valid numbers for Time and Rating!","Input Error",javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_updateButtonActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         int choice = JOptionPane.showConfirmDialog(this,
             "This will delete the OLDEST recipe (FIFO dequeue).\nAre you sure?",
             "Confirm Dequeue Delete",
@@ -2964,7 +2933,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                         JOptionPane.INFORMATION_MESSAGE);
             }
         }
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         CardLayout baseCL = (CardLayout) basePanel.getLayout();
@@ -2972,7 +2941,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         loadHomeCards();
     }//GEN-LAST:event_backButtonActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void sortByRatingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByRatingActionPerformed
           List<RecipeData> sorted = controller.sortRecipesByRating();
 
         // Update view
@@ -2982,7 +2951,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_sortByRatingActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         List<RecipeData> sortedHistory = controller.getHistorySortedByRating();
@@ -3013,7 +2982,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_nameAscActionPerformed
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+    private void nameAscAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameAscAdminActionPerformed
 
         List<RecipeData> sorted = controller.sortRecipesByName();
 
@@ -3031,10 +3000,10 @@ public class AppViewFrame extends javax.swing.JFrame {
                 r.getRating()
             });
         }
-    }//GEN-LAST:event_jButton14ActionPerformed
+    }//GEN-LAST:event_nameAscAdminActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        String query = jTextField3.getText().trim();
+    private void searchRecipesAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchRecipesAdminActionPerformed
+        String query = searchRecipesAdmin.getText().trim();
     
         if (query.equals("Search any recipe")) {
             query = "";
@@ -3056,9 +3025,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                 r.getRating()
             });
         }
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_searchRecipesAdminActionPerformed
 
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+    private void timeAscAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeAscAdminActionPerformed
 
         List<RecipeData> sorted = controller.sortRecipesByTime();
 
@@ -3076,9 +3045,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                 r.getRating()
             });
         }
-    }//GEN-LAST:event_jButton15ActionPerformed
+    }//GEN-LAST:event_timeAscAdminActionPerformed
 
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+    private void ratingDescAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ratingDescAdminActionPerformed
 
         List<RecipeData> sorted = controller.sortRecipesByRating();
 
@@ -3096,7 +3065,7 @@ public class AppViewFrame extends javax.swing.JFrame {
                 r.getRating()
             });
         }
-    }//GEN-LAST:event_jButton16ActionPerformed
+    }//GEN-LAST:event_ratingDescAdminActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
          List<RecipeRequest> sorted = controller.sortRequestsByNameDesc();
@@ -3116,11 +3085,11 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton13ActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clearRecipeForm();
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_clearButtonActionPerformed
 
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+    private void nameDescAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameDescAdminActionPerformed
         List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
 
         javax.swing.table.DefaultTableModel dtm = 
@@ -3137,9 +3106,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                 r.getRating()
             });
         }
-    }//GEN-LAST:event_jButton17ActionPerformed
+    }//GEN-LAST:event_nameDescAdminActionPerformed
 
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+    private void sortByNameDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortByNameDescActionPerformed
        List<RecipeData> sorted = controller.getRecipesSortedByNameDesc();
         browseCardsPanel.removeAll();
         for (RecipeData r : sorted) {
@@ -3147,9 +3116,9 @@ public class AppViewFrame extends javax.swing.JFrame {
         }
         browseCardsPanel.revalidate();
         browseCardsPanel.repaint();
-    }//GEN-LAST:event_jButton18ActionPerformed
+    }//GEN-LAST:event_sortByNameDescActionPerformed
 
-    private void updateStatusBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtn1ActionPerformed
+    private void deleteStackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStackButtonActionPerformed
         model.RecipeRequest removed = controller.popDeletedRequest();
         if (removed != null) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -3163,9 +3132,9 @@ public class AppViewFrame extends javax.swing.JFrame {
                     "Deleted Requests",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
-    }//GEN-LAST:event_updateStatusBtn1ActionPerformed
+    }//GEN-LAST:event_deleteStackButtonActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+    private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
         if (!controller.canUndo()) {
         JOptionPane.showMessageDialog(this,
                 "No deleted recipes to undo!",
@@ -3188,48 +3157,23 @@ public class AppViewFrame extends javax.swing.JFrame {
                     "Undo",
                     JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton12ActionPerformed
+    }//GEN-LAST:event_undoButtonActionPerformed
 
     private void deleteRequestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRequestBtnActionPerformed
-   int row = adminReqTable.getSelectedRow();
-    if (row < 0) {
-        JOptionPane.showMessageDialog(this, 
-            "Please select a request from the table.",
-            "No Selection", 
-            JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    String username = (String) adminReqTable.getValueAt(row, 0);
-    String title = (String) adminReqTable.getValueAt(row, 1);
-    String status = (String) adminReqTable.getValueAt(row, 6);
-
-    int confirm = JOptionPane.showConfirmDialog(
-        this,
-        "\n\nAre you sure you want to delete this request?",
-        "Confirm Delete",
-        JOptionPane.YES_NO_OPTION
-    );
-    if (confirm != JOptionPane.YES_OPTION) return;
-
-    String result = controller.deleteRequest(username, title);
-
-    if ("success".equals(result)) {
-        JOptionPane.showMessageDialog(this, 
-            "Request deleted successfully!",
-            "Success", 
-            JOptionPane.INFORMATION_MESSAGE);
-        loadAdminRequestsTable();
-        loadDeletedRequestsTable(); 
-        loadUserRequestHistoryTable();
-        updateHomeStats();
-    } else {
-        JOptionPane.showMessageDialog(this, 
-            result, 
-            "Error", 
-            JOptionPane.ERROR_MESSAGE);
-    }
-
+        RecipeRequest removed = controller.deleteRequest();
+        if (removed != null) {
+            loadAdminRequestsTable();
+            loadDeletedRequestsTable();
+            JOptionPane.showMessageDialog(this,
+                    "Deleted oldest request using dequeue:\n" + removed.getTitle(),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No requests to delete (queue is empty)!",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_deleteRequestBtnActionPerformed
 
     private void updateStatusBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtnActionPerformed
@@ -3279,7 +3223,7 @@ public class AppViewFrame extends javax.swing.JFrame {
         );
     }//GEN-LAST:event_updateStatusBtnActionPerformed
 
-    private void updateStatusBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtn2ActionPerformed
+    private void showPendingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPendingActionPerformed
     List<RecipeRequest> pending = controller.getPendingRequests();
 
     javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) adminReqTable.getModel();
@@ -3298,13 +3242,13 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
     
     javax.swing.JOptionPane.showMessageDialog(this, "Showing " + pending.size() + " pending requests from LinkedList!", "Pending Requests", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_updateStatusBtn2ActionPerformed
+    }//GEN-LAST:event_showPendingActionPerformed
 
-    private void updateStatusBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateStatusBtn3ActionPerformed
+    private void showAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllActionPerformed
         loadAdminRequestsTable(); 
     
         javax.swing.JOptionPane.showMessageDialog(this, "Showing all requests from Queue!", "All Requests", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_updateStatusBtn3ActionPerformed
+    }//GEN-LAST:event_showAllActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
@@ -3355,6 +3299,7 @@ public class AppViewFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addRecipeButton;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel banner;
@@ -3369,10 +3314,14 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JPanel browseRecipesPanel;
     private javax.swing.JScrollPane browseScrollPane;
     private javax.swing.JPanel browseTopPanel;
+    private javax.swing.JButton clearButton;
+    private javax.swing.JButton clearHistory;
     private javax.swing.JComboBox<String> comboBoxSearch;
     private javax.swing.JTextField cuisineAdmin;
     private javax.swing.JLabel cuisineLabelAdmin;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JButton deleteRequestBtn;
+    private javax.swing.JButton deleteStackButton;
     private javax.swing.JTable deletedRequestsTable;
     private javax.swing.JTextField difficultyAdmin;
     private javax.swing.JLabel difficultyLabelAdmin;
@@ -3384,25 +3333,11 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel imagePathLevelAdmin;
     private javax.swing.JTextArea ingredientsAdmin;
     private javax.swing.JLabel ingredientsLabelAmin;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -3419,16 +3354,12 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
@@ -3438,8 +3369,6 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JSeparator jSeparator7;
     private javax.swing.JSeparator jSeparator9;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel loginPageImage;
     private javax.swing.JPanel loginPanel;
@@ -3457,6 +3386,8 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel myStatsLabel;
     private javax.swing.JLabel myStatsLabel1;
     private javax.swing.JButton nameAsc;
+    private javax.swing.JButton nameAscAdmin;
+    private javax.swing.JButton nameDescAdmin;
     private javax.swing.JPanel navMainPanel;
     private javax.swing.JPanel navMainPanelAdmin;
     private javax.swing.JPanel navigationPanel;
@@ -3468,13 +3399,17 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea processAdmin;
     private javax.swing.JLabel processLabelAdmin;
     private javax.swing.JTextField ratingAdmin;
+    private javax.swing.JButton ratingDescAdmin;
     private javax.swing.JLabel ratingLabelAdmin;
     private javax.swing.JPanel recentlyAddedPanel;
     private javax.swing.JPanel recipeRequestPanel;
     private javax.swing.JLabel recipeTitleLabel;
     private javax.swing.JTextField recipeTitleTextfield;
+    private javax.swing.JPanel recipeViewPanel;
+    private javax.swing.JScrollPane recipeViewScrollPane;
     private javax.swing.JLabel recipesCookedLogo;
     private javax.swing.JLabel recipesCookedNumber;
+    private javax.swing.JPanel recipesFormPanel;
     private javax.swing.JTable recipesTable;
     private javax.swing.JLabel reqHistoryLabel;
     private javax.swing.JTable reqHistoryTable;
@@ -3483,13 +3418,23 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JTextField reqUsernameTextField;
     private javax.swing.JButton requestBtn;
     private javax.swing.JLabel requestRecipe;
+    private javax.swing.JPanel requestRecipePanel;
     private javax.swing.JLabel requestedLabel1;
     private javax.swing.JLabel requestedLogo;
     private javax.swing.JLabel requestedNumber;
     private javax.swing.JLabel requestedNumber1;
-    private javax.swing.JTextField searchField;
+    private javax.swing.JTextField searchBarHistory;
+    private javax.swing.JTextField searchFieldUser;
+    private javax.swing.JTextField searchRecipesAdmin;
+    private javax.swing.JButton showAll;
+    private javax.swing.JButton showPending;
+    private javax.swing.JButton sortByNameAsc;
+    private javax.swing.JButton sortByNameDesc;
+    private javax.swing.JButton sortByRating;
+    private javax.swing.JButton sortByTime;
     private javax.swing.JLabel subTitleLabel;
     private javax.swing.JTextField timeAdmin;
+    private javax.swing.JButton timeAscAdmin;
     private javax.swing.JLabel timeLabelAdmin;
     private javax.swing.JTextField titleAdmin;
     private javax.swing.JLabel titleLabel;
@@ -3497,10 +3442,9 @@ public class AppViewFrame extends javax.swing.JFrame {
     private javax.swing.JLabel totalRecipes;
     private javax.swing.JLabel totalRecipesLogo;
     private javax.swing.JLabel totalRecipesNumber;
+    private javax.swing.JButton undoButton;
+    private javax.swing.JButton updateButton;
     private javax.swing.JButton updateStatusBtn;
-    private javax.swing.JButton updateStatusBtn1;
-    private javax.swing.JButton updateStatusBtn2;
-    private javax.swing.JButton updateStatusBtn3;
     private javax.swing.JPanel userPanel;
     private javax.swing.JTextField usernameField;
     private javax.swing.JLabel usernameLabel;
