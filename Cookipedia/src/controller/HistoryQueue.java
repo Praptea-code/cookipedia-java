@@ -45,10 +45,9 @@ public class HistoryQueue {
     }
 
     /*
-    this method adds a recipe at the front side of the history queue
-    it first checks overflow then when queue is empty it sets front and rear to 0 and inserts element
-    when not empty it shifts all existing elements one step to the right and writes new element at index 0 and updates rear
-    it returns true when insert succeeds or false when the queue is full
+    this method inserts a new recipe at the rear end of the history queue standard enqueue
+    it takes recipedata object element that should be added
+    it first checks overflow using isfull then sets front on first insert and moves rear and stores the recipe and returns true
     */
     public boolean enqueue(RecipeData element) {
         if (isFull()) {
@@ -59,23 +58,16 @@ public class HistoryQueue {
             front = 0;
             rear = 0;
             items[0] = element;
-            return true;
+        } else {
+            rear = rear + 1;
+            items[rear] = element;
         }
-
-        int i = rear;
-        while (i >= front) {
-            items[i + 1] = items[i];
-            i = i - 1;
-        } 
-        items[front] = element;
-        rear = rear + 1;
         return true;
     }
 
     /*
-    this method removes and returns the recipe at the back side of the history queue
-    it always deletes from rear where the oldest recipe is stored
-    it returns null when queue is empty or the last recipe when not empty and resets front and rear for last element
+    this method removes and returns the recipe at the front of the history queue standard dequeue
+    it returns recipedata at front or null when queue is empty and resets front and rear back to -1 when last element is removed
     */
     public RecipeData dequeue() {
         if (isEmpty()) {
@@ -83,21 +75,21 @@ public class HistoryQueue {
             return null;
         }
 
-        RecipeData element = items[rear];
-        items[rear] = null;
+        RecipeData element = items[front];
+        items[front] = null;
 
         if (front >= rear) {
             front = -1;
             rear = -1;
         } else {
-            rear = rear - 1;
+            front = front + 1;
         }
         return element;
     }
 
     /*
-    this method copies all active recipes from front to rear into a new array
-    it returns an empty array when queue is empty or an array with exact number of elements otherwise
+    this method copies all active recipes from front to rear into a new array but reversed newest first
+    it returns an empty array when queue is empty or an array of exact active size newest first when it has elements
     */
     public RecipeData[] toArray() {
         if (isEmpty()) {
@@ -105,10 +97,12 @@ public class HistoryQueue {
         }
         int size = rear - front + 1;
         RecipeData[] arr = new RecipeData[size];
-        int i = 0;
-        while (i < size) {
-            arr[i] = items[front + i];
-            i = i + 1;
+        int j = 0;
+        int i = rear;
+        while (i >= front) {
+            arr[j] = items[i];
+            j = j + 1;
+            i = i - 1;
         }
         return arr;
     }
