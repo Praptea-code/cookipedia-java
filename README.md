@@ -138,7 +138,17 @@ If the credentials are valid, the app opens the correct dashboard for that role.
 - Log in as **user** (`user` / `67890`) to browse, cook and request recipes.  
 - Use the navigation tabs to move between **Home**, **Recipes**, **History** and **Recipe Request**.  
 - Use sorting and searching options to quickly find recipes.  
-- Use the **mark-cooked**, **delete**, **undo**, **update-status** and **request** features to interact with the data structures and algorithms behind the scenes.  
+- Use the **mark-cooked**, **delete**, **undo**, **update-status** and **request** features to interact with the data structures and algorithms behind the scenes.
+
+## Screenshots
+<img width="922" height="704" alt="image" src="https://github.com/user-attachments/assets/4265e0ba-a168-4c07-bbc4-38984594fb51" />
+<img width="923" height="704" alt="image" src="https://github.com/user-attachments/assets/9a735c4a-c723-4499-a35a-2e443fa73aa1" />
+<img width="923" height="703" alt="image" src="https://github.com/user-attachments/assets/2ac1127b-9520-4abb-a506-b1f3fd4b1af5" />
+<img width="924" height="708" alt="image" src="https://github.com/user-attachments/assets/52d1afe9-8b97-4279-bcc4-374347c4d8cd" />
+<img width="924" height="706" alt="image" src="https://github.com/user-attachments/assets/af097034-6e2c-4e10-aecd-46f40124c605" />
+<img width="924" height="706" alt="image" src="https://github.com/user-attachments/assets/5c84343a-726e-489d-828a-f675e54f5b64" />
+<img width="924" height="706" alt="image" src="https://github.com/user-attachments/assets/83b74542-7b69-435a-82a1-0fc910b84ce7" />
+<img width="925" height="706" alt="image" src="https://github.com/user-attachments/assets/7af22c58-9182-4ab6-bec3-244aa24899e2" />
 
 ## Author
 
